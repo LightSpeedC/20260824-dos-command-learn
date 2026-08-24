@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第1回 バッチの実行モデル</title>
+<style>
+:root{
+	--navy1:#12224d;
+	--navy2:#2f5fbf;
+	--ink:#1c2330;
+	--ink-soft:#4a5568;
+	--line:#d9dfe8;
+	--code-bg:#f4f6fa;
+	--accent:var(--navy1);
+	--accent2:var(--navy2);
+	--soft:#f2f5fb;
+}
+
+/* 章ごとのアクセント色（7章 / 色相 280→0 を 46.7°刻み） */
+.ch01{ --accent:hsl(280,78%,25%);   --accent2:hsl(280,58%,65%);   --soft:hsl(280,28%,95%); }
+.ch02{ --accent:hsl(233.3,78%,25%); --accent2:hsl(233.3,58%,65%); --soft:hsl(233.3,28%,95%); }
+.ch03{ --accent:hsl(186.7,78%,25%); --accent2:hsl(186.7,58%,65%); --soft:hsl(186.7,28%,95%); }
+.ch04{ --accent:hsl(140,78%,25%);   --accent2:hsl(140,58%,65%);   --soft:hsl(140,28%,95%); }
+.ch05{ --accent:hsl(93.3,78%,25%);  --accent2:hsl(93.3,58%,65%);  --soft:hsl(93.3,28%,95%); }
+.ch06{ --accent:hsl(46.7,78%,25%);  --accent2:hsl(46.7,58%,65%);  --soft:hsl(46.7,28%,95%); }
+.ch07{ --accent:hsl(0,78%,25%);     --accent2:hsl(0,58%,65%);     --soft:hsl(0,28%,95%); }
+
+*{ box-sizing:border-box; }
+body{
+	margin:0;
+	font-family:"Segoe UI","Yu Gothic UI","Meiryo",sans-serif;
+	font-size:15.5px;
+	line-height:1.85;
+	color:var(--ink);
+	background:#fff;
+}
+
+.titlebar{
+	background:linear-gradient(135deg,var(--navy1),var(--navy2));
+	color:#fff;
+	padding:34px 30px 30px;
+}
+.titlebar .inner{ max-width:1400px; margin:0 auto; }
+.titlebar h1{ font-size:2.05em; margin:0 0 10px; color:#fff; }
+.titlebar .sub{ font-size:.95em; color:#dbe5f7; margin:0; }
+.titlebar .date{ font-size:.9em; color:#c3d3ee; margin:6px 0 0; }
+.titlebar code{ background:rgba(255,255,255,0.16); color:#fff; border:none; }
+
+.wrap{ max-width:1400px; margin:0 auto; padding:0 30px; }
+
+section{
+	background:linear-gradient(180deg,var(--soft),#fff);
+	border:1px solid var(--line);
+	border-radius:10px;
+	padding:4px 26px 26px;
+	margin:34px 0;
+}
+section h1{
+	font-size:1.5em;
+	margin:26px 0 20px;
+	padding:14px 20px;
+	color:#fff;
+	background:linear-gradient(100deg,var(--accent),var(--accent2));
+	border-radius:8px;
+	box-shadow:0 4px 12px rgba(0,0,0,.18);
+}
+section h1 code{ background:rgba(255,255,255,0.16); color:#fff; border:none; }
+h2{
+	font-size:1.15em;
+	margin:32px 0 12px;
+	padding:6px 12px;
+	color:var(--accent);
+	border-left:6px solid var(--accent);
+	background:linear-gradient(90deg,var(--soft),#fff);
+}
+h2 code{ font-size:.92em; }
+h3{
+	font-size:1.02em;
+	margin:20px 0 8px;
+	display:inline-block;
+	padding-bottom:3px;
+	border-bottom:2px dotted var(--accent2);
+}
+
+p{ margin:10px 0; }
+ul,ol{ margin:10px 0; padding-left:1.6em; }
+li{ margin:4px 0; }
+a{ color:var(--navy2); }
+
+code{
+	background:var(--code-bg);
+	border:1px solid var(--line);
+	color:#17335f;
+	padding:.1em .35em;
+	border-radius:4px;
+	font-family:Consolas,"Courier New",monospace;
+	font-size:.92em;
+}
+pre{
+	background:var(--code-bg);
+	color:var(--ink);
+	border-left:5px solid var(--accent2);
+	border-radius:0 8px 8px 0;
+	padding:13px 16px;
+	overflow-x:auto;
+	font-family:Consolas,"Courier New",monospace;
+	font-size:.92em;
+	line-height:1.7;
+}
+pre code{ background:none; border:none; padding:0; color:inherit; font-size:1em; }
+
+.tablewrap{ overflow-x:auto; margin:14px 0; }
+table{
+	border-collapse:collapse;
+	width:100%;
+	border-radius:8px;
+	overflow:hidden;
+	box-shadow:0 2px 8px rgba(0,0,0,.08);
+	font-size:.95em;
+}
+th{
+	padding:9px 12px;
+	text-align:left;
+	color:#fff;
+	background:linear-gradient(100deg,var(--accent),var(--accent2));
+	white-space:nowrap;
+}
+th code{ background:rgba(255,255,255,0.16); color:#fff; border:none; }
+td{
+	padding:9px 12px;
+	vertical-align:top;
+	border-bottom:1px solid var(--line);
+}
+tr:nth-child(even) td{ background:#fafbfe; }
+td.nw{ white-space:nowrap; }
+td.num{ text-align:right; white-space:nowrap; }
+
+.callout{
+	border-left:6px solid var(--accent);
+	background:linear-gradient(180deg,var(--soft),#fff);
+	border-radius:0 8px 8px 0;
+	padding:12px 16px;
+	margin:16px 0;
+}
+.callout strong{ color:var(--accent); }
+
+.badge{
+	display:inline-block;
+	padding:1px 9px;
+	border-radius:999px;
+	color:#fff;
+	font-size:.82em;
+	white-space:nowrap;
+	margin-right:6px;
+}
+.b-ok{ background:linear-gradient(100deg,#1d7a3c,#45b56c); }
+.b-ng{ background:linear-gradient(100deg,#a51f22,#e05a5c); }
+.b-warn{ background:linear-gradient(100deg,#b8620a,#f0a548); }
+.b-todo{ background:linear-gradient(100deg,#5a6472,#97a1ae); }
+
+ol.toc{
+	display:flex;
+	flex-wrap:wrap;
+	gap:8px;
+	list-style:none;
+	padding:0;
+	margin:16px 0 4px;
+	counter-reset:toc;
+}
+ol.toc li{ counter-increment:toc; margin:0; }
+ol.toc a{
+	display:-webkit-box;
+	-webkit-line-clamp:2;
+	-webkit-box-orient:vertical;
+	overflow:hidden;
+	text-overflow:ellipsis;
+	white-space:normal;
+	width:310px;
+	max-width:100%;
+	padding:8px 12px;
+	color:#fff;
+	background:linear-gradient(100deg,var(--accent),var(--accent2));
+	border-radius:8px;
+	text-decoration:none;
+	font-size:.95em;
+	line-height:1.45;
+}
+ol.toc a::before{ content:counter(toc) ". "; }
+
+svg{ max-width:100%; height:auto; display:block; margin:16px 0; }
+
+.backlink{ margin:22px 0 0; font-size:.95em; }
+.backlink a{ color:var(--navy2); }
+
+footer{
+	max-width:1400px;
+	margin:0 auto;
+	padding:18px 30px 0;
+	border-top:1px solid var(--line);
+	font-size:.95em;
+}
+footer a{ color:var(--navy2); }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+	<div class="inner">
+		<h1>第1回 バッチの実行モデル</h1>
+		<p class="sub">全3回シリーズ（1/3） &nbsp;|&nbsp; この回のゴール: 渡された <code>.bat</code> を読んで何をしているか説明できる</p>
+		<p class="date">📅 作成: 2026-08-25 / 更新: 2026-08-25</p>
+	</div>
+</div>
+
+<div class="wrap">
+
+<p class="backlink"><a href="../README.html">← README に戻る</a></p>
+
+<h2>目次</h2>
+<ol class="toc">
+	<li class="ch01"><a href="#ch01">はじめに — <code>.bat</code> と <code>.cmd</code></a></li>
+	<li class="ch02"><a href="#ch02">実行モデル — 1行が実行されるまで</a></li>
+	<li class="ch03"><a href="#ch03">変数 — すべては文字列</a></li>
+	<li class="ch04"><a href="#ch04">終了コード — 例外のない世界</a></li>
+	<li class="ch05"><a href="#ch05">引数と自分の居場所</a></li>
+	<li class="ch06"><a href="#ch06">デモ — 最初のバッチを書く</a></li>
+	<li class="ch07"><a href="#ch07">まとめと第2回の予告</a></li>
+</ol>
+
+<section class="ch01" id="ch01">
+	<h1>はじめに — <code>.bat</code> と <code>.cmd</code></h1>
+
+	<h2>なぜ今バッチを学ぶのか</h2>
+	<p>より良い言語がいくらでもある2026年に、あえてバッチを学ぶ理由は1つだけです。<strong>Windows にはバッチが最初から入っているから</strong>です。</p>
+	<ul>
+		<li>実行環境の準備が不要。Node.js も .NET SDK も要らない</li>
+		<li>タスクスケジューラ、インストーラ、CI の設定、他人が10年前に書いたスクリプト — 現場にはバッチが残っている</li>
+		<li>読める必要がある。書けなくても、読めないと既存の仕組みを触れない</li>
+	</ul>
+	<p>この勉強会は「バッチで何でも書けるようになる」ことを目指しません。<strong>読めること</strong>と、<strong>数十行までなら自分で書けること</strong>を目標にします。</p>
+
+	<h2><code>.bat</code> と <code>.cmd</code> はどちらを使うか</h2>
+	<p>最初に決着させます。<strong>新しく作るなら <code>.cmd</code>、既存のファイルに合わせるならそれに従う</strong>。これだけ覚えれば十分です。</p>
+	<p>実務上の差は1つだけあります。<code>set</code> や <code>path</code> のような一部の内部コマンドを実行したとき、<strong><code>.cmd</code> は終了コードを 0 にリセットしますが、<code>.bat</code> はリセットしません</strong>。</p>
+	<pre><code>@echo off
+call :fail
+echo before set: %errorlevel%
+set FOO=bar
+echo after  set: %errorlevel%
+goto :eof
+:fail
+exit /b 1</code></pre>
+	<p>同じ内容を拡張子だけ変えて実行した結果です。</p>
+	<div class="tablewrap">
+		<table>
+			<tr><th>拡張子</th><th>出力</th></tr>
+			<tr><td class="nw"><code>.bat</code></td><td><pre style="margin:0;border:none;background:none;padding:0"><code>before set: 1
+after  set: 1</code></pre></td></tr>
+			<tr><td class="nw"><code>.cmd</code></td><td><pre style="margin:0;border:none;background:none;padding:0"><code>before set: 1
+after  set: 0</code></pre></td></tr>
+		</table>
+	</div>
+	<p><code>.bat</code> では失敗の記録が残り続け、<code>.cmd</code> では <code>set</code> を通過した時点で消えます。エラー処理を書くときに <code>.cmd</code> のほうが挙動が素直なので、新規は <code>.cmd</code> を選びます。</p>
+
+	<div class="callout">
+		<p><strong>これ以外の違いは実質ありません。</strong>「<code>.bat</code> は MS-DOS 時代の、<code>.cmd</code> は Windows NT 以降の拡張子」という歴史的な経緯はありますが、現在の cmd.exe はどちらも同じように実行します。ネット上で見かける「<code>.cmd</code> のほうが高機能」という説明は正確ではありません。</p>
+	</div>
+
+	<h2>既知の言語との対応（と、対応が破綻するところ）</h2>
+	<p>JavaScript / Java / C# を知っている人向けに、対応表を先に置きます。<strong>重要なのは右端の列</strong>です。似ているところより、似ていないところのほうが後で問題になります。</p>
+	<div class="tablewrap">
+		<table>
+			<tr><th>やりたいこと</th><th>JS</th><th>Java / C#</th><th>バッチ</th><th>対応が破綻する点</th></tr>
+			<tr>
+				<td class="nw">変数に代入</td>
+				<td class="nw"><code>let n = 5;</code></td>
+				<td class="nw"><code>int n = 5;</code></td>
+				<td class="nw"><code>set n=5</code></td>
+				<td><code>5</code> は数値ではなく文字列。<code>set /a</code> を使ったときだけ数値として扱われる</td>
+			</tr>
+			<tr>
+				<td class="nw">変数を読む</td>
+				<td class="nw"><code>n</code></td>
+				<td class="nw"><code>n</code></td>
+				<td class="nw"><code>%n%</code></td>
+				<td>読むのは実行時ではなく<strong>行の解析時</strong>。未定義なら空文字ではなく <code>%n%</code> という文字列がそのまま残る</td>
+			</tr>
+			<tr>
+				<td class="nw">スコープ</td>
+				<td class="nw">ブロック / 関数</td>
+				<td class="nw">ブロック / クラス</td>
+				<td class="nw"><code>setlocal</code></td>
+				<td>ブロックスコープが存在しない。<code>setlocal</code> を書かないとプロセスの環境変数を汚染する</td>
+			</tr>
+			<tr>
+				<td class="nw">エラー通知</td>
+				<td class="nw"><code>throw</code></td>
+				<td class="nw">例外</td>
+				<td class="nw">終了コード</td>
+				<td>例外がないので<strong>伝播もしない</strong>。呼び出しごとに自分で確認しないと処理が続行する</td>
+			</tr>
+			<tr>
+				<td class="nw">コメント</td>
+				<td class="nw"><code>//</code></td>
+				<td class="nw"><code>//</code></td>
+				<td class="nw"><code>rem</code> / <code>::</code></td>
+				<td><code>::</code> は本来ラベル。<code>for</code> や <code>if</code> の括弧内では構文エラーになる</td>
+			</tr>
+			<tr>
+				<td class="nw">配列</td>
+				<td class="nw"><code>[1,2,3]</code></td>
+				<td class="nw"><code>List</code></td>
+				<td class="nw">—</td>
+				<td><strong>存在しない</strong>。変数名に連番を埋め込んで模倣するしかない</td>
+			</tr>
+		</table>
+	</div>
+</section>
+
+<section class="ch02" id="ch02">
+	<h1>実行モデル — 1行が実行されるまで</h1>
+
+	<p>この章がこの回の中心です。ここを理解すると、後で出てくる「よく分からない例外規則」の大半が説明できます。</p>
+
+	<h2>バッチは言語ではなく、コマンドの並び</h2>
+	<p>JavaScript や Java の処理系は、ソース全体を読んで構文木を作り、それを実行します。バッチは違います。<strong>cmd.exe はファイルを1行読んで、文字列を置換して、コマンドを起動する。これを繰り返すだけ</strong>です。</p>
+
+	<svg viewBox="0 0 1000 190" role="img" aria-label="バッチの1行が実行されるまでの流れ">
+		<defs>
+			<linearGradient id="g-02-1a" x1="0" y1="1" x2="0" y2="0">
+				<stop offset="0" stop-color="hsl(280,78%,25%)"/>
+				<stop offset="1" stop-color="hsl(280,58%,65%)"/>
+			</linearGradient>
+			<linearGradient id="g-02-1b" x1="0" y1="1" x2="0" y2="0">
+				<stop offset="0" stop-color="hsl(187,78%,25%)"/>
+				<stop offset="1" stop-color="hsl(187,58%,65%)"/>
+			</linearGradient>
+			<linearGradient id="g-02-1c" x1="0" y1="1" x2="0" y2="0">
+				<stop offset="0" stop-color="hsl(93,78%,25%)"/>
+				<stop offset="1" stop-color="hsl(93,58%,65%)"/>
+			</linearGradient>
+			<linearGradient id="g-02-1d" x1="0" y1="1" x2="0" y2="0">
+				<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+				<stop offset="1" stop-color="hsl(0,58%,65%)"/>
+			</linearGradient>
+			<marker id="m-02-1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+				<path d="M0,0 L10,5 L0,10 z" fill="#4a5568"/>
+			</marker>
+		</defs>
+
+		<rect x="15" y="30" width="205" height="85" rx="10" fill="url(#g-02-1a)"/>
+		<text x="117" y="60" fill="#fff" font-size="14" font-weight="bold" text-anchor="middle">1行を読む</text>
+		<text x="117" y="84" fill="#fff" font-size="12" text-anchor="middle">ファイルを閉じずに</text>
+		<text x="117" y="101" fill="#fff" font-size="12" text-anchor="middle">1行ずつ逐次読む</text>
+
+		<rect x="275" y="30" width="205" height="85" rx="10" fill="url(#g-02-1b)"/>
+		<text x="377" y="55" fill="#fff" font-size="14" font-weight="bold" text-anchor="middle">変数を文字列に置換</text>
+		<text x="377" y="78" fill="#fff" font-size="12" text-anchor="middle">%VAR% をここで展開</text>
+		<text x="377" y="97" fill="#fff" font-size="12" text-anchor="middle">実行前に値が確定する</text>
+
+		<rect x="535" y="30" width="205" height="85" rx="10" fill="url(#g-02-1c)"/>
+		<text x="637" y="60" fill="#fff" font-size="14" font-weight="bold" text-anchor="middle">コマンドを実行</text>
+		<text x="637" y="84" fill="#fff" font-size="12" text-anchor="middle">内部コマンド</text>
+		<text x="637" y="101" fill="#fff" font-size="12" text-anchor="middle">または外部の exe</text>
+
+		<rect x="795" y="30" width="190" height="85" rx="10" fill="url(#g-02-1d)"/>
+		<text x="890" y="60" fill="#fff" font-size="14" font-weight="bold" text-anchor="middle">終了コードを残す</text>
+		<text x="890" y="84" fill="#fff" font-size="12" text-anchor="middle">ERRORLEVEL を</text>
+		<text x="890" y="101" fill="#fff" font-size="12" text-anchor="middle">上書きする</text>
+
+		<line x1="225" y1="72" x2="267" y2="72" stroke="#4a5568" stroke-width="2" marker-end="url(#m-02-1)"/>
+		<line x1="485" y1="72" x2="527" y2="72" stroke="#4a5568" stroke-width="2" marker-end="url(#m-02-1)"/>
+		<line x1="745" y1="72" x2="787" y2="72" stroke="#4a5568" stroke-width="2" marker-end="url(#m-02-1)"/>
+
+		<text x="500" y="150" fill="#4a5568" font-size="12" text-anchor="middle">2番目の「置換」は、括弧で囲まれたブロックがあればブロック全体に対して一括で先に行われる</text>
+		<text x="500" y="170" fill="#4a5568" font-size="12" text-anchor="middle">→ これが第2回で扱う「遅延展開」の原因になる</text>
+	</svg>
+
+	<h2>置換であることの帰結</h2>
+	<p>「変数を読む」が「その位置に値の文字列を貼り込む」であるため、次のようなことが起きます。</p>
+
+	<h3>1. 未定義の変数は空にならない</h3>
+	<pre><code>@echo off
+echo [%UNDEFINED_VAR%]</code></pre>
+	<pre><code>[%UNDEFINED_VAR%]</code></pre>
+	<p>JavaScript なら <code>undefined</code>、Java ならコンパイルエラーですが、バッチは<strong>置換できないので元の文字列を残します</strong>。<code>if "%A%"=="x"</code> で比較が成立しないときは、まずこれを疑います。</p>
+
+	<h3>2. 置換した結果が、もう一度コマンドとして読み直される</h3>
+	<p>これがこの回で一番重要な帰結です。置換は文字列を貼り込むだけなので、<strong>貼り込んだ値の中にある記号も、コマンドの記号として解釈されます</strong>。</p>
+	<pre><code>@echo off
+set MSG=Hello &amp; echo あとがき
+echo %MSG%</code></pre>
+	<p>まず <code>set</code> の行が壊れています。<code>&amp;</code> はコマンドの区切りなので、この行は「<code>MSG</code> に <code>Hello </code> を代入」と「<code>echo あとがき</code> を実行」の2つのコマンドとして扱われます。</p>
+	<p>代入だけなら <code>set "名前=値"</code> の形で守れます。</p>
+	<pre><code>@echo off
+setlocal enabledelayedexpansion
+set "MSG=Hello &amp; World"
+echo A: %MSG%
+echo B: !MSG!
+echo C: "%MSG%"</code></pre>
+	<pre><code>A: Hello
+'World' は、内部コマンドまたは外部コマンド、
+操作可能なプログラムまたはバッチ ファイルとして認識されていません。
+B: Hello &amp; World
+C: "Hello &amp; World"</code></pre>
+	<p>変数には <code>Hello &amp; World</code> が正しく入っています。それでも <code>A</code> は壊れます。<code>echo %MSG%</code> が置換されて <code>echo Hello &amp; World</code> という<strong>行</strong>になり、その行がコマンドとして読み直されるからです。<code>&amp;</code> 以降は別のコマンドとして実行され、<code>World</code> というコマンドを探しに行きます。</p>
+	<p><code>B</code> の <code>!MSG!</code> は正しく表示されます。遅延展開は実行の直前に値を差し込み、<strong>その結果を読み直しません</strong>。<code>C</code> のように引用符で囲む方法もありますが、引用符自体も表示されてしまいます。</p>
+
+	<div class="callout">
+		<p><strong><code>set "名前=値"</code> は代入を守るだけで、読み出しは守りません。</strong>記号を含む値を扱うときは <code>!VAR!</code> で読みます。第2回で扱う遅延展開は「ループで値が更新されない問題」の対策として説明されることが多いのですが、実はこの<strong>再解析を止める</strong>役割のほうが本質的です。</p>
+	</div>
+
+	<h3>3. <code>rem</code> の行でも解析は行われる</h3>
+	<p>次の1行だけでバッチが停止します。コメントなのに、です。</p>
+	<pre><code>rem 引数と %~ 修飾子の確認</code></pre>
+	<pre><code>バッチ パラメーターの置き換え中で、パス演算子の次の使用方法は無効です:
+%~ 修飾子の確認</code></pre>
+	<p><code>%~</code> の直後は修飾子（<code>f</code> <code>d</code> <code>n</code> など）でなければならず、空白が来ると無効と判断されます。<code>rem</code> は<strong>その行を実行しないだけ</strong>で、行を読み込んで置換する処理はその前に走っています。</p>
+	<p>コメントの中でも <code>%</code> は特別な文字です。日本語の説明を書くときに <code>%~</code> や <code>%1</code> のような表記を含めると、コメントが原因でバッチが動かなくなります。</p>
+
+	<h3>4. <code>%</code> はエスケープが必要になる</h3>
+	<pre><code>echo 進捗: 50%
+echo 進捗: 50%%</code></pre>
+	<pre><code>進捗: 50
+進捗: 50%</code></pre>
+	<p>バッチファイル内では <code>%%</code> と書きます。コマンドプロンプトに直接打つときは <code>%</code> 1つで済むため、プロンプトで試したコードを貼るとここだけ崩れます。</p>
+
+	<h2>最低限の定型句</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>書き方</th><th>意味</th><th>備考</th></tr>
+			<tr><td class="nw"><code>@echo off</code></td><td>実行するコマンド自体の表示を止める</td><td>1行目に書く。先頭の <code>@</code> はこの行自身を隠すため</td></tr>
+			<tr><td class="nw"><code>rem コメント</code></td><td>コメント</td><td>括弧の中でも使える（<code>::</code> は使えない）。ただしコメント内の <code>%</code> も解析される</td></tr>
+			<tr><td class="nw"><code>echo 文字列</code></td><td>表示</td><td><code>echo.</code>（ピリオド付き）で空行</td></tr>
+			<tr><td class="nw"><code>pause</code></td><td>キー入力を待つ</td><td>ダブルクリック実行で結果を読ませたいときに末尾へ</td></tr>
+		</table>
+	</div>
+	<div class="callout">
+		<p><strong><code>@echo off</code> を外すとデバッグできます。</strong>実行される1行1行が展開後の姿で表示されるため、「変数がどう置換されたか」が目で見えます。動かないバッチを調べるときの最初の手段です。</p>
+	</div>
+</section>
+
+<section class="ch03" id="ch03">
+	<h1>変数 — すべては文字列</h1>
+
+	<h2>代入は <code>set "名前=値"</code> の形で書く</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>書き方</th><th>結果</th></tr>
+			<tr><td class="nw"><code>set NAME=太郎</code></td><td><span class="badge b-warn">可</span>動くが、値に <code>&amp;</code> などを含められない</td></tr>
+			<tr><td class="nw"><code>set NAME = 太郎</code></td><td><span class="badge b-ng">不可</span>変数名が <code>NAME </code>、値が <code> 太郎</code> になる</td></tr>
+			<tr><td class="nw"><code>set "NAME=太郎"</code></td><td><span class="badge b-ok">推奨</span>これを定型にする</td></tr>
+			<tr><td class="nw"><code>set "NAME="</code></td><td>変数を<strong>削除</strong>する（空文字の代入ではない）</td></tr>
+		</table>
+	</div>
+	<p><code>=</code> の前後に空白を入れないこと、そして囲むのは値だけでなく<strong>「名前＝値」の全体</strong>であることが要点です。<code>set NAME="太郎"</code> と書くと、引用符が値の一部として保存されてしまいます。</p>
+
+	<h2>すべての値は文字列</h2>
+	<pre><code>@echo off
+set "N=5"
+set "M=3"
+echo %N% + %M% は %N%%M%</code></pre>
+	<pre><code>5 + 3 は 53</code></pre>
+	<p>数値として計算するには <code>set /a</code> を使います。</p>
+	<pre><code>@echo off
+set /a SUM=5+3
+set /a DIV=7/2
+set /a MOD=7%%2
+echo %SUM% %DIV% %MOD%</code></pre>
+	<pre><code>8 3 1</code></pre>
+	<p>整数のみで、小数は扱えません（<code>7/2</code> は <code>3</code>）。剰余の <code>%</code> はバッチ内では <code>%%</code> と書きます。</p>
+
+	<div class="callout">
+		<p><strong><code>set /a</code> の中では変数に <code>%</code> が不要です。</strong><code>set /a COUNT=COUNT+1</code> と書けます（<code>set /a COUNT=%COUNT%+1</code> でも動きます）。<code>set /a</code> だけが変数名を直接解釈できる特別な文脈です。</p>
+	</div>
+
+	<h2>スコープは <code>setlocal</code> しかない</h2>
+	<p><code>set</code> はプロセスの環境変数を書き換えます。ブロックスコープも関数スコープもありません。</p>
+	<pre><code>@echo off
+rem これを実行すると、実行後のコンソールでも PATH が変わったまま
+set "PATH=C:\mytools"</code></pre>
+	<p><code>setlocal</code> を宣言すると、それ以降の変更はスクリプト終了時に破棄されます。</p>
+	<pre><code>@echo off
+setlocal
+set "PATH=C:\mytools;%PATH%"
+rem …処理…
+rem スクリプトが終わると PATH は元に戻る</code></pre>
+	<p>実務では次の形が標準です。第2回で扱う <code>!VAR!</code> を有効にするオプションを最初から付けておきます。</p>
+	<pre><code>@echo off
+setlocal enabledelayedexpansion</code></pre>
+
+	<h2>変数の一覧と確認</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>コマンド</th><th>内容</th></tr>
+			<tr><td class="nw"><code>set</code></td><td>すべての環境変数を一覧表示</td></tr>
+			<tr><td class="nw"><code>set PA</code></td><td><code>PA</code> で始まる変数だけを表示（<code>PATH</code> など）</td></tr>
+			<tr><td class="nw"><code>echo %VAR%</code></td><td>1つの値を確認</td></tr>
+			<tr><td class="nw"><code>if defined VAR</code></td><td>定義されているかを判定（<code>%</code> で囲まない）</td></tr>
+		</table>
+	</div>
+	<p>よく使う組み込み変数です。</p>
+	<div class="tablewrap">
+		<table>
+			<tr><th>変数</th><th>内容</th><th>注意</th></tr>
+			<tr><td class="nw"><code>%CD%</code></td><td>カレントディレクトリ</td><td>バッチの場所とは<strong>別物</strong></td></tr>
+			<tr><td class="nw"><code>%DATE%</code></td><td>日付</td><td>書式が地域設定に依存する（日本語環境では <code>2026/08/25</code>）</td></tr>
+			<tr><td class="nw"><code>%TIME%</code></td><td>時刻</td><td>時が1桁だと<strong>先頭が空白</strong>になる（<code> 0:21:51.61</code>）</td></tr>
+			<tr><td class="nw"><code>%USERNAME%</code></td><td>ユーザー名</td><td>—</td></tr>
+			<tr><td class="nw"><code>%TEMP%</code></td><td>一時フォルダ</td><td>—</td></tr>
+			<tr><td class="nw"><code>%ERRORLEVEL%</code></td><td>直前の終了コード</td><td>次章で扱う</td></tr>
+		</table>
+	</div>
+	<div class="callout">
+		<p><strong><code>%TIME%</code> をファイル名に使うと壊れます。</strong>午前0時台は <code> 0:21:51.61</code> と先頭に空白が入り、<code>:</code> と <code>.</code> はファイル名に使えません。日時をファイル名にする方法は第3回で扱います。</p>
+	</div>
+</section>
+
+<section class="ch04" id="ch04">
+	<h1>終了コード — 例外のない世界</h1>
+
+	<h2>バッチに例外はない</h2>
+	<p>これがバッチで最も事故を生む性質です。<strong>コマンドが失敗しても、次の行はそのまま実行されます。</strong></p>
+	<pre><code>@echo off
+copy "C:\notexist\a.txt" "D:\backup\"
+del "C:\notexist\a.txt"
+echo 完了しました</code></pre>
+	<p>コピーが失敗してエラーメッセージが出ても、<code>del</code> が実行され、<code>完了しました</code> まで表示されます。JavaScript なら <code>throw</code> で止まり、Java なら例外が呼び出し元へ伝播するところですが、バッチは<strong>失敗を数値で記録するだけ</strong>です。</p>
+
+	<h2><code>ERRORLEVEL</code> の読み方</h2>
+	<div class="tablewrap">
+			<table>
+			<tr><th>書き方</th><th>意味</th></tr>
+			<tr><td class="nw"><code>%errorlevel%</code></td><td>直前のコマンドの終了コード。<strong>0 が成功</strong></td></tr>
+			<tr><td class="nw"><code>if errorlevel 1</code></td><td>終了コードが <strong>1以上</strong>なら真（「1と等しい」ではない）</td></tr>
+			<tr><td class="nw"><code>if "%errorlevel%"=="2"</code></td><td>特定の値だけを見る</td></tr>
+		</table>
+	</div>
+	<p><code>if errorlevel 1</code> が「1以上」という点は繰り返し引っかかるところです。終了コードが 5 でも真になります。</p>
+
+	<h2>実務で使うのは <code>&amp;&amp;</code> と <code>||</code></h2>
+	<p>JavaScript の短絡評価と同じ記号ですが、判定するのは真偽値ではなく<strong>終了コード</strong>です。</p>
+	<div class="tablewrap">
+		<table>
+			<tr><th>書き方</th><th>意味</th></tr>
+			<tr><td class="nw"><code>コマンド &amp;&amp; 次</code></td><td>成功（終了コード 0）したときだけ次を実行</td></tr>
+			<tr><td class="nw"><code>コマンド || 次</code></td><td>失敗（0以外）したときだけ次を実行</td></tr>
+			<tr><td class="nw"><code>コマンド1 &amp; コマンド2</code></td><td>結果に関係なく続けて実行</td></tr>
+		</table>
+	</div>
+	<pre><code>@echo off
+rem 失敗したらメッセージを出して終了する定型
+copy "%SRC%" "%DST%" || (
+    echo コピーに失敗しました
+    exit /b 1
+)
+echo コピーしました</code></pre>
+
+	<h2>自分の終了コードを返す</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>書き方</th><th>効果</th><th>使い分け</th></tr>
+			<tr><td class="nw"><code>exit /b 0</code></td><td>このバッチを成功として終える</td><td rowspan="2">ほぼ常にこちら</td></tr>
+			<tr><td class="nw"><code>exit /b 1</code></td><td>このバッチを失敗として終える</td></tr>
+			<tr><td class="nw"><code>exit 1</code></td><td><strong>cmd.exe そのものを終了</strong>する</td><td>呼び出し元のコンソールまで閉じる。事故のもと</td></tr>
+			<tr><td class="nw"><code>goto :eof</code></td><td>ファイル末尾へ飛ぶ（終了コードは変えない）</td><td>サブルーチンからの復帰</td></tr>
+		</table>
+	</div>
+	<div class="callout">
+		<p><strong><code>/b</code> を付け忘れると開いていたコマンドプロンプトが閉じます。</strong><code>exit</code> は「cmd.exe を終了する」コマンドで、<code>/b</code>（batch）を付けたときだけ「このバッチだけ終了する」に変わります。他のバッチから呼ばれる可能性があるなら必ず <code>/b</code> を付けます。</p>
+	</div>
+
+	<h2>終了コードの意味はコマンドごとに違う</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>コマンド</th><th>終了コードの意味</th></tr>
+			<tr><td class="nw"><code>copy</code> / <code>del</code> / <code>move</code></td><td>0 が成功、1 が失敗。素直</td></tr>
+			<tr><td class="nw"><code>robocopy</code></td><td><strong>1〜7 も成功</strong>。8 以上が失敗。<code>|| exit /b</code> をそのまま付けると誤判定する</td></tr>
+			<tr><td class="nw"><code>find</code> / <code>findstr</code></td><td>該当なしで 1。「見つからなかった」は失敗として扱われる</td></tr>
+			<tr><td class="nw"><code>where</code></td><td>見つからないと 1。コマンドの存在確認に使える</td></tr>
+		</table>
+	</div>
+	<p>知らないコマンドを使うときは <code>コマンド /?</code> で終了コードの説明を読んでから、エラー処理を書きます。</p>
+</section>
+
+<section class="ch05" id="ch05">
+	<h1>引数と自分の居場所</h1>
+
+	<h2>引数の受け取り</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>書き方</th><th>内容</th></tr>
+			<tr><td class="nw"><code>%0</code></td><td>実行されたバッチ自身のパス</td></tr>
+			<tr><td class="nw"><code>%1</code> 〜 <code>%9</code></td><td>1〜9番目の引数</td></tr>
+			<tr><td class="nw"><code>%*</code></td><td>すべての引数をまとめた文字列</td></tr>
+			<tr><td class="nw"><code>%~1</code></td><td>1番目の引数から前後の引用符を外したもの</td></tr>
+		</table>
+	</div>
+	<p>引数は <code>%~1</code> で受け取り、使うときに改めて引用符で囲むのが定型です。こうすれば呼び出し側が囲んでいても囲んでいなくても同じ形で扱えます。</p>
+	<pre><code>@echo off
+setlocal
+if "%~1"=="" (
+    echo 使い方: %~nx0 ^<対象ファイル^>
+    exit /b 1
+)
+set "TARGET=%~1"
+if not exist "%TARGET%" (
+    echo 見つかりません: %TARGET%
+    exit /b 1
+)
+echo 対象: %TARGET%</code></pre>
+
+	<h2><code>%~</code> 修飾子でパスを分解する</h2>
+	<p><code>%1</code> に <code>C:\work\data\input.txt</code> が渡された場合の展開結果です。</p>
+	<div class="tablewrap">
+		<table>
+			<tr><th>書き方</th><th>意味</th><th>結果</th></tr>
+			<tr><td class="nw"><code>%~f1</code></td><td>フルパス</td><td class="nw"><code>C:\work\data\input.txt</code></td></tr>
+			<tr><td class="nw"><code>%~dp1</code></td><td>ドライブ＋パス</td><td class="nw"><code>C:\work\data\</code></td></tr>
+			<tr><td class="nw"><code>%~n1</code></td><td>拡張子なしのファイル名</td><td class="nw"><code>input</code></td></tr>
+			<tr><td class="nw"><code>%~x1</code></td><td>拡張子</td><td class="nw"><code>.txt</code></td></tr>
+			<tr><td class="nw"><code>%~nx1</code></td><td>ファイル名＋拡張子</td><td class="nw"><code>input.txt</code></td></tr>
+			<tr><td class="nw"><code>%~t1</code></td><td>更新日時</td><td class="nw"><code>2026/08/25 10:30</code></td></tr>
+			<tr><td class="nw"><code>%~z1</code></td><td>サイズ（バイト）</td><td class="nw"><code>1024</code></td></tr>
+		</table>
+	</div>
+	<p>他の言語なら <code>path.basename()</code> や <code>Path.GetFileName()</code> を呼ぶところですが、バッチではこの修飾子が同じ役割を果たします。</p>
+
+	<h2><code>%~dp0</code> — 自分がどこにいるか</h2>
+	<p>この修飾子を <code>%0</code>（自分自身）に適用すると、<strong>バッチが置かれているフォルダ</strong>が得られます。これが実務で最も使う記法です。</p>
+	<pre><code>@echo off
+echo バッチの場所: %~dp0
+echo カレント     : %CD%</code></pre>
+	<p>この2つは<strong>別物</strong>です。相対パスの起点はカレントディレクトリであり、バッチの場所ではありません。ダブルクリックで実行すると一致しますが、タスクスケジューラや別フォルダから呼ばれると一致しません。</p>
+	<pre><code>@echo off
+rem 同じフォルダの config.ini を確実に読む
+for /f "delims=" %%l in ("%~dp0config.ini") do echo %%l
+
+rem あるいはカレントを移動してしまう
+pushd "%~dp0" || exit /b 1
+rem …処理…
+popd</code></pre>
+	<div class="callout">
+		<p><strong><code>%~dp0</code> の末尾には <code>\</code> が付いています。</strong>連結は <code>"%~dp0config.ini"</code> です。<code>"%~dp0\config.ini"</code> と書くと <code>\</code> が二重になります。また移動には <code>cd</code> ではなく <code>pushd</code> を使ってください。<code>cd</code> は共有フォルダ（<code>\\server\share\...</code>）に移動できません。</p>
+	</div>
+</section>
+
+<section class="ch06" id="ch06">
+	<h1>デモ — 最初のバッチを書く</h1>
+
+	<p>ここまでの内容だけで、実際に使えるものを1つ作ります。<strong>指定したファイルを、日付付きの名前でバックアップフォルダにコピーする</strong>バッチです。</p>
+	<p>この題材は第2回・第3回でも育てていきます。段階を追って、なぜその1行が必要になるかを見ます。</p>
+
+	<h2>Step 1: とにかく動かす</h2>
+	<pre><code>@echo off
+copy "C:\work\data.txt" "C:\backup\data.txt"
+echo 完了</code></pre>
+	<p>動きますが、対象を変えるたびにファイルを書き換える必要があります。</p>
+
+	<h2>Step 2: 変数にする</h2>
+	<pre><code>@echo off
+setlocal
+
+set "SRC=C:\work\data.txt"
+set "DSTDIR=C:\backup"
+
+copy "%SRC%" "%DSTDIR%\"
+echo 完了</code></pre>
+	<p>設定が先頭に集まり、読みやすくなりました。<code>setlocal</code> があるので、実行後にコンソールの環境変数が汚れることもありません。</p>
+
+	<h2>Step 3: 日付を付ける</h2>
+	<pre><code>@echo off
+setlocal
+
+set "SRC=C:\work\data.txt"
+set "DSTDIR=C:\backup"
+
+rem %DATE% は 2026/08/25 形式。/ を削除して 20260825 にする
+set "TODAY=%DATE:/=%"
+
+copy "%SRC%" "%DSTDIR%\%TODAY%_data.txt"
+echo 完了</code></pre>
+	<p><code>%DATE:/=%</code> は「<code>/</code> を空文字に置換する」という記法です（第2回で詳しく扱います）。</p>
+	<p><span class="badge b-warn">要注意</span>この方法は<strong>地域設定に依存します</strong>。区切りが <code>-</code> の環境では効きません。環境に依存しない日付の取得方法は第3回で扱います。</p>
+
+	<h2>Step 4: 失敗を検知する</h2>
+	<pre><code>@echo off
+setlocal
+
+set "SRC=C:\work\data.txt"
+set "DSTDIR=C:\backup"
+set "TODAY=%DATE:/=%"
+
+rem コピー元がなければ、その時点でやめる
+if not exist "%SRC%" (
+    echo [エラー] コピー元が見つかりません: %SRC%
+    exit /b 1
+)
+
+rem 保存先フォルダがなければ作る
+if not exist "%DSTDIR%\" md "%DSTDIR%"
+
+copy "%SRC%" "%DSTDIR%\%TODAY%_%~nx1" &gt;nul || (
+    echo [エラー] コピーに失敗しました
+    exit /b 1
+)
+
+echo 完了: %DSTDIR%\%TODAY%_data.txt
+exit /b 0</code></pre>
+	<p>エラー処理が入って、はじめて「他人に渡せる」方向に一歩進みました。<code>&gt;nul</code> は <code>copy</code> の「1 個のファイルをコピーしました。」という出力を捨てるためです。</p>
+
+	<h2>Step 5: 引数で受け取る</h2>
+	<pre><code>@echo off
+setlocal
+
+rem --- 引数チェック ---
+if "%~1"=="" (
+    echo 使い方: %~nx0 ^<バックアップするファイル^>
+    exit /b 1
+)
+
+set "SRC=%~1"
+set "DSTDIR=%~dp0backup"
+set "TODAY=%DATE:/=%"
+
+if not exist "%SRC%" (
+    echo [エラー] コピー元が見つかりません: %SRC%
+    exit /b 1
+)
+
+if not exist "%DSTDIR%\" md "%DSTDIR%"
+
+rem %~nx1 で「ファイル名＋拡張子」を取り出して名前を組み立てる
+set "DST=%DSTDIR%\%TODAY%_%~nx1"
+
+copy "%SRC%" "%DST%" &gt;nul || (
+    echo [エラー] コピーに失敗しました
+    exit /b 1
+)
+
+echo 完了: %DST%
+exit /b 0</code></pre>
+	<p>これで、どのファイルにも使える汎用のバックアップツールになりました。<code>%~dp0backup</code> としたので、保存先は<strong>バッチと同じ場所</strong>の <code>backup</code> フォルダになり、どこから実行しても同じ場所に保存されます。</p>
+
+	<div class="callout">
+		<p><strong>この20行に、この回の内容がすべて入っています。</strong><code>setlocal</code>（スコープ）、<code>set "…=…"</code>（代入）、<code>%~1</code>（引数）、<code>%~nx1</code>（パス分解）、<code>%~dp0</code>（自分の場所）、<code>if exist</code>（確認）、<code>||</code>（失敗時の処理）、<code>exit /b</code>（終了コード）。読み返して、それぞれがなぜ必要かを説明できれば、この回の目標は達成です。</p>
+	</div>
+
+	<p>サンプルは <code>samples\01\</code> に置いてあります。</p>
+	<div class="tablewrap">
+		<table>
+			<tr><th>ファイル</th><th>内容</th></tr>
+			<tr><td class="nw"><code>01-hello.cmd</code></td><td><code>@echo off</code> と <code>echo</code> の確認。<code>@echo off</code> を消すと何が起きるか</td></tr>
+			<tr><td class="nw"><code>02-expand.cmd</code></td><td>置換であることの確認。未定義変数 / <code>set</code> の書き方の違い / <code>%%</code> / 記号を含む値の再解析</td></tr>
+			<tr><td class="nw"><code>03-errorlevel.cmd</code></td><td>終了コードの確認。<code>&amp;&amp;</code> と <code>||</code> の動作</td></tr>
+			<tr><td class="nw"><code>04-args.cmd</code></td><td>引数と <code>%~</code> 修飾子の一覧表示</td></tr>
+			<tr><td class="nw"><code>05-backup.cmd</code></td><td>上の Step 5（完成版）</td></tr>
+		</table>
+	</div>
+</section>
+
+<section class="ch07" id="ch07">
+	<h1>まとめと第2回の予告</h1>
+
+	<h2>この回の要点</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>#</th><th>覚えること</th><th>理由</th></tr>
+			<tr><td class="num">1</td><td>バッチは1行ずつ「置換してから実行」する</td><td>後で出てくる罠のほぼすべてがここから説明できる</td></tr>
+			<tr><td class="num">2</td><td>値はすべて文字列。計算は <code>set /a</code></td><td>型がないので、比較も文字列比較になる</td></tr>
+			<tr><td class="num">3</td><td><code>set "名前=値"</code> の形で書く</td><td>空白混入と記号の誤解釈を同時に防げる</td></tr>
+			<tr><td class="num">4</td><td>先頭に <code>setlocal enabledelayedexpansion</code></td><td>環境を汚さない。第2回の <code>!VAR!</code> の前提になる</td></tr>
+			<tr><td class="num">5</td><td>例外はない。<code>||</code> で失敗を捕まえる</td><td>書き忘れた行は黙って通過する</td></tr>
+			<tr><td class="num">6</td><td><code>exit</code> ではなく <code>exit /b</code></td><td>付け忘れるとコンソールごと閉じる</td></tr>
+			<tr><td class="num">7</td><td>自分の場所は <code>%~dp0</code>、カレントは <code>%CD%</code></td><td>この2つは一致しない</td></tr>
+		</table>
+	</div>
+
+	<h2>第2回で扱うこと</h2>
+	<p>次回は制御構文です。<code>if</code> と <code>for</code> を扱いますが、中心になるのは<strong>この回の「置換」が引き起こす問題</strong>です。</p>
+	<pre><code>@echo off
+setlocal
+set count=0
+for %%f in (*.txt) do (
+    set /a count=count+1
+    echo 現在: %count%
+)
+echo 合計: %count%</code></pre>
+	<p>このコードは、<code>.txt</code> が3つあるフォルダで実行すると <code>現在: 0</code> を3回表示し、最後に <code>合計: 3</code> と表示します。なぜそうなるのかを、この回の実行モデルの図で説明できるようにするのが第2回の前半です。</p>
+
+	<h2>この回に関連する落とし穴</h2>
+	<p>詳しくは<a href="A3-pitfalls.html">落とし穴カタログ</a>を参照してください。</p>
+	<div class="tablewrap">
+		<table>
+			<tr><th>#</th><th>症状</th></tr>
+			<tr><td class="num"><a href="A3-pitfalls.html#p2">2</a></td><td>比較が成立しない / 値の末尾に空白が入る</td></tr>
+			<tr><td class="num"><a href="A3-pitfalls.html#p5">5</a></td><td>パスに空白が含まれると失敗する</td></tr>
+			<tr><td class="num"><a href="A3-pitfalls.html#p6">6</a></td><td>エラーが出ているのに処理が続行する</td></tr>
+			<tr><td class="num"><a href="A3-pitfalls.html#p8">8</a></td><td><code>exit</code> したらコンソールごと閉じた</td></tr>
+			<tr><td class="num"><a href="A3-pitfalls.html#p10">10</a></td><td><code>%</code> を含む文字列が消える</td></tr>
+			<tr><td class="num"><a href="A3-pitfalls.html#p13">13</a></td><td>実行後、環境変数が書き換わっている</td></tr>
+		</table>
+	</div>
+	<p>記法の確認は<a href="A2-cheatsheet.html">記法早見表</a>、目的から引くときは<a href="A1-appendix-index.html">逆引き参照</a>を使ってください。</p>
+</section>
+
+</div>
+
+<footer>
+	<p><a href="../README.html">← README に戻る</a></p>
+</footer>
+
+</body>
+</html>

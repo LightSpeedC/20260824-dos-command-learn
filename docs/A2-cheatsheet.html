@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>付録: バッチ記法早見表</title>
+<style>
+:root{
+	--navy1:#12224d;
+	--navy2:#2f5fbf;
+	--ink:#1c2330;
+	--ink-soft:#4a5568;
+	--line:#d9dfe8;
+	--code-bg:#f4f6fa;
+	--accent:var(--navy1);
+	--accent2:var(--navy2);
+	--soft:#f2f5fb;
+}
+
+/* 章ごとのアクセント色（8章 / 色相 280→0 を 40°刻み） */
+.ch01{ --accent:hsl(280,78%,25%); --accent2:hsl(280,58%,65%); --soft:hsl(280,28%,95%); }
+.ch02{ --accent:hsl(240,78%,25%); --accent2:hsl(240,58%,65%); --soft:hsl(240,28%,95%); }
+.ch03{ --accent:hsl(200,78%,25%); --accent2:hsl(200,58%,65%); --soft:hsl(200,28%,95%); }
+.ch04{ --accent:hsl(160,78%,25%); --accent2:hsl(160,58%,65%); --soft:hsl(160,28%,95%); }
+.ch05{ --accent:hsl(120,78%,25%); --accent2:hsl(120,58%,65%); --soft:hsl(120,28%,95%); }
+.ch06{ --accent:hsl(80,78%,25%);  --accent2:hsl(80,58%,65%);  --soft:hsl(80,28%,95%); }
+.ch07{ --accent:hsl(40,78%,25%);  --accent2:hsl(40,58%,65%);  --soft:hsl(40,28%,95%); }
+.ch08{ --accent:hsl(0,78%,25%);   --accent2:hsl(0,58%,65%);   --soft:hsl(0,28%,95%); }
+
+*{ box-sizing:border-box; }
+body{
+	margin:0;
+	font-family:"Segoe UI","Yu Gothic UI","Meiryo",sans-serif;
+	font-size:15.5px;
+	line-height:1.85;
+	color:var(--ink);
+	background:#fff;
+}
+
+.titlebar{
+	background:linear-gradient(135deg,var(--navy1),var(--navy2));
+	color:#fff;
+	padding:34px 30px 30px;
+}
+.titlebar .inner{ max-width:1400px; margin:0 auto; }
+.titlebar h1{ font-size:2.05em; margin:0 0 10px; color:#fff; }
+.titlebar .sub{ font-size:.95em; color:#dbe5f7; margin:0; }
+.titlebar .date{ font-size:.9em; color:#c3d3ee; margin:6px 0 0; }
+.titlebar code{ background:rgba(255,255,255,0.16); color:#fff; border:none; }
+
+.wrap{ max-width:1400px; margin:0 auto; padding:0 30px; }
+
+section{
+	background:linear-gradient(180deg,var(--soft),#fff);
+	border:1px solid var(--line);
+	border-radius:10px;
+	padding:4px 26px 26px;
+	margin:34px 0;
+}
+section h1{
+	font-size:1.5em;
+	margin:26px 0 20px;
+	padding:14px 20px;
+	color:#fff;
+	background:linear-gradient(100deg,var(--accent),var(--accent2));
+	border-radius:8px;
+	box-shadow:0 4px 12px rgba(0,0,0,.18);
+}
+section h1 code{ background:rgba(255,255,255,0.16); color:#fff; border:none; }
+h2{
+	font-size:1.15em;
+	margin:30px 0 12px;
+	padding:6px 12px;
+	color:var(--accent);
+	border-left:6px solid var(--accent);
+	background:linear-gradient(90deg,var(--soft),#fff);
+}
+h3{
+	font-size:1.02em;
+	margin:20px 0 8px;
+	display:inline-block;
+	padding-bottom:3px;
+	border-bottom:2px dotted var(--accent2);
+}
+
+p{ margin:10px 0; }
+ul,ol{ margin:10px 0; padding-left:1.6em; }
+li{ margin:4px 0; }
+a{ color:var(--navy2); }
+
+code{
+	background:var(--code-bg);
+	border:1px solid var(--line);
+	color:#17335f;
+	padding:.1em .35em;
+	border-radius:4px;
+	font-family:Consolas,"Courier New",monospace;
+	font-size:.92em;
+}
+pre{
+	background:var(--code-bg);
+	color:var(--ink);
+	border-left:5px solid var(--accent2);
+	border-radius:0 8px 8px 0;
+	padding:13px 16px;
+	overflow-x:auto;
+	font-family:Consolas,"Courier New",monospace;
+	font-size:.92em;
+	line-height:1.7;
+}
+pre code{ background:none; border:none; padding:0; color:inherit; font-size:1em; }
+
+.tablewrap{ overflow-x:auto; margin:14px 0; }
+table{
+	border-collapse:collapse;
+	width:100%;
+	border-radius:8px;
+	overflow:hidden;
+	box-shadow:0 2px 8px rgba(0,0,0,.08);
+	font-size:.95em;
+}
+th{
+	padding:9px 12px;
+	text-align:left;
+	color:#fff;
+	background:linear-gradient(100deg,var(--accent),var(--accent2));
+	white-space:nowrap;
+}
+th code{ background:rgba(255,255,255,0.16); color:#fff; border:none; }
+td{
+	padding:9px 12px;
+	vertical-align:top;
+	border-bottom:1px solid var(--line);
+}
+tr:nth-child(even) td{ background:#fafbfe; }
+td.nw{ white-space:nowrap; }
+td.num{ text-align:right; white-space:nowrap; }
+
+.callout{
+	border-left:6px solid var(--accent);
+	background:linear-gradient(180deg,var(--soft),#fff);
+	border-radius:0 8px 8px 0;
+	padding:12px 16px;
+	margin:16px 0;
+}
+.callout strong{ color:var(--accent); }
+
+.badge{
+	display:inline-block;
+	padding:1px 9px;
+	border-radius:999px;
+	color:#fff;
+	font-size:.82em;
+	white-space:nowrap;
+	margin-right:6px;
+}
+.b-ok{ background:linear-gradient(100deg,#1d7a3c,#45b56c); }
+.b-ng{ background:linear-gradient(100deg,#a51f22,#e05a5c); }
+.b-warn{ background:linear-gradient(100deg,#b8620a,#f0a548); }
+
+ol.toc{
+	display:flex;
+	flex-wrap:wrap;
+	gap:8px;
+	list-style:none;
+	padding:0;
+	margin:16px 0 4px;
+	counter-reset:toc;
+}
+ol.toc li{ counter-increment:toc; margin:0; }
+ol.toc a{
+	display:-webkit-box;
+	-webkit-line-clamp:2;
+	-webkit-box-orient:vertical;
+	overflow:hidden;
+	text-overflow:ellipsis;
+	white-space:normal;
+	width:310px;
+	max-width:100%;
+	padding:8px 12px;
+	color:#fff;
+	background:linear-gradient(100deg,var(--accent),var(--accent2));
+	border-radius:8px;
+	text-decoration:none;
+	font-size:.95em;
+	line-height:1.45;
+}
+ol.toc a::before{ content:counter(toc) ". "; }
+
+.backlink{ margin:22px 0 0; font-size:.95em; }
+.backlink a{ color:var(--navy2); }
+
+footer{
+	max-width:1400px;
+	margin:0 auto;
+	padding:18px 30px 0;
+	border-top:1px solid var(--line);
+	font-size:.95em;
+}
+footer a{ color:var(--navy2); }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+	<div class="inner">
+		<h1>付録: バッチ記法早見表</h1>
+		<p class="sub">「書き方だけ確認したい」ときに引く一覧。解説は本編（第1〜3回）にあります</p>
+		<p class="date">📅 作成: 2026-08-25 / 更新: 2026-08-25</p>
+	</div>
+</div>
+
+<div class="wrap">
+
+<p class="backlink"><a href="../README.html">← README に戻る</a></p>
+
+<h2>目次</h2>
+<ol class="toc">
+	<li class="ch01"><a href="#ch01">変数と展開</a></li>
+	<li class="ch02"><a href="#ch02">引数と <code>%~</code> 修飾子</a></li>
+	<li class="ch03"><a href="#ch03">エスケープ</a></li>
+	<li class="ch04"><a href="#ch04">条件分岐 <code>if</code></a></li>
+	<li class="ch05"><a href="#ch05">繰り返し <code>for</code></a></li>
+	<li class="ch06"><a href="#ch06">文字列操作</a></li>
+	<li class="ch07"><a href="#ch07">リダイレクトと終了コード</a></li>
+	<li class="ch08"><a href="#ch08">よく使うコマンド</a></li>
+</ol>
+
+<section class="ch01" id="ch01">
+	<h1>変数と展開</h1>
+
+	<h2>代入</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>書き方</th><th>意味</th><th>備考</th></tr>
+			<tr><td class="nw"><code>set VAR=値</code></td><td>代入</td><td><code>=</code> の前後に空白を入れない。<code>set VAR = 値</code> は変数名が <code>VAR </code>、値が <code> 値</code> になる</td></tr>
+			<tr><td class="nw"><code>set "VAR=値"</code></td><td>代入（推奨形）</td><td>値の末尾に空白が付かない。値に <code>&amp;</code> や <code>|</code> を含められる（ただし読み出しは <code>!VAR!</code> で行う。下の注意を参照）</td></tr>
+			<tr><td class="nw"><code>set /a VAR=1+2</code></td><td>数値計算して代入</td><td><code>/a</code> のときだけ値が数値として扱われる。<code>%</code> は剰余になる（バッチ内では <code>%%</code>）</td></tr>
+			<tr><td class="nw"><code>set /p VAR=入力: </code></td><td>キーボード入力を代入</td><td>入力待ちになる。無人実行するバッチでは使わない</td></tr>
+			<tr><td class="nw"><code>set "VAR="</code></td><td>変数を削除</td><td>空文字の代入ではなく削除。<code>if defined</code> が偽になる</td></tr>
+		</table>
+	</div>
+
+	<h2>展開（読み出し）</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>書き方</th><th>展開されるタイミング</th><th>使う場面</th></tr>
+			<tr><td class="nw"><code>%VAR%</code></td><td>その行が読み込まれた時点（実行前）</td><td>通常。ただし括弧ブロックの中では値が古いままになる。<strong>展開後の行がもう一度コマンドとして読み直される</strong></td></tr>
+			<tr><td class="nw"><code>!VAR!</code></td><td>その行が実行される直前</td><td><code>for</code> や <code>if</code> の括弧内。<code>setlocal enabledelayedexpansion</code> が必要。<strong>展開結果は読み直されない</strong>ため記号を含む値でも安全</td></tr>
+			<tr><td class="nw"><code>%%f</code></td><td><code>for</code> の各回</td><td><code>for</code> のループ変数。バッチ内は <code>%%</code>、コマンドプロンプトに直接打つときは <code>%</code> 1つ</td></tr>
+		</table>
+	</div>
+
+	<div class="callout">
+		<p><strong>括弧の中では <code>!VAR!</code> を使う。</strong><code>for</code> や <code>if</code> の <code>(</code> 〜 <code>)</code> は、中に入る前に全体が1回だけ文字列展開されます。ループごとに変わる値を <code>%VAR%</code> で読むと、全周にわたって同じ値になります。</p>
+	</div>
+
+	<div class="callout">
+		<p><strong>記号を含む値も <code>!VAR!</code> で読む。</strong><code>set "MSG=Hello &amp; World"</code> の代入は成功しますが、<code>echo %MSG%</code> は展開後の <code>echo Hello &amp; World</code> という行が読み直され、<code>&amp;</code> がコマンド区切りとして働いて壊れます。<code>echo !MSG!</code> なら展開結果が読み直されないため正しく表示されます。</p>
+	</div>
+
+	<h2>スコープ</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>書き方</th><th>意味</th></tr>
+			<tr><td class="nw"><code>setlocal</code></td><td>これ以降の変数変更をこのスクリプト内に閉じる。書かないと呼び出し元の環境変数を書き換える</td></tr>
+			<tr><td class="nw"><code>setlocal enabledelayedexpansion</code></td><td>上に加えて <code>!VAR!</code> を有効にする。実質これが標準形</td></tr>
+			<tr><td class="nw"><code>endlocal</code></td><td>変更を破棄して元に戻す。スクリプト終了時に自動で行われる</td></tr>
+			<tr><td class="nw"><code>endlocal &amp; set "X=%X%"</code></td><td><code>endlocal</code> を越えて値を1つだけ持ち出す定型</td></tr>
+		</table>
+	</div>
+</section>
+
+<section class="ch02" id="ch02">
+	<h1>引数と <code>%~</code> 修飾子</h1>
+
+	<h2>引数の受け取り</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>書き方</th><th>意味</th></tr>
+			<tr><td class="nw"><code>%0</code></td><td>実行されたバッチ自身のパス</td></tr>
+			<tr><td class="nw"><code>%1</code> … <code>%9</code></td><td>1〜9番目の引数</td></tr>
+			<tr><td class="nw"><code>%*</code></td><td>すべての引数をまとめた文字列</td></tr>
+			<tr><td class="nw"><code>shift</code></td><td>引数を1つずつずらす。10個以上の引数を扱うときに使う</td></tr>
+			<tr><td class="nw"><code>%~1</code></td><td>1番目の引数から前後のダブルクォートを外したもの</td></tr>
+		</table>
+	</div>
+
+	<h2><code>%~</code> 修飾子（<code>%0</code> と <code>%1</code>〜、<code>for</code> の変数に使える）</h2>
+	<p>ここでは <code>C:\work\data\input.txt</code> が渡された場合の展開結果を示します。</p>
+	<div class="tablewrap">
+		<table>
+			<tr><th>書き方</th><th>意味</th><th>展開結果</th></tr>
+			<tr><td class="nw"><code>%~1</code></td><td>クォートを外す</td><td class="nw"><code>C:\work\data\input.txt</code></td></tr>
+			<tr><td class="nw"><code>%~f1</code></td><td>フルパスにする</td><td class="nw"><code>C:\work\data\input.txt</code></td></tr>
+			<tr><td class="nw"><code>%~d1</code></td><td>ドライブ</td><td class="nw"><code>C:</code></td></tr>
+			<tr><td class="nw"><code>%~p1</code></td><td>パス部分</td><td class="nw"><code>\work\data\</code></td></tr>
+			<tr><td class="nw"><code>%~dp1</code></td><td>ドライブ＋パス</td><td class="nw"><code>C:\work\data\</code></td></tr>
+			<tr><td class="nw"><code>%~n1</code></td><td>拡張子なしのファイル名</td><td class="nw"><code>input</code></td></tr>
+			<tr><td class="nw"><code>%~x1</code></td><td>拡張子</td><td class="nw"><code>.txt</code></td></tr>
+			<tr><td class="nw"><code>%~nx1</code></td><td>ファイル名＋拡張子</td><td class="nw"><code>input.txt</code></td></tr>
+			<tr><td class="nw"><code>%~s1</code></td><td>8.3形式の短いパス</td><td class="nw">空白を含むパスの回避に使う</td></tr>
+			<tr><td class="nw"><code>%~a1</code></td><td>ファイル属性</td><td class="nw"><code>--a------</code></td></tr>
+			<tr><td class="nw"><code>%~t1</code></td><td>更新日時</td><td class="nw"><code>2026/08/25 10:30</code></td></tr>
+			<tr><td class="nw"><code>%~z1</code></td><td>ファイルサイズ</td><td class="nw"><code>1024</code></td></tr>
+		</table>
+	</div>
+
+	<h2>自分の場所を指す定型</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>書き方</th><th>意味</th><th>注意</th></tr>
+			<tr><td class="nw"><code>%~dp0</code></td><td>このバッチがあるフォルダ（末尾に <code>\</code> 付き）</td><td><code>"%~dp0file.txt"</code> と連結する。<code>"%~dp0\file.txt"</code> は <code>\</code> が二重になる</td></tr>
+			<tr><td class="nw"><code>%~nx0</code></td><td>このバッチのファイル名</td><td>使い方（usage）表示に使う</td></tr>
+			<tr><td class="nw"><code>pushd "%~dp0"</code></td><td>このバッチの場所へ移動</td><td>UNC パスでも動く。戻すときは <code>popd</code></td></tr>
+		</table>
+	</div>
+</section>
+
+<section class="ch03" id="ch03">
+	<h1>エスケープ</h1>
+
+	<div class="tablewrap">
+		<table>
+			<tr><th>文字</th><th>そのまま書くと</th><th>エスケープ</th><th>備考</th></tr>
+			<tr><td class="nw"><code>%</code></td><td>変数展開として解釈される</td><td class="nw"><code>%%</code></td><td>バッチファイル内のみ。プロンプトに直接打つときは <code>%</code> 1つ</td></tr>
+			<tr><td class="nw"><code>^</code></td><td>次の1文字のエスケープ記号</td><td class="nw"><code>^^</code></td><td>行末に置くと行継続になる</td></tr>
+			<tr><td class="nw"><code>&amp;</code></td><td>コマンドの区切り</td><td class="nw"><code>^&amp;</code></td><td><code>"</code> で囲んだ中なら不要</td></tr>
+			<tr><td class="nw"><code>|</code></td><td>パイプ</td><td class="nw"><code>^|</code></td><td>同上</td></tr>
+			<tr><td class="nw"><code>&gt;</code> <code>&lt;</code></td><td>リダイレクト</td><td class="nw"><code>^&gt;</code> <code>^&lt;</code></td><td>同上</td></tr>
+			<tr><td class="nw"><code>(</code> <code>)</code></td><td>ブロックの区切り</td><td class="nw"><code>^(</code> <code>^)</code></td><td>ブロック内では特に必要になる</td></tr>
+			<tr><td class="nw"><code>!</code></td><td>遅延展開が有効なとき変数として解釈される</td><td class="nw"><code>^^!</code></td><td><code>^</code> が<strong>2つ</strong>必要。<code>^!</code> では展開されてしまう。遅延展開が無効ならエスケープ不要</td></tr>
+			<tr><td class="nw"><code>"</code></td><td>文字列の区切り</td><td class="nw">—</td><td>エスケープできない。数を偶数に保つのが基本</td></tr>
+		</table>
+	</div>
+
+	<div class="callout">
+		<p><strong>迷ったら文字列全体を <code>"</code> で囲む。</strong><code>&amp;</code> <code>|</code> <code>&gt;</code> <code>&lt;</code> <code>(</code> <code>)</code> はダブルクォートの内側では特別扱いされません。<code>^</code> を1文字ずつ付けるより事故が少なくなります。ただし <code>%</code> と <code>!</code> はクォートの中でも展開されるため、これだけは <code>%%</code> / <code>^^!</code> が必要です。</p>
+	</div>
+
+	<h2><code>!</code> だけ <code>^</code> が2つ必要な理由</h2>
+	<p>1行は「<code>%</code> の展開 → <code>^</code> の処理 → <code>!</code> の展開」という順に解釈されます。<code>!</code> の展開が <code>^</code> の処理より<strong>後</strong>にあるため、<code>^!</code> と書くと <code>^</code> が先に消費されて <code>!</code> だけが残り、そのあと変数として展開されてしまいます。</p>
+	<pre><code>@echo off
+setlocal enabledelayedexpansion
+set "MSG=VALUE"
+echo 1: ^!MSG^!
+echo 2: ^^!MSG^^!</code></pre>
+	<pre><code>1: VALUE
+2: !MSG!</code></pre>
+	<p><code>^^</code> が <code>^</code> 1つに減り、その <code>^</code> が <code>!</code> の展開を止めます。<code>!</code> をリテラルで出したいだけなら、その箇所を <code>setlocal disabledelayedexpansion</code> で囲んで遅延展開を切るほうが読みやすくなります。</p>
+
+	<h2>行継続</h2>
+	<pre><code>rem 長いコマンドを複数行に分ける（行末に ^ 、次の行は続きとして扱われる）
+robocopy "C:\src" "C:\dst" ^
+    /E /R:1 /W:1 ^
+    /LOG:"%~dp0robocopy.log"</code></pre>
+	<p><span class="badge b-warn">要注意</span><code>^</code> の後ろに空白があると行継続として機能しません。行末は <code>^</code> で終わらせます。</p>
+</section>
+
+<section class="ch04" id="ch04">
+	<h1>条件分岐 <code>if</code></h1>
+
+	<h2>基本形</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>書き方</th><th>意味</th></tr>
+			<tr><td class="nw"><code>if "%A%"=="x" ( … )</code></td><td>文字列の一致。両辺を <code>"</code> で囲むのが定型（空のときに構文エラーになるのを防ぐ）</td></tr>
+			<tr><td class="nw"><code>if /i "%A%"=="x" ( … )</code></td><td>大文字小文字を区別しない比較</td></tr>
+			<tr><td class="nw"><code>if not "%A%"=="x" ( … )</code></td><td>否定</td></tr>
+			<tr><td class="nw"><code>if defined A ( … )</code></td><td>変数が定義されているか。<code>%</code> で囲まない</td></tr>
+			<tr><td class="nw"><code>if exist "path" ( … )</code></td><td>ファイル・フォルダの存在。フォルダを確かめたいときは <code>"path\"</code> と末尾に <code>\</code> を付ける</td></tr>
+			<tr><td class="nw"><code>if errorlevel 1 ( … )</code></td><td>直前の終了コードが <strong>1以上</strong>なら真（「1と等しい」ではない）</td></tr>
+			<tr><td class="nw"><code>if %N% GEQ 10 ( … )</code></td><td>数値比較</td></tr>
+		</table>
+	</div>
+
+	<h2>数値比較の演算子</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>演算子</th><th>意味</th><th>他言語</th></tr>
+			<tr><td class="nw"><code>EQU</code></td><td>等しい</td><td class="nw"><code>==</code></td></tr>
+			<tr><td class="nw"><code>NEQ</code></td><td>等しくない</td><td class="nw"><code>!=</code></td></tr>
+			<tr><td class="nw"><code>LSS</code></td><td>より小さい</td><td class="nw"><code>&lt;</code></td></tr>
+			<tr><td class="nw"><code>LEQ</code></td><td>以下</td><td class="nw"><code>&lt;=</code></td></tr>
+			<tr><td class="nw"><code>GTR</code></td><td>より大きい</td><td class="nw"><code>&gt;</code></td></tr>
+			<tr><td class="nw"><code>GEQ</code></td><td>以上</td><td class="nw"><code>&gt;=</code></td></tr>
+		</table>
+	</div>
+
+	<h2><code>else</code> の書き方</h2>
+	<pre><code>rem 正しい: ) と else と ( を同じ行に置く
+if "%A%"=="x" (
+    echo A は x
+) else (
+    echo A は x ではない
+)</code></pre>
+	<p><span class="badge b-ng">構文エラー</span><code>)</code> と <code>else</code> を別の行に分けると動きません。<code>if</code> は1つの論理行として解析されるためです。</p>
+
+	<div class="callout">
+		<p><strong><code>if</code> の中で <code>%errorlevel%</code> は使えない。</strong>ブロック内の <code>%errorlevel%</code> はブロックに入る前の値に固定されています。ブロック内で更新後の値を見るには <code>!errorlevel!</code> か <code>if errorlevel 1</code> を使います。</p>
+	</div>
+</section>
+
+<section class="ch05" id="ch05">
+	<h1>繰り返し <code>for</code></h1>
+
+	<h2>4つの形</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>形</th><th>回すもの</th><th>例</th></tr>
+			<tr><td class="nw">無印</td><td>ファイル名・空白区切りの文字列</td><td class="nw"><code>for %%f in (*.txt) do echo %%f</code></td></tr>
+			<tr><td class="nw"><code>/l</code></td><td>数値の範囲（開始,増分,終了）</td><td class="nw"><code>for /l %%i in (1,1,5) do echo %%i</code></td></tr>
+			<tr><td class="nw"><code>/f</code></td><td>ファイルの各行・文字列・コマンド出力</td><td class="nw"><code>for /f "delims=" %%l in (a.txt) do echo %%l</code></td></tr>
+			<tr><td class="nw"><code>/r</code></td><td>サブフォルダを含むファイル</td><td class="nw"><code>for /r "C:\work" %%f in (*.log) do echo %%f</code></td></tr>
+			<tr><td class="nw"><code>/d</code></td><td>フォルダのみ</td><td class="nw"><code>for /d %%d in (*) do echo %%d</code></td></tr>
+		</table>
+	</div>
+
+	<h2><code>/f</code> のオプション</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>オプション</th><th>意味</th></tr>
+			<tr><td class="nw"><code>delims=,</code></td><td>区切り文字を指定（既定は空白とタブ）。<code>delims=</code> と空にすると行全体を1つとして扱う</td></tr>
+			<tr><td class="nw"><code>tokens=1,3</code></td><td>取り出す列の番号。<code>tokens=1,*</code> で「1列目」と「残り全部」</td></tr>
+			<tr><td class="nw"><code>skip=1</code></td><td>先頭のn行を飛ばす（ヘッダ行の読み飛ばし）</td></tr>
+			<tr><td class="nw"><code>eol=;</code></td><td>この文字で始まる行を無視する（既定は <code>;</code>）</td></tr>
+			<tr><td class="nw"><code>usebackq</code></td><td>引用符の意味を変える。空白を含むファイル名を読むときに必要</td></tr>
+		</table>
+	</div>
+
+	<h2>対象の指定と引用符</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>書き方</th><th>回す対象</th></tr>
+			<tr><td class="nw"><code>in (a.txt)</code></td><td>ファイル <code>a.txt</code> の各行</td></tr>
+			<tr><td class="nw"><code>in ("文字列")</code></td><td>その文字列そのもの（ファイルではない）</td></tr>
+			<tr><td class="nw"><code>in ('コマンド')</code></td><td>コマンドの実行結果の各行</td></tr>
+			<tr><td class="nw"><code>in ("C:\a b\c.txt")</code> ＋ <code>usebackq</code></td><td>空白を含むパスのファイルの各行</td></tr>
+		</table>
+	</div>
+
+	<pre><code>rem 空白を含むパスのファイルを1行ずつ読む
+for /f "usebackq delims=" %%l in ("%~dp0data file.txt") do (
+    echo 行: %%l
+)
+
+rem コマンドの出力を読む（usebackq のときはバッククォート）
+for /f "usebackq tokens=1,2 delims=," %%a in (`type list.csv`) do (
+    echo 1列目=%%a 2列目=%%b
+)</code></pre>
+
+	<div class="callout">
+		<p><strong><code>tokens</code> を複数指定すると変数は自動で増える。</strong><code>tokens=1,2,3</code> で <code>%%a</code> を指定した場合、2列目は <code>%%b</code>、3列目は <code>%%c</code> になります。宣言は不要で、アルファベット順に割り当てられます。</p>
+	</div>
+
+	<h2>ループの脱出</h2>
+	<p><code>break</code> はありません。<code>goto</code> でループの外のラベルへ飛ぶか、フラグ変数で以降の処理をスキップします。</p>
+	<pre><code>for %%f in (*.txt) do (
+    if "%%~nf"=="target" goto :found
+)
+echo 見つかりませんでした
+goto :eof
+
+:found
+echo 見つかりました</code></pre>
+</section>
+
+<section class="ch06" id="ch06">
+	<h1>文字列操作</h1>
+
+	<p>いずれも <code>%VAR%</code> 形式の変数にしか使えません。引数 <code>%1</code> や <code>for</code> の <code>%%f</code> に直接は使えないため、いったん <code>set "V=%~1"</code> で変数に入れます。</p>
+
+	<div class="tablewrap">
+		<table>
+			<tr><th>書き方</th><th>意味</th><th>例（<code>V=abcdefg</code>）</th></tr>
+			<tr><td class="nw"><code>%V:~0,3%</code></td><td>0文字目から3文字</td><td class="nw"><code>abc</code></td></tr>
+			<tr><td class="nw"><code>%V:~3%</code></td><td>3文字目から末尾まで</td><td class="nw"><code>defg</code></td></tr>
+			<tr><td class="nw"><code>%V:~-2%</code></td><td>末尾から2文字</td><td class="nw"><code>fg</code></td></tr>
+			<tr><td class="nw"><code>%V:~0,-2%</code></td><td>末尾2文字を除いた残り</td><td class="nw"><code>abcde</code></td></tr>
+			<tr><td class="nw"><code>%V:abc=X%</code></td><td>置換</td><td class="nw"><code>Xdefg</code></td></tr>
+			<tr><td class="nw"><code>%V:abc=%</code></td><td>削除（空文字に置換）</td><td class="nw"><code>defg</code></td></tr>
+		</table>
+	</div>
+
+	<h2>よく使う組み合わせ</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>やりたいこと</th><th>書き方</th></tr>
+			<tr><td>文字列を含むか判定</td><td class="nw"><code>if not "%V:abc=%"=="%V%" ( 含む )</code></td></tr>
+			<tr><td>末尾の <code>\</code> を取り除く</td><td class="nw"><code>if "%V:~-1%"=="\" set "V=%V:~0,-1%"</code></td></tr>
+			<tr><td>パスの区切りを置換</td><td class="nw"><code>set "V=%V:\=/%"</code></td></tr>
+			<tr><td>大文字小文字を無視して置換</td><td class="nw">不可。<code>for /f</code> と外部コマンドを使う</td></tr>
+		</table>
+	</div>
+
+	<div class="callout">
+		<p><strong>置換・部分取得は <code>!V!</code> 形式でも書ける。</strong>ループ内で使う場合は <code>!V:~0,3!</code> のように <code>!</code> で囲みます。ただし値そのものに <code>=</code> や <code>:</code> が含まれると解釈が崩れるため、この記法で扱うのはパスや識別子程度にとどめるのが安全です。</p>
+	</div>
+</section>
+
+<section class="ch07" id="ch07">
+	<h1>リダイレクトと終了コード</h1>
+
+	<h2>リダイレクト</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>書き方</th><th>意味</th></tr>
+			<tr><td class="nw"><code>&gt; file</code></td><td>標準出力をファイルへ（上書き）</td></tr>
+			<tr><td class="nw"><code>&gt;&gt; file</code></td><td>標準出力をファイルへ（追記）</td></tr>
+			<tr><td class="nw"><code>2&gt; file</code></td><td>標準エラーをファイルへ</td></tr>
+			<tr><td class="nw"><code>&gt; file 2&gt;&amp;1</code></td><td>標準出力と標準エラーをまとめてファイルへ</td></tr>
+			<tr><td class="nw"><code>&gt; nul</code></td><td>出力を破棄する</td></tr>
+			<tr><td class="nw"><code>2&gt; nul</code></td><td>エラー出力だけ破棄する</td></tr>
+			<tr><td class="nw"><code>&lt; file</code></td><td>ファイルを標準入力として渡す</td></tr>
+			<tr><td class="nw"><code>cmd1 | cmd2</code></td><td>cmd1 の出力を cmd2 の入力へ</td></tr>
+		</table>
+	</div>
+
+	<p><span class="badge b-warn">要注意</span><code>2&gt;&amp;1</code> は「その時点の標準出力と同じ先」を意味するため、順序が変わると結果が変わります。<code>&gt; file 2&gt;&amp;1</code> は両方がファイルへ、<code>2&gt;&amp;1 &gt; file</code> は標準出力だけがファイルへ行き、エラーは画面に残ります。</p>
+
+	<h2>終了コード</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>書き方</th><th>意味</th></tr>
+			<tr><td class="nw"><code>%errorlevel%</code></td><td>直前のコマンドの終了コード。0 が成功</td></tr>
+			<tr><td class="nw"><code>if errorlevel 1</code></td><td>1以上（＝失敗）なら真</td></tr>
+			<tr><td class="nw"><code>cmd &amp;&amp; 次</code></td><td>cmd が成功したときだけ次を実行</td></tr>
+			<tr><td class="nw"><code>cmd || 次</code></td><td>cmd が失敗したときだけ次を実行</td></tr>
+			<tr><td class="nw"><code>exit /b n</code></td><td>このバッチを終了コード n で終える</td></tr>
+			<tr><td class="nw"><code>exit n</code></td><td>cmd.exe そのものを終える（呼び出し元も閉じる）</td></tr>
+			<tr><td class="nw"><code>goto :eof</code></td><td>サブルーチンから戻る / スクリプトの末尾へ飛ぶ</td></tr>
+		</table>
+	</div>
+
+	<pre><code>rem 失敗したら中断する定型
+copy "%SRC%" "%DST%" || (
+    echo コピーに失敗しました
+    exit /b 1
+)</code></pre>
+
+	<h2>サブルーチン</h2>
+	<pre><code>call :log "処理を開始します"
+call :log "処理が完了しました"
+goto :eof
+
+:log
+echo [%DATE% %TIME%] %~1
+goto :eof</code></pre>
+	<p><code>call</code> を付けずに <code>:log</code> へ <code>goto</code> すると、そこから戻ってきません。</p>
+</section>
+
+<section class="ch08" id="ch08">
+	<h1>よく使うコマンド</h1>
+
+	<h2>ファイル・フォルダ</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>コマンド</th><th>用途</th><th>覚えておくオプション</th></tr>
+			<tr><td class="nw"><code>copy</code></td><td>ファイルのコピー</td><td class="nw"><code>/y</code> 上書き確認なし</td></tr>
+			<tr><td class="nw"><code>xcopy</code></td><td>フォルダごとコピー</td><td class="nw"><code>/e /i /y</code></td></tr>
+			<tr><td class="nw"><code>robocopy</code></td><td>大量・差分コピー</td><td class="nw"><code>/e /r:1 /w:1</code>。終了コードが 0 以外でも成功のことがある</td></tr>
+			<tr><td class="nw"><code>move</code></td><td>移動・リネーム</td><td class="nw"><code>/y</code></td></tr>
+			<tr><td class="nw"><code>del</code></td><td>ファイル削除</td><td class="nw"><code>/q</code> 確認なし <code>/s</code> サブフォルダも</td></tr>
+			<tr><td class="nw"><code>rd</code></td><td>フォルダ削除</td><td class="nw"><code>/s /q</code></td></tr>
+			<tr><td class="nw"><code>md</code></td><td>フォルダ作成</td><td class="nw">途中の階層も自動で作られる</td></tr>
+			<tr><td class="nw"><code>dir</code></td><td>一覧</td><td class="nw"><code>/b</code> 名前だけ <code>/s</code> 再帰 <code>/a-d</code> ファイルのみ</td></tr>
+		</table>
+	</div>
+
+	<h2>テキスト・情報取得</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>コマンド</th><th>用途</th><th>備考</th></tr>
+			<tr><td class="nw"><code>type</code></td><td>ファイルの内容を表示</td><td>複数ファイルの連結にも使える</td></tr>
+			<tr><td class="nw"><code>find</code></td><td>文字列の検索</td><td><code>"</code> で囲む必要がある。<code>/c</code> で件数、<code>/v</code> で否定</td></tr>
+			<tr><td class="nw"><code>findstr</code></td><td>正規表現の検索</td><td><code>/i</code> 大小無視 <code>/r</code> 正規表現 <code>/c:"..."</code> 語句指定</td></tr>
+			<tr><td class="nw"><code>where</code></td><td>実行ファイルの場所を探す</td><td>存在確認にも使える（見つからないと終了コードが 1）</td></tr>
+			<tr><td class="nw"><code>tasklist</code></td><td>プロセス一覧</td><td><code>/fi "imagename eq x.exe"</code></td></tr>
+			<tr><td class="nw"><code>chcp</code></td><td>コードページの確認・変更</td><td>日本語環境は <code>932</code>。<code>65001</code>（UTF-8）への変更は副作用があるため安易に使わない</td></tr>
+		</table>
+	</div>
+
+	<h2>制御・その他</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>コマンド</th><th>用途</th><th>備考</th></tr>
+			<tr><td class="nw"><code>@echo off</code></td><td>実行するコマンド自体の表示を止める</td><td>1行目に書く。先頭の <code>@</code> はこの行自身を隠すため</td></tr>
+			<tr><td class="nw"><code>rem</code></td><td>コメント</td><td>括弧の中でも安全。<code>::</code> はラベルなので括弧内では使えない</td></tr>
+			<tr><td class="nw"><code>pause</code></td><td>キー入力を待つ</td><td>ダブルクリック実行で結果を読ませたいときに末尾へ</td></tr>
+			<tr><td class="nw"><code>timeout /t 5</code></td><td>5秒待つ</td><td><code>/nobreak</code> でキー入力による中断を防ぐ</td></tr>
+			<tr><td class="nw"><code>start ""</code></td><td>別プロセスとして起動</td><td>第1引数はウィンドウタイトル扱いなので <code>""</code> を置く</td></tr>
+			<tr><td class="nw"><code>call other.cmd</code></td><td>別のバッチを呼んで戻る</td><td><code>call</code> なしでは戻ってこない</td></tr>
+			<tr><td class="nw"><code>pushd</code> / <code>popd</code></td><td>移動して戻る</td><td>UNC パスにも対応する</td></tr>
+			<tr><td class="nw"><code>title</code></td><td>ウィンドウタイトルを設定</td><td>長時間動くバッチで進捗を示すのに使える</td></tr>
+		</table>
+	</div>
+
+	<div class="callout">
+		<p><strong>コマンドのヘルプは <code>コマンド /?</code> で読める。</strong><code>for /?</code> や <code>set /?</code> は、この早見表より詳しい説明を出します。出力が長いので <code>for /? | more</code> やファイルへのリダイレクトと併せて使ってください。</p>
+	</div>
+</section>
+
+</div>
+
+<footer>
+	<p><a href="../README.html">← README に戻る</a></p>
+</footer>
+
+</body>
+</html>

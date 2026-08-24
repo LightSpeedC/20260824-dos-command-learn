@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DOSコマンド勉強会 資料作成計画</title>
+<style>
+:root{
+	--navy1:#12224d;
+	--navy2:#2f5fbf;
+	--ink:#1c2330;
+	--ink-soft:#4a5568;
+	--line:#d9dfe8;
+	--code-bg:#f4f6fa;
+	--accent:var(--navy1);
+	--accent2:var(--navy2);
+	--soft:#f2f5fb;
+}
+
+/* 章ごとのアクセント色（10章 / 色相 280→0 を 31.1°刻み） */
+.ch01{ --accent:hsl(280,78%,25%);   --accent2:hsl(280,58%,65%);   --soft:hsl(280,28%,95%); }
+.ch02{ --accent:hsl(248.9,78%,25%); --accent2:hsl(248.9,58%,65%); --soft:hsl(248.9,28%,95%); }
+.ch03{ --accent:hsl(217.8,78%,25%); --accent2:hsl(217.8,58%,65%); --soft:hsl(217.8,28%,95%); }
+.ch04{ --accent:hsl(186.7,78%,25%); --accent2:hsl(186.7,58%,65%); --soft:hsl(186.7,28%,95%); }
+.ch05{ --accent:hsl(155.6,78%,25%); --accent2:hsl(155.6,58%,65%); --soft:hsl(155.6,28%,95%); }
+.ch06{ --accent:hsl(124.4,78%,25%); --accent2:hsl(124.4,58%,65%); --soft:hsl(124.4,28%,95%); }
+.ch07{ --accent:hsl(93.3,78%,25%);  --accent2:hsl(93.3,58%,65%);  --soft:hsl(93.3,28%,95%); }
+.ch08{ --accent:hsl(62.2,78%,25%);  --accent2:hsl(62.2,58%,65%);  --soft:hsl(62.2,28%,95%); }
+.ch09{ --accent:hsl(31.1,78%,25%);  --accent2:hsl(31.1,58%,65%);  --soft:hsl(31.1,28%,95%); }
+.ch10{ --accent:hsl(0,78%,25%);     --accent2:hsl(0,58%,65%);     --soft:hsl(0,28%,95%); }
+
+*{ box-sizing:border-box; }
+body{
+	margin:0;
+	font-family:"Segoe UI","Yu Gothic UI","Meiryo",sans-serif;
+	font-size:15.5px;
+	line-height:1.85;
+	color:var(--ink);
+	background:#fff;
+}
+
+.titlebar{
+	background:linear-gradient(135deg,var(--navy1),var(--navy2));
+	color:#fff;
+	padding:34px 30px 30px;
+}
+.titlebar .inner{ max-width:1400px; margin:0 auto; }
+.titlebar h1{
+	font-size:2.05em;
+	margin:0 0 10px;
+	color:#fff;
+}
+.titlebar .sub{ font-size:.95em; color:#dbe5f7; margin:0; }
+.titlebar .date{ font-size:.9em; color:#c3d3ee; margin:6px 0 0; }
+.titlebar code{ background:rgba(255,255,255,0.16); color:#fff; border:none; }
+
+.wrap{ max-width:1400px; margin:0 auto; padding:0 30px; }
+
+section{
+	background:linear-gradient(180deg,var(--soft),#fff);
+	border:1px solid var(--line);
+	border-radius:10px;
+	padding:4px 26px 26px;
+	margin:34px 0;
+}
+section h1{
+	font-size:1.5em;
+	margin:26px 0 20px;
+	padding:14px 20px;
+	color:#fff;
+	background:linear-gradient(100deg,var(--accent),var(--accent2));
+	border-radius:8px;
+	box-shadow:0 4px 12px rgba(0,0,0,.18);
+}
+section h1 code{ background:rgba(255,255,255,0.16); color:#fff; border:none; }
+h2{
+	font-size:1.15em;
+	margin:30px 0 12px;
+	padding:6px 12px;
+	color:var(--accent);
+	border-left:6px solid var(--accent);
+	background:linear-gradient(90deg,var(--soft),#fff);
+}
+h3{
+	font-size:1.02em;
+	margin:20px 0 8px;
+	display:inline-block;
+	padding-bottom:3px;
+	border-bottom:2px dotted var(--accent2);
+}
+
+p{ margin:10px 0; }
+ul,ol{ margin:10px 0; padding-left:1.6em; }
+li{ margin:4px 0; }
+
+code{
+	background:var(--code-bg);
+	border:1px solid var(--line);
+	color:#17335f;
+	padding:.1em .35em;
+	border-radius:4px;
+	font-family:Consolas,"Courier New",monospace;
+	font-size:.92em;
+}
+pre{
+	background:var(--code-bg);
+	color:var(--ink);
+	border-left:5px solid var(--accent2);
+	border-radius:0 8px 8px 0;
+	padding:13px 16px;
+	overflow-x:auto;
+	font-family:Consolas,"Courier New",monospace;
+	font-size:.92em;
+	line-height:1.7;
+}
+pre code{ background:none; border:none; padding:0; color:inherit; font-size:1em; }
+
+.tablewrap{ overflow-x:auto; margin:14px 0; }
+table{
+	border-collapse:collapse;
+	width:100%;
+	border-radius:8px;
+	overflow:hidden;
+	box-shadow:0 2px 8px rgba(0,0,0,.08);
+	font-size:.95em;
+}
+th{
+	padding:9px 12px;
+	text-align:left;
+	color:#fff;
+	background:linear-gradient(100deg,var(--accent),var(--accent2));
+	white-space:nowrap;
+}
+th code{ background:rgba(255,255,255,0.16); color:#fff; border:none; }
+td{
+	padding:9px 12px;
+	vertical-align:top;
+	border-bottom:1px solid var(--line);
+}
+tr:nth-child(even) td{ background:#fafbfe; }
+td.nw{ white-space:nowrap; }
+td.num{ text-align:right; white-space:nowrap; }
+
+.callout{
+	border-left:6px solid var(--accent);
+	background:linear-gradient(180deg,var(--soft),#fff);
+	border-radius:0 8px 8px 0;
+	padding:12px 16px;
+	margin:16px 0;
+}
+.callout strong{ color:var(--accent); }
+
+.badge{
+	display:inline-block;
+	padding:1px 9px;
+	border-radius:999px;
+	color:#fff;
+	font-size:.82em;
+	white-space:nowrap;
+	margin-right:6px;
+}
+.b-ok{ background:linear-gradient(100deg,#1d7a3c,#45b56c); }
+.b-ng{ background:linear-gradient(100deg,#a51f22,#e05a5c); }
+.b-todo{ background:linear-gradient(100deg,#5a6472,#97a1ae); }
+.b-warn{ background:linear-gradient(100deg,#b8620a,#f0a548); }
+
+ol.toc{
+	display:flex;
+	flex-wrap:wrap;
+	gap:8px;
+	list-style:none;
+	padding:0;
+	margin:16px 0 4px;
+	counter-reset:toc;
+}
+ol.toc li{ counter-increment:toc; margin:0; }
+ol.toc a{
+	display:-webkit-box;
+	-webkit-line-clamp:2;
+	-webkit-box-orient:vertical;
+	overflow:hidden;
+	text-overflow:ellipsis;
+	white-space:normal;
+	width:310px;
+	max-width:100%;
+	padding:8px 12px;
+	color:#fff;
+	background:linear-gradient(100deg,var(--accent),var(--accent2));
+	border-radius:8px;
+	text-decoration:none;
+	font-size:.95em;
+	line-height:1.45;
+}
+ol.toc a::before{ content:counter(toc) ". "; }
+
+svg{ max-width:100%; height:auto; display:block; margin:16px 0; }
+
+.backlink{ margin:22px 0 0; font-size:.95em; }
+.backlink a{ color:var(--navy2); }
+
+footer{
+	max-width:1400px;
+	margin:0 auto;
+	padding:18px 30px 0;
+	border-top:1px solid var(--line);
+	font-size:.95em;
+}
+footer a{ color:var(--navy2); }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+	<div class="inner">
+		<h1>DOSコマンド勉強会 資料作成計画</h1>
+		<p class="sub">対象: JavaScript の基礎文法・開発経験がある人 / Java または C# を知っている人 &nbsp;|&nbsp; ゴール: <code>.bat</code> <code>.cmd</code> を自分で書けるようになる</p>
+		<p class="date">📅 作成: 2026-08-24 / 更新: 2026-08-25</p>
+	</div>
+</div>
+
+<div class="wrap">
+
+<p class="backlink"><a href="../../README.html">← README に戻る</a></p>
+
+<h2>目次</h2>
+<ol class="toc">
+	<li class="ch01"><a href="#ch01">この勉強会のゴールと基本方針</a></li>
+	<li class="ch02"><a href="#ch02">対象者の前提と、そこから決まる説明順</a></li>
+	<li class="ch03"><a href="#ch03">全3回の全体構成</a></li>
+	<li class="ch04"><a href="#ch04">第1回: バッチの実行モデル</a></li>
+	<li class="ch05"><a href="#ch05">第2回: 制御構文と展開の罠</a></li>
+	<li class="ch06"><a href="#ch06">第3回: 実務で使えるバッチを書く</a></li>
+	<li class="ch07"><a href="#ch07">成果物とファイル構成</a></li>
+	<li class="ch08"><a href="#ch08">資料に必ず含める落とし穴リスト</a></li>
+	<li class="ch09"><a href="#ch09">制作手順と、確認したいこと</a></li>
+	<li class="ch10"><a href="#ch10">付録: 逆引き参照</a></li>
+</ol>
+
+<section class="ch01" id="ch01">
+	<h1>この勉強会のゴールと基本方針</h1>
+
+	<h2>ゴール（勉強会が終わったときの状態）</h2>
+	<ol>
+		<li>渡された <code>.bat</code> を読んで、何をしているか説明できる</li>
+		<li>数十行規模の <code>.bat</code> を、テンプレートを土台に自分で書ける</li>
+		<li>バッチ特有の落とし穴（遅延展開・エスケープ・文字コード）に自力で気づける</li>
+		<li>「これはバッチで書くべきではない」という判断ができる</li>
+	</ol>
+
+	<h2>決定した進行形式</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>項目</th><th>決定</th><th>資料への影響</th></tr>
+			<tr><td class="nw">分量</td><td class="nw">全3回 × 各60分</td><td>1回あたり本編45分＋デモ10分＋質疑5分。1回で1つの完結したテーマにする</td></tr>
+			<tr><td class="nw">進め方</td><td class="nw">デモ・読み物中心</td><td>参加者は環境構築なしで参加可。講師が実演し、参加者は資料を読む。演習は「宿題」として任意提示</td></tr>
+			<tr><td class="nw">対象範囲</td><td class="nw">cmd.exe / バッチのみ</td><td>PowerShell との比較章は作らない。第3回の末尾で「バッチの限界」に1項だけ触れる</td></tr>
+			<tr><td class="nw">他言語対比</td><td class="nw">入れる</td><td>各回に JS / Java / C# との対比表を1つずつ配置する</td></tr>
+			<tr><td class="nw">テンプレート</td><td class="nw">入れる</td><td>第3回で「まずこれをコピー」の定型を配布。成果物として独立ファイルにする</td></tr>
+		</table>
+	</div>
+
+	<h2>読み物中心にするうえでの設計判断</h2>
+	<p>ハンズオンをしない代わりに、資料側で以下を担保します。</p>
+	<ul>
+		<li><strong>コードは必ず実行結果とセットで載せる。</strong>手を動かさない参加者が「で、どうなるの?」で止まらないようにする</li>
+		<li><strong>誤りコードを先に見せて、直す。</strong>正解だけ並べると読み流されるため、落とし穴は「動かないコード → 出力 → 原因 → 修正」の4点セットで書く</li>
+		<li><strong>後で1人で読み返せる密度にする。</strong>スライドではなく HTML の読み物として作り、勉強会後はそのままリファレンスとして機能させる</li>
+	</ul>
+</section>
+
+<section class="ch02" id="ch02">
+	<h1>対象者の前提と、そこから決まる説明順</h1>
+
+	<h2>参加者が持っているもの / 持っていないもの</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>持っている</th><th>持っていない（＝説明が必要）</th></tr>
+			<tr>
+				<td>変数・条件分岐・ループ・関数の概念<br>文字列型と数値型の区別<br>スコープの概念<br>例外処理の概念<br>コードを読む習慣</td>
+				<td>cmd.exe というプロセスのイメージ<br>「値が文字列として展開されてから実行される」モデル<br>終了コードで制御するという発想<br>Windows の文字コード事情（CP932 / CRLF）<br>コマンドの標準入出力とリダイレクト</td>
+			</tr>
+		</table>
+	</div>
+
+	<h2>説明順を決める原則</h2>
+	<p>プログラミング経験者にバッチを教えるときの最大の障害は、<strong>「言語だと思って読む」</strong>ことです。バッチは構文解析してから実行する言語ではなく、1行ずつテキストを置換してからコマンドを起動する仕組みです。ここを最初に壊さないと、遅延展開もエスケープも「よく分からない例外規則」として暗記対象になってしまいます。</p>
+	<p>したがって説明順は次の通りにします。</p>
+	<ol>
+		<li><strong>実行モデル</strong>（第1回前半）— なぜ罠が多いのかの根拠を先に置く</li>
+		<li><strong>変数と終了コード</strong>（第1回後半）— バッチの2大データ経路</li>
+		<li><strong>制御構文と展開の罠</strong>（第2回）— 実行モデルの帰結として説明する</li>
+		<li><strong>実務の型</strong>（第3回）— 罠を回避済みのテンプレートに落とす</li>
+	</ol>
+
+	<div class="callout">
+		<p><strong>既知言語との対比は「似ている」で終わらせない。</strong>対比表は毎回、右端に「対比が破綻する点」の列を置きます。<code>set</code> を「代入」と紹介するだけだと、参加者は <code>set</code> がスコープを持たずプロセス全体の環境変数を書き換えるという事実に、自分のコードが壊れて初めて気づくことになります。</p>
+	</div>
+</section>
+
+<section class="ch03" id="ch03">
+	<h1>全3回の全体構成</h1>
+
+	<svg viewBox="0 0 1000 210" role="img" aria-label="全3回の流れ図">
+		<defs>
+			<linearGradient id="g-03-1a" x1="0" y1="1" x2="0" y2="0">
+				<stop offset="0" stop-color="hsl(280,78%,25%)"/>
+				<stop offset="1" stop-color="hsl(280,58%,65%)"/>
+			</linearGradient>
+			<linearGradient id="g-03-1b" x1="0" y1="1" x2="0" y2="0">
+				<stop offset="0" stop-color="hsl(140,78%,25%)"/>
+				<stop offset="1" stop-color="hsl(140,58%,65%)"/>
+			</linearGradient>
+			<linearGradient id="g-03-1c" x1="0" y1="1" x2="0" y2="0">
+				<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+				<stop offset="1" stop-color="hsl(0,58%,65%)"/>
+			</linearGradient>
+			<marker id="m-03-1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+				<path d="M0,0 L10,5 L0,10 z" fill="#4a5568"/>
+			</marker>
+		</defs>
+
+		<rect x="20" y="30" width="280" height="120" rx="10" fill="url(#g-03-1a)"/>
+		<text x="160" y="62" fill="#fff" font-size="15" font-weight="bold" text-anchor="middle">第1回 バッチの実行モデル</text>
+		<text x="160" y="88" fill="#fff" font-size="13" text-anchor="middle">1行ずつ展開して実行する</text>
+		<text x="160" y="110" fill="#fff" font-size="13" text-anchor="middle">変数 / 終了コード / 引数</text>
+		<text x="160" y="132" fill="#fff" font-size="12" text-anchor="middle">→ 読めるようになる</text>
+
+		<rect x="360" y="30" width="280" height="120" rx="10" fill="url(#g-03-1b)"/>
+		<text x="500" y="62" fill="#fff" font-size="15" font-weight="bold" text-anchor="middle">第2回 制御構文と展開の罠</text>
+		<text x="500" y="88" fill="#fff" font-size="13" text-anchor="middle">if / for / call / goto</text>
+		<text x="500" y="110" fill="#fff" font-size="13" text-anchor="middle">遅延展開 / エスケープ</text>
+		<text x="500" y="132" fill="#fff" font-size="12" text-anchor="middle">→ 書けるようになる</text>
+
+		<rect x="700" y="30" width="280" height="120" rx="10" fill="url(#g-03-1c)"/>
+		<text x="840" y="62" fill="#fff" font-size="15" font-weight="bold" text-anchor="middle">第3回 実務で使う型</text>
+		<text x="840" y="88" fill="#fff" font-size="13" text-anchor="middle">文字コード / エラー処理</text>
+		<text x="840" y="110" fill="#fff" font-size="13" text-anchor="middle">ランチャー / テンプレート</text>
+		<text x="840" y="132" fill="#fff" font-size="12" text-anchor="middle">→ 配れるようになる</text>
+
+		<line x1="305" y1="90" x2="352" y2="90" stroke="#4a5568" stroke-width="2" marker-end="url(#m-03-1)"/>
+		<line x1="645" y1="90" x2="692" y2="90" stroke="#4a5568" stroke-width="2" marker-end="url(#m-03-1)"/>
+
+		<text x="500" y="185" fill="#4a5568" font-size="12" text-anchor="middle">各回60分（本編45分 + デモ10分 + 質疑5分） / 各回は単独でも読める構成にする</text>
+	</svg>
+
+	<h2>回ごとの狙いと成果</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>回</th><th>タイトル</th><th>この回の中心的な問い</th><th>持ち帰るもの</th></tr>
+			<tr>
+				<td class="nw">第1回</td>
+				<td class="nw">バッチの実行モデル</td>
+				<td>なぜバッチは他の言語と同じように読むと壊れるのか</td>
+				<td>実行モデルの図 / 変数と終了コードの対比表</td>
+			</tr>
+			<tr>
+				<td class="nw">第2回</td>
+				<td class="nw">制御構文と展開の罠</td>
+				<td>ループの中で変数が更新されないのはなぜか</td>
+				<td>落とし穴カタログ（動かないコードと修正の対）</td>
+			</tr>
+			<tr>
+				<td class="nw">第3回</td>
+				<td class="nw">実務で使えるバッチを書く</td>
+				<td>他人に渡して壊れないバッチの条件は何か</td>
+				<td>テンプレート集（そのままコピーして使える）</td>
+			</tr>
+		</table>
+	</div>
+
+	<h2>全体を貫く「1本のサンプル」</h2>
+	<p>回をまたいで同じ題材を育てる形にします。毎回まったく別の例を出すより、同じスクリプトが3回で実務品質に到達する過程を見せたほうが、読み物として最後まで読まれます。</p>
+	<div class="tablewrap">
+		<table>
+			<tr><th>回</th><th>題材スクリプトの状態</th></tr>
+			<tr><td class="nw">第1回</td><td>指定フォルダのファイルを1つ、日付付きの名前でバックアップフォルダにコピーする（10行程度・ベタ書き）</td></tr>
+			<tr><td class="nw">第2回</td><td>フォルダ内の複数ファイルをループ処理し、拡張子で振り分ける（<code>for</code> / <code>if</code> / サブルーチン化）</td></tr>
+			<tr><td class="nw">第3回</td><td>引数・ログ・エラー処理・文字コード対応を備え、ダブルクリックでも動く配布可能な形にする</td></tr>
+		</table>
+	</div>
+</section>
+
+<section class="ch04" id="ch04">
+	<h1>第1回: バッチの実行モデル</h1>
+
+	<h2>時間配分</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>時間</th><th>内容</th><th>形式</th></tr>
+			<tr><td class="num">5分</td><td>導入: バッチは今でも必要か / <code>.bat</code> と <code>.cmd</code> の違い</td><td class="nw">説明</td></tr>
+			<tr><td class="num">15分</td><td>実行モデル: cmd.exe が1行をどう処理するか</td><td class="nw">図 + 説明</td></tr>
+			<tr><td class="num">12分</td><td>変数: <code>set</code> / <code>%VAR%</code> / <code>setlocal</code> / 全部文字列</td><td class="nw">説明 + 対比表</td></tr>
+			<tr><td class="num">8分</td><td>終了コード: <code>ERRORLEVEL</code> / <code>&amp;&amp;</code> / <code>||</code></td><td class="nw">説明</td></tr>
+			<tr><td class="num">5分</td><td>引数: <code>%1</code> と <code>%~dp0</code></td><td class="nw">説明</td></tr>
+			<tr><td class="num">10分</td><td>デモ: 題材スクリプト（バックアップ処理）を1行ずつ作る</td><td class="nw">実演</td></tr>
+			<tr><td class="num">5分</td><td>質疑</td><td class="nw">—</td></tr>
+		</table>
+	</div>
+
+	<h2>中心に置く図: 1行が実行されるまで</h2>
+	<svg viewBox="0 0 1000 180" role="img" aria-label="バッチの1行が実行されるまでの流れ">
+		<defs>
+			<linearGradient id="g-04-1a" x1="0" y1="1" x2="0" y2="0">
+				<stop offset="0" stop-color="hsl(280,78%,25%)"/>
+				<stop offset="1" stop-color="hsl(280,58%,65%)"/>
+			</linearGradient>
+			<linearGradient id="g-04-1b" x1="0" y1="1" x2="0" y2="0">
+				<stop offset="0" stop-color="hsl(187,78%,25%)"/>
+				<stop offset="1" stop-color="hsl(187,58%,65%)"/>
+			</linearGradient>
+			<linearGradient id="g-04-1c" x1="0" y1="1" x2="0" y2="0">
+				<stop offset="0" stop-color="hsl(93,78%,25%)"/>
+				<stop offset="1" stop-color="hsl(93,58%,65%)"/>
+			</linearGradient>
+			<linearGradient id="g-04-1d" x1="0" y1="1" x2="0" y2="0">
+				<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+				<stop offset="1" stop-color="hsl(0,58%,65%)"/>
+			</linearGradient>
+			<marker id="m-04-1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+				<path d="M0,0 L10,5 L0,10 z" fill="#4a5568"/>
+			</marker>
+		</defs>
+
+		<rect x="15" y="35" width="205" height="80" rx="10" fill="url(#g-04-1a)"/>
+		<text x="117" y="68" fill="#fff" font-size="14" font-weight="bold" text-anchor="middle">1行を読む</text>
+		<text x="117" y="92" fill="#fff" font-size="12" text-anchor="middle">ファイルを閉じずに逐次読む</text>
+
+		<rect x="275" y="35" width="205" height="80" rx="10" fill="url(#g-04-1b)"/>
+		<text x="377" y="62" fill="#fff" font-size="14" font-weight="bold" text-anchor="middle">変数を文字列に置換</text>
+		<text x="377" y="84" fill="#fff" font-size="12" text-anchor="middle">%VAR% をここで展開</text>
+		<text x="377" y="102" fill="#fff" font-size="12" text-anchor="middle">（実行前に確定してしまう）</text>
+
+		<rect x="535" y="35" width="205" height="80" rx="10" fill="url(#g-04-1c)"/>
+		<text x="637" y="68" fill="#fff" font-size="14" font-weight="bold" text-anchor="middle">コマンドを実行</text>
+		<text x="637" y="92" fill="#fff" font-size="12" text-anchor="middle">内部コマンド or 外部 exe</text>
+
+		<rect x="795" y="35" width="190" height="80" rx="10" fill="url(#g-04-1d)"/>
+		<text x="890" y="68" fill="#fff" font-size="14" font-weight="bold" text-anchor="middle">終了コードを残す</text>
+		<text x="890" y="92" fill="#fff" font-size="12" text-anchor="middle">ERRORLEVEL に上書き</text>
+
+		<line x1="225" y1="75" x2="267" y2="75" stroke="#4a5568" stroke-width="2" marker-end="url(#m-04-1)"/>
+		<line x1="485" y1="75" x2="527" y2="75" stroke="#4a5568" stroke-width="2" marker-end="url(#m-04-1)"/>
+		<line x1="745" y1="75" x2="787" y2="75" stroke="#4a5568" stroke-width="2" marker-end="url(#m-04-1)"/>
+
+		<text x="500" y="152" fill="#4a5568" font-size="12" text-anchor="middle">重要: 2番目の「置換」は、括弧で囲まれたブロック全体に対して一括で先に行われる → 第2回の遅延展開の話につながる</text>
+	</svg>
+
+	<h2>載せる対比表（第1回分）</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>やりたいこと</th><th>JS</th><th>Java / C#</th><th>バッチ</th><th>対比が破綻する点</th></tr>
+			<tr>
+				<td class="nw">変数に代入</td>
+				<td class="nw"><code>let n = 5;</code></td>
+				<td class="nw"><code>int n = 5;</code></td>
+				<td class="nw"><code>set n=5</code></td>
+				<td><code>5</code> は数値ではなく文字列。<code>set /a</code> を使ったときだけ数値として扱われる</td>
+			</tr>
+			<tr>
+				<td class="nw">変数を読む</td>
+				<td class="nw"><code>n</code></td>
+				<td class="nw"><code>n</code></td>
+				<td class="nw"><code>%n%</code></td>
+				<td>読むのは実行時ではなく「行の解析時」。未定義なら空文字ではなく <code>%n%</code> という文字列がそのまま残る</td>
+			</tr>
+			<tr>
+				<td class="nw">スコープ</td>
+				<td class="nw">ブロック / 関数</td>
+				<td class="nw">ブロック / クラス</td>
+				<td class="nw"><code>setlocal</code></td>
+				<td>ブロックスコープが存在しない。<code>setlocal</code> を書かないとプロセスの環境変数を汚染する</td>
+			</tr>
+			<tr>
+				<td class="nw">エラー通知</td>
+				<td class="nw"><code>throw</code></td>
+				<td class="nw">例外</td>
+				<td class="nw">終了コード</td>
+				<td>例外がないので伝播もしない。呼び出しごとに自分で確認しないと処理が続行してしまう</td>
+			</tr>
+			<tr>
+				<td class="nw">コメント</td>
+				<td class="nw"><code>//</code></td>
+				<td class="nw"><code>//</code></td>
+				<td class="nw"><code>rem</code> / <code>::</code></td>
+				<td><code>::</code> は本来ラベルであり、<code>for</code> や <code>if</code> の括弧内では構文エラーになる</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="callout">
+		<p><strong><code>.bat</code> と <code>.cmd</code> の違いは第1回で決着させる。</strong>実務上の差は、<code>set</code> や <code>path</code> といった一部の内部コマンドを実行したとき <code>ERRORLEVEL</code> がどう変化するかだけです。ここを曖昧にしたまま進むと、参加者は「どちらを使えばいいのか」を毎回迷い続けます。資料では「新規に作るなら <code>.cmd</code>、既存に合わせるならそれに従う」と結論を明示します。</p>
+	</div>
+</section>
+
+<section class="ch05" id="ch05">
+	<h1>第2回: 制御構文と展開の罠</h1>
+
+	<h2>時間配分</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>時間</th><th>内容</th><th>形式</th></tr>
+			<tr><td class="num">3分</td><td>前回の復習: 実行モデルの図を再掲</td><td class="nw">説明</td></tr>
+			<tr><td class="num">10分</td><td><code>if</code>: 比較演算子 / <code>defined</code> / <code>exist</code> / <code>else</code> の書き方の制約</td><td class="nw">説明</td></tr>
+			<tr><td class="num">12分</td><td><code>for</code>: 4つの形（無印 / <code>/l</code> / <code>/f</code> / <code>/r</code>）と <code>tokens</code> <code>delims</code></td><td class="nw">説明 + 対比表</td></tr>
+			<tr><td class="num">12分</td><td><strong>遅延展開</strong>: なぜ <code>!VAR!</code> が必要か（この回の山場）</td><td class="nw">誤りコード → 修正</td></tr>
+			<tr><td class="num">8分</td><td>関数化: <code>call :label</code> / <code>goto :eof</code> / 戻り値の受け渡し</td><td class="nw">説明</td></tr>
+			<tr><td class="num">10分</td><td>デモ: 題材スクリプトをループ + 振り分け対応にする</td><td class="nw">実演</td></tr>
+			<tr><td class="num">5分</td><td>質疑</td><td class="nw">—</td></tr>
+		</table>
+	</div>
+
+	<h2>山場の作り方: 遅延展開</h2>
+	<p>この回の中心はここです。「動かないコードを見せる → 出力を見せる → 実行モデルの図に戻って原因を示す → 修正する」の順に書きます。</p>
+	<pre><code>@echo off
+setlocal
+set count=0
+for %%f in (*.txt) do (
+    set /a count=count+1
+    echo 現在: %count%
+)
+echo 合計: %count%</code></pre>
+	<p><span class="badge b-ng">動かない</span>3ファイルあっても <code>現在: 0</code> が3回出て、<code>合計: 3</code> になります。<code>for</code> の括弧内は、ループが始まる前に丸ごと1回だけ文字列置換されるため、<code>%count%</code> はすべて <code>0</code> に確定済みです。</p>
+	<pre><code>@echo off
+setlocal enabledelayedexpansion
+set count=0
+for %%f in (*.txt) do (
+    set /a count=count+1
+    echo 現在: !count!
+)
+echo 合計: !count!</code></pre>
+	<p><span class="badge b-ok">動く</span><code>!count!</code> は行の解析時ではなく実行の直前に展開されます。</p>
+
+	<h2>載せる対比表（第2回分）</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>やりたいこと</th><th>JS</th><th>Java / C#</th><th>バッチ</th><th>対比が破綻する点</th></tr>
+			<tr>
+				<td class="nw">配列を回す</td>
+				<td class="nw"><code>for (const x of arr)</code></td>
+				<td class="nw"><code>for (var x : arr)</code></td>
+				<td class="nw"><code>for %%f in (...) do</code></td>
+				<td>配列型が存在しない。回せるのはファイル名・空白区切り文字列・行のいずれか</td>
+			</tr>
+			<tr>
+				<td class="nw">回数ループ</td>
+				<td class="nw"><code>for (let i=0;i&lt;n;i++)</code></td>
+				<td class="nw">同じ</td>
+				<td class="nw"><code>for /l %%i in (1,1,n) do</code></td>
+				<td>上限に変数を直接書けない場面がある（展開タイミングの問題）</td>
+			</tr>
+			<tr>
+				<td class="nw">行を読む</td>
+				<td class="nw"><code>split("\n")</code></td>
+				<td class="nw"><code>BufferedReader</code></td>
+				<td class="nw"><code>for /f</code></td>
+				<td>空行が黙って飛ばされる。行頭が <code>;</code> の行も既定で無視される</td>
+			</tr>
+			<tr>
+				<td class="nw">関数を呼ぶ</td>
+				<td class="nw"><code>f(a)</code></td>
+				<td class="nw"><code>f(a)</code></td>
+				<td class="nw"><code>call :f a</code></td>
+				<td>戻り値の仕組みがない。<code>ERRORLEVEL</code> か呼び出し元の変数を書き換えて返す</td>
+			</tr>
+			<tr>
+				<td class="nw">早期 return</td>
+				<td class="nw"><code>return;</code></td>
+				<td class="nw"><code>return;</code></td>
+				<td class="nw"><code>goto :eof</code></td>
+				<td>サブルーチン内では戻り、トップレベルではスクリプト終了。同じ記述で意味が変わる</td>
+			</tr>
+			<tr>
+				<td class="nw">文字列の部分取得</td>
+				<td class="nw"><code>s.slice(0,3)</code></td>
+				<td class="nw"><code>substring</code></td>
+				<td class="nw"><code>%s:~0,3%</code></td>
+				<td>この記法は <code>%VAR%</code> にしか使えず、<code>%1</code> などの引数には直接使えない</td>
+			</tr>
+		</table>
+	</div>
+
+	<h2>エスケープはまとめて1ページにする</h2>
+	<p><code>^</code> <code>&amp;</code> <code>|</code> <code>&gt;</code> <code>&lt;</code> <code>%</code> <code>"</code> の扱いは、都度説明すると散らばって覚えられません。「どの文字が、どの文脈でエスケープを必要とするか」の一覧表を1つ作り、そこを参照する形にします。</p>
+</section>
+
+<section class="ch06" id="ch06">
+	<h1>第3回: 実務で使えるバッチを書く</h1>
+
+	<h2>時間配分</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>時間</th><th>内容</th><th>形式</th></tr>
+			<tr><td class="num">3分</td><td>この回の位置づけ: 「動く」から「渡せる」へ</td><td class="nw">説明</td></tr>
+			<tr><td class="num">10分</td><td>文字コードと改行: CP932 / CRLF / <code>chcp 65001</code> の是非</td><td class="nw">説明 + 実演</td></tr>
+			<tr><td class="num">10分</td><td>実行環境の固定: <code>%~dp0</code> / <code>pushd</code> / ダブルクリック実行</td><td class="nw">説明</td></tr>
+			<tr><td class="num">10分</td><td>エラー処理の型: <code>|| exit /b</code> / <code>errorlevel</code> の判定 / ログ出力</td><td class="nw">説明</td></tr>
+			<tr><td class="num">8分</td><td>引数処理とヘルプ表示の定型</td><td class="nw">説明</td></tr>
+			<tr><td class="num">10分</td><td>デモ: 題材スクリプトを配布可能な形に仕上げる（テンプレート適用）</td><td class="nw">実演</td></tr>
+			<tr><td class="num">4分</td><td>バッチの限界: これ以上は別の道具を使う判断基準</td><td class="nw">説明</td></tr>
+			<tr><td class="num">5分</td><td>質疑</td><td class="nw">—</td></tr>
+		</table>
+	</div>
+
+	<h2>配布するテンプレートの骨格</h2>
+	<p>第3回の実質的な成果物です。参加者が翌日からコピーして使えることを最優先にし、行ごとに「なぜ必要か」のコメントを日本語で入れます。</p>
+	<pre><code>@echo off
+rem ==== 実行環境を固定する ====
+rem  ダブルクリック実行だとカレントがバッチの場所とは限らないため、必ず移動する
+pushd "%~dp0" || exit /b 1
+
+rem ==== 変数の影響をこのスクリプト内に閉じる ====
+setlocal enabledelayedexpansion
+
+rem ==== 引数チェック ====
+if "%~1"=="" (
+    echo 使い方: %~nx0 ^<対象フォルダ^>
+    exit /b 1
+)
+set "TARGET=%~1"
+if not exist "!TARGET!\" (
+    echo エラー: フォルダが見つかりません: !TARGET!
+    exit /b 1
+)
+
+rem ==== 本処理 ====
+call :main
+set "RC=!errorlevel!"
+
+rem ==== 後始末（成功・失敗にかかわらず通る） ====
+endlocal & set "RC=%RC%"
+popd
+exit /b %RC%
+
+:main
+rem ここに処理を書く。失敗したら exit /b で 0 以外を返す
+goto :eof</code></pre>
+
+	<div class="callout">
+		<p><strong>テンプレートは1種類にしない。</strong>上の「引数を取るツール型」に加えて、(1) 他のスクリプトや exe を起動するだけのランチャー型、(2) 定時実行を前提にログを残すバッチ処理型 の3種を用意します。用途が違うと必要な定型も違い、1つに全部詰めると読めない長さになります。</p>
+	</div>
+
+	<h2>載せる対比表（第3回分）</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>やりたいこと</th><th>JS / Java / C#</th><th>バッチ</th><th>注意点</th></tr>
+			<tr>
+				<td class="nw">失敗したら中断</td>
+				<td class="nw">例外が自動で伝播</td>
+				<td class="nw"><code>cmd || exit /b 1</code></td>
+				<td>1行ごとに書く必要がある。書き忘れた行は黙って通過する</td>
+			</tr>
+			<tr>
+				<td class="nw">スクリプトの場所を得る</td>
+				<td class="nw"><code>__dirname</code> 相当</td>
+				<td class="nw"><code>%~dp0</code></td>
+				<td>末尾に <code>\</code> が付くので <code>"%~dp0file"</code> と連結する。<code>"%~dp0\file"</code> は誤り</td>
+			</tr>
+			<tr>
+				<td class="nw">標準出力をファイルへ</td>
+				<td class="nw">ロガー</td>
+				<td class="nw"><code>&gt;&gt; log.txt 2&gt;&amp;1</code></td>
+				<td>順序が重要。<code>2&gt;&amp;1 &gt;&gt; log.txt</code> では標準エラーが画面に残る</td>
+			</tr>
+			<tr>
+				<td class="nw">終了コードを返す</td>
+				<td class="nw"><code>process.exit(n)</code></td>
+				<td class="nw"><code>exit /b n</code></td>
+				<td><code>/b</code> を忘れると cmd.exe ごと閉じる。呼び出し元から使われる想定なら致命的</td>
+			</tr>
+		</table>
+	</div>
+
+	<h2>最後に置く「バッチの限界」</h2>
+	<p>PowerShell との比較章は作らない方針ですが、判断基準だけは示します。<strong>配列や連想配列が必要、JSON を扱う、エラー処理が数階層になる、文字列処理が主目的</strong>のいずれかに該当したらバッチで書くべきではない、という4条件に絞って提示します。</p>
+</section>
+
+<section class="ch07" id="ch07">
+	<h1>成果物とファイル構成</h1>
+
+	<h2>作成するファイル</h2>
+	<pre><code>N:\2026\20260824-dos-command-learn\
+├── README.html              … 資料一覧（各資料への入口）
+├── docs\
+│   ├── plan\
+│   │   └── plan.html        … 本計画書
+│   ├── 01-execution-model.html   … 第1回 バッチの実行モデル
+│   ├── 02-control-flow.html      … 第2回 制御構文と展開の罠
+│   ├── 03-practical.html         … 第3回 実務で使えるバッチを書く
+│   ├── A1-appendix-index.html    … 付録: 逆引き参照（3種の索引 / 詳細は各資料へリンク）
+│   ├── A2-cheatsheet.html        … 付録: 記法早見表（変数展開・エスケープ・for のオプション）
+│   └── A3-pitfalls.html          … 付録: 落とし穴カタログ（症状 → 原因 → 修正）
+├── samples\
+│   ├── 01\ … 03\            … 各回のデモで使うバッチ（回ごとに完成版を置く）
+│   └── README.html          … サンプルの実行方法
+└── templates\
+    ├── tool.cmd             … 引数を取るツール型
+    ├── launcher.cmd         … 他のスクリプト・exe を起動するランチャー型
+    └── batchjob.cmd         … 定時実行・ログ出力前提のバッチ処理型</code></pre>
+
+	<h2>ファイル名の付け方</h2>
+	<p>本編と付録が名前順で混ざらないよう、接頭辞で系列を分けます。</p>
+	<div class="tablewrap">
+		<table>
+			<tr><th>系列</th><th>接頭辞</th><th>並び順の意味</th></tr>
+			<tr><td class="nw">本編</td><td class="nw"><code>01-</code> 〜 <code>03-</code></td><td>勉強会で読む順（＝学ぶ順）</td></tr>
+			<tr><td class="nw">付録</td><td class="nw"><code>A1-</code> 〜 <code>A3-</code></td><td>引くときに使う入口の順。逆引き索引 → 早見表 → 落とし穴カタログ</td></tr>
+		</table>
+	</div>
+	<p>エクスプローラやエディタの名前順で <code>01</code> → <code>02</code> → <code>03</code> → <code>A1</code> → <code>A2</code> → <code>A3</code> と並び、本編を読み終えた先に付録が続く形になります。付録を後から追加する場合も <code>A4-</code> 以降を使い、本編の連番には割り込ませません。</p>
+
+	<div class="callout">
+		<p><strong>付録を各回から独立させる理由。</strong>勉強会中は第1〜3回を順に読みますが、勉強会後に実際にバッチを書く場面で必要になるのは「症状から引く」「記法だけ確認する」という使い方です。回の資料に埋め込むと後から引けません。各回の本文からは付録の該当項目へリンクします。</p>
+	</div>
+
+	<h2>サンプルバッチの扱い</h2>
+	<ul>
+		<li><span class="badge b-warn">要注意</span>サンプルは <strong>SJIS + CRLF</strong> で作成する。UTF-8 で保存すると日本語メッセージが化け、勉強会中のデモが失敗する</li>
+		<li>各回のサンプルは「失敗版」と「修正版」を対で置く。落とし穴の説明は実物が動かないと説得力が出ない</li>
+		<li>サンプルは <code>samples\</code> 配下に閉じた動作にする。外部フォルダを書き換えるサンプルは作らない（参加者が試したときの事故を避ける）</li>
+	</ul>
+</section>
+
+<section class="ch08" id="ch08">
+	<h1>資料に必ず含める落とし穴リスト</h1>
+
+	<p>実際にバッチを書く人が踏むものを先に列挙し、これを <code>A3-pitfalls.html</code> の目次とします。各項目は「症状 → 原因 → 修正」の形で書きます。</p>
+
+	<div class="tablewrap">
+		<table>
+			<tr><th>#</th><th>症状</th><th>原因</th><th>扱う回</th></tr>
+			<tr><td class="num">1</td><td>ループ内で変数が更新されない</td><td>括弧ブロックが実行前に一括展開される（遅延展開が必要）</td><td class="nw">第2回</td></tr>
+			<tr><td class="num">2</td><td>変数の値の末尾に空白が入る</td><td><code>set VAR = value</code> と書いた。空白も値の一部になる</td><td class="nw">第1回</td></tr>
+			<tr><td class="num">3</td><td>日本語が化ける・文字化けで実行が止まる</td><td>ファイルが UTF-8。バッチは CP932 で読まれる</td><td class="nw">第3回</td></tr>
+			<tr><td class="num">4</td><td>ダブルクリックすると動くのに、別の場所から呼ぶと失敗する</td><td>相対パス依存。カレントディレクトリを固定していない</td><td class="nw">第3回</td></tr>
+			<tr><td class="num">5</td><td>パスに空白が含まれると失敗する</td><td>引数を <code>"</code> で囲んでいない、または二重に囲んでいる</td><td class="nw">第1回</td></tr>
+			<tr><td class="num">6</td><td>エラーが出ているのに処理が続行する</td><td>終了コードを確認していない。例外は存在しない</td><td class="nw">第3回</td></tr>
+			<tr><td class="num">7</td><td><code>if</code> の中の <code>ERRORLEVEL</code> が期待と違う</td><td>ブロック内の <code>%errorlevel%</code> はブロック進入時の値に固定されている</td><td class="nw">第2回</td></tr>
+			<tr><td class="num">8</td><td><code>exit</code> したらコンソールごと閉じた</td><td><code>/b</code> を付けていない</td><td class="nw">第3回</td></tr>
+			<tr><td class="num">9</td><td><code>::</code> コメントを入れたらループが構文エラーになった</td><td><code>::</code> はラベルであり、括弧内では使えない</td><td class="nw">第1回</td></tr>
+			<tr><td class="num">10</td><td><code>%</code> を含む文字列が消える</td><td>バッチ内では <code>%%</code> と書く必要がある</td><td class="nw">第2回</td></tr>
+			<tr><td class="num">11</td><td><code>for /f</code> でファイル名ではなく文字列そのものが処理される</td><td>引用符の有無で対象の解釈が変わる（<code>usebackq</code> の話）</td><td class="nw">第2回</td></tr>
+			<tr><td class="num">12</td><td>他のバッチを呼んだらそこで処理が終わってしまった</td><td><code>call</code> を付けずに呼んだため、制御が戻らない</td><td class="nw">第2回</td></tr>
+			<tr><td class="num">13</td><td>スクリプト実行後、環境変数が汚れている</td><td><code>setlocal</code> がない</td><td class="nw">第1回</td></tr>
+			<tr><td class="num">14</td><td>UNC パス（<code>\\server\share</code>）でカレント移動が失敗する</td><td><code>cd</code> は UNC を扱えない。<code>pushd</code> を使う</td><td class="nw">第3回</td></tr>
+		</table>
+	</div>
+
+	<div class="callout">
+		<p><strong>この14項目は、資料の品質検証にも使う。</strong>3回分の資料を書き終えたあと、各項目が本当にどこかで説明されているかを1つずつ突き合わせます。落とし穴の説明漏れは、資料としての価値を最も大きく損なう欠陥です。</p>
+	</div>
+</section>
+
+<section class="ch09" id="ch09">
+	<h1>制作手順と、確認したいこと</h1>
+
+	<h2>制作の順序</h2>
+	<p>資料は「第1回から順に」ではなく、依存関係の少ないものから作ります。早見表と落とし穴カタログを先に作ると、各回の本文からリンクを張りながら書けます。</p>
+	<div class="tablewrap">
+		<table>
+			<tr><th>順</th><th>作るもの</th><th>状態</th><th>備考</th></tr>
+			<tr><td class="num">1</td><td>本計画書（<code>docs/plan/plan.html</code>）</td><td class="nw"><span class="badge b-ok">完了</span></td><td>—</td></tr>
+			<tr><td class="num">2</td><td><code>README.html</code>（資料一覧）</td><td class="nw"><span class="badge b-ok">完了</span></td><td>資料が増えるたびにリンクを追加する</td></tr>
+			<tr><td class="num">3</td><td><code>A2-cheatsheet.html</code>（記法早見表）</td><td class="nw"><span class="badge b-ok">完了</span></td><td>各回から参照されるため最初に固める</td></tr>
+			<tr><td class="num">4</td><td><code>A3-pitfalls.html</code>（落とし穴カタログ 14項目）</td><td class="nw"><span class="badge b-ok">完了</span></td><td>症状 → 原因 → 修正の3点セット</td></tr>
+			<tr><td class="num">5</td><td><code>templates\</code> 3種のテンプレート</td><td class="nw"><span class="badge b-ok">完了</span></td><td>第3回の骨格。動作確認も行う</td></tr>
+			<tr><td class="num">6</td><td>第1回資料 + サンプル</td><td class="nw"><span class="badge b-ok">完了</span></td><td>実行モデルの図が中心</td></tr>
+			<tr><td class="num">7</td><td>第2回資料 + サンプル（失敗版・修正版）</td><td class="nw"><span class="badge b-ok">完了</span></td><td>最も分量が多くなる想定</td></tr>
+			<tr><td class="num">8</td><td>第3回資料 + サンプル</td><td class="nw"><span class="badge b-ok">完了</span></td><td>テンプレートを題材に適用する形にする</td></tr>
+			<tr><td class="num">9</td><td>付録 <code>A1-appendix-index.html</code>（逆引き参照）</td><td class="nw"><span class="badge b-ok">完了</span></td><td>番号は A1 だが制作は最後。索引A（やりたいこと）／B（他言語）／C（症状）の3構成</td></tr>
+			<tr><td class="num">10</td><td>全体の突き合わせ</td><td class="nw"><span class="badge b-ok">完了</span></td><td>落とし穴14項目は全項目が本編から参照済み / 全サンプルを実行して動作確認済み / 内部リンクとアンカーの切れなし</td></tr>
+		</table>
+	</div>
+
+	<h2>先に決めたいこと</h2>
+	<p>以下は資料の内容に影響しますが、なくても着手はできます。判明した時点で反映します。</p>
+	<ul>
+		<li><strong>参加者の Windows 環境</strong> — Windows 11 のみか、10 や Server も混ざるか。混在するなら <code>where</code> や <code>curl</code> のような比較的新しく標準搭載されたコマンドをデモで使うのは避けます</li>
+		<li><strong>資料の配布方法</strong> — HTML を直接配るのか、社内の共有フォルダに置くのか。共有フォルダ配布なら相対リンクが機能するようフォルダごと配る必要があります</li>
+		<li><strong>既存のバッチ資産があるか</strong> — 実際に社内で使われているバッチがあれば、それをデモの題材にしたほうが定着します（機密情報を含まない範囲で）</li>
+		<li><strong>開催日</strong> — 未定。決まり次第、上の制作順に日付を割り当てます</li>
+	</ul>
+
+	<h2>次のアクション</h2>
+	<p>すべての資料・テンプレート・サンプルの作成が完了しました。制作中に実機で確認した結果、当初の計画から次の点を補強しています。</p>
+	<div class="tablewrap">
+		<table>
+			<tr><th>実機で判明したこと</th><th>反映先</th></tr>
+			<tr><td><code>set "名前=値"</code> は代入を守るが、<code>%VAR%</code> での読み出し時に再解析されて壊れる</td><td class="nw">第1回 2章 / 第2回 4章</td></tr>
+			<tr><td>遅延展開が有効なとき <code>!</code> のリテラル表示には <code>^^!</code> が必要（<code>^!</code> では展開される）</td><td class="nw">第2回 4章・7章 / 早見表 3章</td></tr>
+			<tr><td><code>rem</code> のコメント行でも <code>%</code> の解析が行われ、無効な修飾子だとバッチが停止する</td><td class="nw">第1回 2章</td></tr>
+			<tr><td>化けるかどうかはファイルの文字コードとコンソールのコードページの<strong>組み合わせ</strong>で決まる</td><td class="nw">第3回 2章 / 落とし穴 #3</td></tr>
+			<tr><td>空の変数に置換記法を使うと予期しない文字列が残る</td><td class="nw">第2回 8章</td></tr>
+			<tr><td><code>%TIME%</code> は時が1桁だと先頭が空白になる（<code>%TIME: =0%</code> で対処）</td><td class="nw">第1回 3章 / 第3回 3章</td></tr>
+			<tr><td><code>wmic</code> は動作するが非推奨。<code>for /f</code> で読むと末尾に余分な文字が混入する</td><td class="nw">第3回 3章</td></tr>
+		</table>
+	</div>
+	<p>開催日が決まり次第、当日の進行（デモの順序と実演環境）を確認します。参加者の Windows 環境と配布方法が判明した場合も、該当箇所を見直します。</p>
+</section>
+
+<section class="ch10" id="ch10">
+	<h1>付録: 逆引き参照</h1>
+
+	<p>本編（第1〜3回）は<strong>学ぶ順</strong>に並んでいますが、勉強会後に実際にバッチを書く人が必要とするのは<strong>探す順</strong>です。この2つは並び方が根本的に違うため、同じ文書では両立できません。そこで付録として逆引き専用のページ（<code>A1-appendix-index.html</code>）を用意します。</p>
+
+	<h2>3種類の入口を用意する</h2>
+	<p>「探す」と言っても、探し始める手がかりは人によって違います。次の3つを別々の索引として持ちます。</p>
+	<div class="tablewrap">
+		<table>
+			<tr><th>索引</th><th>手がかり</th><th>想定する場面</th></tr>
+			<tr><td class="nw">索引A<br>やりたいこと逆引き</td><td class="nw">日本語の目的</td><td>「フォルダ内のファイルを順に処理したい」— これから書く。何を使えばいいか分からない</td></tr>
+			<tr><td class="nw">索引B<br>他言語からの逆引き</td><td class="nw">既知言語の構文</td><td>「JS の <code>for...of</code> にあたるものは?」— 書きたい処理は頭にあり、記法だけが分からない</td></tr>
+			<tr><td class="nw">索引C<br>症状からの逆引き</td><td class="nw">エラー文・おかしな挙動</td><td>「<code>この時点では予期されていません。</code> と出た」— 既に書いたものが動かない</td></tr>
+		</table>
+	</div>
+
+	<h2>索引A: やりたいこと逆引き（抜粋）</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>やりたいこと</th><th>使うもの</th><th>参照先</th></tr>
+			<tr><td>フォルダ内のファイルを1つずつ処理したい</td><td class="nw"><code>for %%f in (...)</code> / <code>for /r</code></td><td class="nw">第2回</td></tr>
+			<tr><td>テキストファイルを1行ずつ読みたい</td><td class="nw"><code>for /f</code></td><td class="nw">第2回</td></tr>
+			<tr><td>ファイル・フォルダの存在を確認したい</td><td class="nw"><code>if exist</code></td><td class="nw">第2回</td></tr>
+			<tr><td>引数を受け取りたい / 省略時にヘルプを出したい</td><td class="nw"><code>%~1</code> / <code>if "%~1"==""</code></td><td class="nw">第1回・第3回</td></tr>
+			<tr><td>スクリプトと同じ場所のファイルを参照したい</td><td class="nw"><code>"%~dp0file"</code></td><td class="nw">第3回</td></tr>
+			<tr><td>処理が失敗したらそこで止めたい</td><td class="nw"><code>|| exit /b 1</code></td><td class="nw">第3回</td></tr>
+			<tr><td>数値を数えたい・計算したい</td><td class="nw"><code>set /a</code></td><td class="nw">第1回</td></tr>
+			<tr><td>文字列の一部を取り出したい / 置換したい</td><td class="nw"><code>%V:~0,3%</code> / <code>%V:a=b%</code></td><td class="nw">第2回</td></tr>
+			<tr><td>処理を関数のようにまとめたい</td><td class="nw"><code>call :label</code> / <code>goto :eof</code></td><td class="nw">第2回</td></tr>
+			<tr><td>画面の出力をログファイルに残したい</td><td class="nw"><code>&gt;&gt; log.txt 2&gt;&amp;1</code></td><td class="nw">第3回</td></tr>
+			<tr><td>日付入りのファイル名を作りたい</td><td class="nw">日付取得の定型</td><td class="nw">第3回</td></tr>
+			<tr><td>共有フォルダ（UNC パス）を扱いたい</td><td class="nw"><code>pushd</code> / <code>popd</code></td><td class="nw">第3回</td></tr>
+		</table>
+	</div>
+
+	<h2>索引B: 他言語からの逆引き（抜粋）</h2>
+	<p>本編の各回に置く対比表は「学ぶための対比」で、対比が破綻する点の説明を含みます。索引Bは「引くための対比」なので、記法と参照先だけに絞って一覧性を優先します。</p>
+	<div class="tablewrap">
+		<table>
+			<tr><th>JS</th><th>Java / C#</th><th>バッチ</th><th>参照先</th></tr>
+			<tr><td class="nw"><code>console.log(x)</code></td><td class="nw"><code>System.out.println</code> / <code>Console.WriteLine</code></td><td class="nw"><code>echo %x%</code></td><td class="nw">第1回</td></tr>
+			<tr><td class="nw"><code>let n = 5</code></td><td class="nw"><code>int n = 5;</code></td><td class="nw"><code>set n=5</code></td><td class="nw">第1回</td></tr>
+			<tr><td class="nw"><code>if (a === b)</code></td><td class="nw"><code>if (a.equals(b))</code></td><td class="nw"><code>if "%a%"=="%b%"</code></td><td class="nw">第2回</td></tr>
+			<tr><td class="nw"><code>for (const x of arr)</code></td><td class="nw"><code>for (var x : arr)</code></td><td class="nw"><code>for %%x in (...) do</code></td><td class="nw">第2回</td></tr>
+			<tr><td class="nw"><code>for (let i=0;i&lt;n;i++)</code></td><td class="nw">同じ</td><td class="nw"><code>for /l %%i in (1,1,n)</code></td><td class="nw">第2回</td></tr>
+			<tr><td class="nw"><code>function f() {}</code></td><td class="nw">メソッド</td><td class="nw"><code>:f</code> ラベル + <code>call :f</code></td><td class="nw">第2回</td></tr>
+			<tr><td class="nw"><code>return</code></td><td class="nw"><code>return;</code></td><td class="nw"><code>goto :eof</code></td><td class="nw">第2回</td></tr>
+			<tr><td class="nw"><code>try / catch</code></td><td class="nw">例外処理</td><td class="nw"><code>if errorlevel 1</code> / <code>||</code></td><td class="nw">第3回</td></tr>
+			<tr><td class="nw"><code>process.argv</code></td><td class="nw"><code>args[]</code></td><td class="nw"><code>%1</code> … <code>%*</code></td><td class="nw">第1回</td></tr>
+			<tr><td class="nw"><code>__dirname</code></td><td class="nw">実行パス取得</td><td class="nw"><code>%~dp0</code></td><td class="nw">第3回</td></tr>
+			<tr><td class="nw"><code>process.exit(1)</code></td><td class="nw"><code>System.exit(1)</code> / <code>Environment.Exit</code></td><td class="nw"><code>exit /b 1</code></td><td class="nw">第3回</td></tr>
+			<tr><td class="nw"><code>s.substring(0,3)</code></td><td class="nw"><code>substring</code></td><td class="nw"><code>%s:~0,3%</code></td><td class="nw">第2回</td></tr>
+			<tr><td class="nw"><code>s.replace(...)</code></td><td class="nw"><code>replace</code></td><td class="nw"><code>%s:a=b%</code></td><td class="nw">第2回</td></tr>
+			<tr><td class="nw"><code>process.env.X</code></td><td class="nw"><code>getenv</code></td><td class="nw"><code>%X%</code></td><td class="nw">第1回</td></tr>
+			<tr><td class="nw">（該当なし）</td><td class="nw">配列 / <code>List</code> / <code>Map</code></td><td class="nw">存在しない</td><td class="nw">第3回（バッチの限界）</td></tr>
+		</table>
+	</div>
+
+	<h2>索引C: 症状からの逆引き（抜粋）</h2>
+	<p>参照先は<a href="#ch08">落とし穴カタログ</a>の項番（本計画の第8章のリストと同じ番号）です。</p>
+	<div class="tablewrap">
+		<table>
+			<tr><th>症状・目にするメッセージ</th><th>まず疑うところ</th><th>落とし穴 #</th></tr>
+			<tr><td>ループ内の出力が初期値のまま変わらない</td><td>遅延展開（<code>%VAR%</code> を <code>!VAR!</code> に）</td><td class="num">1</td></tr>
+			<tr><td>比較が常に成立しない / 値の末尾に空白が付く</td><td><code>set VAR = value</code> の空白</td><td class="num">2</td></tr>
+			<tr><td>日本語が <code>?</code> や別の文字になる</td><td>ファイルの文字コード（UTF-8 で保存していないか）</td><td class="num">3</td></tr>
+			<tr><td><code>指定されたパスが見つかりません。</code></td><td>カレントディレクトリ / <code>%~dp0</code> の連結</td><td class="num">4・5</td></tr>
+			<tr><td><code>この時点では予期されていません。</code></td><td>括弧・引用符・エスケープ（<code>&amp;</code> <code>|</code> <code>%</code>）</td><td class="num">10</td></tr>
+			<tr><td><code>コマンドの構文が誤っています。</code></td><td>引数の引用符 / 空白を含むパス</td><td class="num">5</td></tr>
+			<tr><td>ラベルが見つからない旨のメッセージ</td><td><code>goto</code> 先のスペル / <code>::</code> を括弧内に書いていないか</td><td class="num">9</td></tr>
+			<tr><td>エラーが出ているのに次の処理に進む</td><td>終了コードを確認していない</td><td class="num">6・7</td></tr>
+			<tr><td>実行後、ウィンドウが一瞬で閉じる</td><td><code>exit</code> に <code>/b</code> がない / <code>pause</code> がない</td><td class="num">8</td></tr>
+			<tr><td>呼び出したバッチから戻ってこない</td><td><code>call</code> を付けずに呼んでいる</td><td class="num">12</td></tr>
+			<tr><td>実行後、環境変数が書き換わっている</td><td><code>setlocal</code> がない</td><td class="num">13</td></tr>
+		</table>
+	</div>
+
+	<div class="callout">
+		<p><strong>索引には解説を書かない。</strong>付録の各行は「手がかり → 記法 → 参照先」の3列だけに保ちます。ここに説明を書き始めると本編と内容が二重管理になり、片方だけ直して食い違うことになります。エラーメッセージの文言は環境によって差が出るため、資料作成時に実機で発生させて確認したものだけを載せます。</p>
+	</div>
+</section>
+
+</div>
+
+<footer>
+	<p><a href="../../README.html">← README に戻る</a></p>
+</footer>
+
+</body>
+</html>

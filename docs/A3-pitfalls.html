@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>付録: バッチの落とし穴カタログ</title>
+<style>
+:root{
+	--navy1:#12224d;
+	--navy2:#2f5fbf;
+	--ink:#1c2330;
+	--ink-soft:#4a5568;
+	--line:#d9dfe8;
+	--code-bg:#f4f6fa;
+	--accent:var(--navy1);
+	--accent2:var(--navy2);
+	--soft:#f2f5fb;
+}
+
+/* 章ごとのアクセント色（5章 / 色相 280→0 を 70°刻み） */
+.ch01{ --accent:hsl(280,78%,25%); --accent2:hsl(280,58%,65%); --soft:hsl(280,28%,95%); }
+.ch02{ --accent:hsl(210,78%,25%); --accent2:hsl(210,58%,65%); --soft:hsl(210,28%,95%); }
+.ch03{ --accent:hsl(140,78%,25%); --accent2:hsl(140,58%,65%); --soft:hsl(140,28%,95%); }
+.ch04{ --accent:hsl(70,78%,25%);  --accent2:hsl(70,58%,65%);  --soft:hsl(70,28%,95%); }
+.ch05{ --accent:hsl(0,78%,25%);   --accent2:hsl(0,58%,65%);   --soft:hsl(0,28%,95%); }
+
+*{ box-sizing:border-box; }
+body{
+	margin:0;
+	font-family:"Segoe UI","Yu Gothic UI","Meiryo",sans-serif;
+	font-size:15.5px;
+	line-height:1.85;
+	color:var(--ink);
+	background:#fff;
+}
+
+.titlebar{
+	background:linear-gradient(135deg,var(--navy1),var(--navy2));
+	color:#fff;
+	padding:34px 30px 30px;
+}
+.titlebar .inner{ max-width:1400px; margin:0 auto; }
+.titlebar h1{ font-size:2.05em; margin:0 0 10px; color:#fff; }
+.titlebar .sub{ font-size:.95em; color:#dbe5f7; margin:0; }
+.titlebar .date{ font-size:.9em; color:#c3d3ee; margin:6px 0 0; }
+.titlebar code{ background:rgba(255,255,255,0.16); color:#fff; border:none; }
+
+.wrap{ max-width:1400px; margin:0 auto; padding:0 30px; }
+
+section{
+	background:linear-gradient(180deg,var(--soft),#fff);
+	border:1px solid var(--line);
+	border-radius:10px;
+	padding:4px 26px 26px;
+	margin:34px 0;
+}
+section h1{
+	font-size:1.5em;
+	margin:26px 0 20px;
+	padding:14px 20px;
+	color:#fff;
+	background:linear-gradient(100deg,var(--accent),var(--accent2));
+	border-radius:8px;
+	box-shadow:0 4px 12px rgba(0,0,0,.18);
+}
+section h1 code{ background:rgba(255,255,255,0.16); color:#fff; border:none; }
+h2{
+	font-size:1.15em;
+	margin:34px 0 12px;
+	padding:6px 12px;
+	color:var(--accent);
+	border-left:6px solid var(--accent);
+	background:linear-gradient(90deg,var(--soft),#fff);
+}
+h2 code{ font-size:.92em; }
+h3{
+	font-size:1.02em;
+	margin:20px 0 8px;
+	display:inline-block;
+	padding-bottom:3px;
+	border-bottom:2px dotted var(--accent2);
+}
+
+p{ margin:10px 0; }
+ul,ol{ margin:10px 0; padding-left:1.6em; }
+li{ margin:4px 0; }
+a{ color:var(--navy2); }
+
+code{
+	background:var(--code-bg);
+	border:1px solid var(--line);
+	color:#17335f;
+	padding:.1em .35em;
+	border-radius:4px;
+	font-family:Consolas,"Courier New",monospace;
+	font-size:.92em;
+}
+pre{
+	background:var(--code-bg);
+	color:var(--ink);
+	border-left:5px solid var(--accent2);
+	border-radius:0 8px 8px 0;
+	padding:13px 16px;
+	overflow-x:auto;
+	font-family:Consolas,"Courier New",monospace;
+	font-size:.92em;
+	line-height:1.7;
+}
+pre code{ background:none; border:none; padding:0; color:inherit; font-size:1em; }
+
+.tablewrap{ overflow-x:auto; margin:14px 0; }
+table{
+	border-collapse:collapse;
+	width:100%;
+	border-radius:8px;
+	overflow:hidden;
+	box-shadow:0 2px 8px rgba(0,0,0,.08);
+	font-size:.95em;
+}
+th{
+	padding:9px 12px;
+	text-align:left;
+	color:#fff;
+	background:linear-gradient(100deg,var(--accent),var(--accent2));
+	white-space:nowrap;
+}
+th code{ background:rgba(255,255,255,0.16); color:#fff; border:none; }
+td{
+	padding:9px 12px;
+	vertical-align:top;
+	border-bottom:1px solid var(--line);
+}
+tr:nth-child(even) td{ background:#fafbfe; }
+td.nw{ white-space:nowrap; }
+td.num{ text-align:right; white-space:nowrap; }
+
+.callout{
+	border-left:6px solid var(--accent);
+	background:linear-gradient(180deg,var(--soft),#fff);
+	border-radius:0 8px 8px 0;
+	padding:12px 16px;
+	margin:16px 0;
+}
+.callout strong{ color:var(--accent); }
+
+.badge{
+	display:inline-block;
+	padding:1px 9px;
+	border-radius:999px;
+	color:#fff;
+	font-size:.82em;
+	white-space:nowrap;
+	margin-right:6px;
+}
+.b-ok{ background:linear-gradient(100deg,#1d7a3c,#45b56c); }
+.b-ng{ background:linear-gradient(100deg,#a51f22,#e05a5c); }
+.b-warn{ background:linear-gradient(100deg,#b8620a,#f0a548); }
+
+ol.toc{
+	display:flex;
+	flex-wrap:wrap;
+	gap:8px;
+	list-style:none;
+	padding:0;
+	margin:16px 0 4px;
+	counter-reset:toc;
+}
+ol.toc li{ counter-increment:toc; margin:0; }
+ol.toc a{
+	display:-webkit-box;
+	-webkit-line-clamp:2;
+	-webkit-box-orient:vertical;
+	overflow:hidden;
+	text-overflow:ellipsis;
+	white-space:normal;
+	width:310px;
+	max-width:100%;
+	padding:8px 12px;
+	color:#fff;
+	background:linear-gradient(100deg,var(--accent),var(--accent2));
+	border-radius:8px;
+	text-decoration:none;
+	font-size:.95em;
+	line-height:1.45;
+}
+ol.toc a::before{ content:counter(toc) ". "; }
+
+.backlink{ margin:22px 0 0; font-size:.95em; }
+.backlink a{ color:var(--navy2); }
+
+footer{
+	max-width:1400px;
+	margin:0 auto;
+	padding:18px 30px 0;
+	border-top:1px solid var(--line);
+	font-size:.95em;
+}
+footer a{ color:var(--navy2); }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+	<div class="inner">
+		<h1>付録: バッチの落とし穴カタログ</h1>
+		<p class="sub">症状 → 原因 → 修正 の形で14項目。動かないときに症状から引くための資料です</p>
+		<p class="date">📅 作成: 2026-08-25 / 更新: 2026-08-25</p>
+	</div>
+</div>
+
+<div class="wrap">
+
+<p class="backlink"><a href="../README.html">← README に戻る</a></p>
+
+<h2>症状から探す</h2>
+<div class="tablewrap">
+	<table>
+		<tr><th>#</th><th>症状</th><th>原因の要約</th></tr>
+		<tr><td class="num"><a href="#p1">1</a></td><td>ループ内で変数が更新されない</td><td>括弧ブロックが実行前に一括展開される</td></tr>
+		<tr><td class="num"><a href="#p2">2</a></td><td>比較が成立しない / 値の末尾に空白が入る</td><td><code>set VAR = value</code> の空白</td></tr>
+		<tr><td class="num"><a href="#p3">3</a></td><td>日本語が化ける・実行が途中で止まる</td><td>ファイルが UTF-8 で保存されている</td></tr>
+		<tr><td class="num"><a href="#p4">4</a></td><td>ダブルクリックでは動くのに別の場所から呼ぶと失敗する</td><td>カレントディレクトリを固定していない</td></tr>
+		<tr><td class="num"><a href="#p5">5</a></td><td>パスに空白が含まれると失敗する</td><td>引用符の付け方</td></tr>
+		<tr><td class="num"><a href="#p6">6</a></td><td>エラーが出ているのに処理が続行する</td><td>終了コードを確認していない</td></tr>
+		<tr><td class="num"><a href="#p7">7</a></td><td><code>if</code> の中の <code>%errorlevel%</code> が期待と違う</td><td>ブロック進入時の値に固定されている</td></tr>
+		<tr><td class="num"><a href="#p8">8</a></td><td><code>exit</code> したらコンソールごと閉じた</td><td><code>/b</code> がない</td></tr>
+		<tr><td class="num"><a href="#p9">9</a></td><td><code>::</code> コメントを入れたらループが構文エラーになった</td><td><code>::</code> はラベルであり括弧内では使えない</td></tr>
+		<tr><td class="num"><a href="#p10">10</a></td><td><code>%</code> を含む文字列が消える</td><td>バッチ内では <code>%%</code> と書く</td></tr>
+		<tr><td class="num"><a href="#p11">11</a></td><td><code>for /f</code> でファイルの中身ではなく文字列そのものが処理される</td><td>引用符の有無で対象の解釈が変わる</td></tr>
+		<tr><td class="num"><a href="#p12">12</a></td><td>他のバッチを呼んだらそこで処理が終わってしまった</td><td><code>call</code> を付けていない</td></tr>
+		<tr><td class="num"><a href="#p13">13</a></td><td>実行後、環境変数が書き換わっている</td><td><code>setlocal</code> がない</td></tr>
+		<tr><td class="num"><a href="#p14">14</a></td><td>共有フォルダ（UNC パス）でカレント移動が失敗する</td><td><code>cd</code> は UNC を扱えない</td></tr>
+	</table>
+</div>
+
+<h2>分類から探す</h2>
+<ol class="toc">
+	<li class="ch01"><a href="#ch01">変数と展開（#1 #2 #7 #13）</a></li>
+	<li class="ch02"><a href="#ch02">構文とエスケープ（#9 #10 #11）</a></li>
+	<li class="ch03"><a href="#ch03">制御フローと終了コード（#6 #8 #12）</a></li>
+	<li class="ch04"><a href="#ch04">パスと実行環境（#4 #5 #14）</a></li>
+	<li class="ch05"><a href="#ch05">文字コード（#3）</a></li>
+</ol>
+
+<section class="ch01" id="ch01">
+	<h1>変数と展開</h1>
+
+	<h2 id="p1">#1 ループ内で変数が更新されない</h2>
+	<p><span class="badge b-ng">症状</span><code>.txt</code> ファイルが3つあるフォルダで実行しても、表示はすべて <code>現在: 0</code> になる。</p>
+	<pre><code>@echo off
+setlocal
+set count=0
+for %%f in (*.txt) do (
+    set /a count=count+1
+    echo 現在: %count%
+)
+echo 合計: %count%</code></pre>
+	<pre><code>現在: 0
+現在: 0
+現在: 0
+合計: 3</code></pre>
+	<p><span class="badge b-warn">原因</span>括弧 <code>(</code> 〜 <code>)</code> の中身は、ループに入る前に丸ごと1回だけ文字列展開されます。この時点で <code>count</code> は <code>0</code> なので、3回分すべての <code>echo</code> が <code>echo 現在: 0</code> という文字列に確定します。最後の <code>合計</code> は括弧の外なので、実行時の値 <code>3</code> が出ます。</p>
+	<p><span class="badge b-ok">修正</span><code>setlocal enabledelayedexpansion</code> を宣言し、括弧の中では <code>!VAR!</code> で読みます。</p>
+	<pre><code>@echo off
+setlocal enabledelayedexpansion
+set count=0
+for %%f in (*.txt) do (
+    set /a count=count+1
+    echo 現在: !count!
+)
+echo 合計: !count!</code></pre>
+	<div class="callout">
+		<p><strong>括弧の中は常に <code>!VAR!</code> と決めてしまうのが安全です。</strong><code>%VAR%</code> でも正しく動くのは「ループ中に値が変わらない変数」だけで、その判断を毎回するより機械的に統一したほうが事故が減ります。</p>
+	</div>
+
+	<h2 id="p2">#2 比較が成立しない / 値の末尾に空白が入る</h2>
+	<p><span class="badge b-ng">症状</span>値は合っているはずなのに <code>if</code> が成立しない。<code>echo</code> の出力を見ても違いが分からない。</p>
+	<pre><code>set MODE = test
+if "%MODE%"=="test" echo テストモード</code></pre>
+	<p><span class="badge b-warn">原因</span><code>set MODE = test</code> は「<code>MODE </code>（末尾に空白）」という名前の変数に「<code> test</code>（先頭に空白）」を代入します。<code>%MODE%</code> は定義されていないため、<code>if</code> の左辺は <code>%MODE%</code> という文字列そのものになります。</p>
+	<p><span class="badge b-ok">修正</span><code>=</code> の前後に空白を入れず、変数名と値をまとめて <code>"</code> で囲みます。</p>
+	<pre><code>set "MODE=test"
+if "%MODE%"=="test" echo テストモード</code></pre>
+	<p>この <code>set "名前=値"</code> の形は、値の末尾に空白が付かないだけでなく、値に <code>&amp;</code> や <code>|</code> を含められるという利点もあります。常にこの形で書くのが定型です。</p>
+	<div class="callout">
+		<p><strong>ただし守られるのは代入だけです。</strong><code>set "MSG=Hello &amp; World"</code> で値は正しく入りますが、<code>echo %MSG%</code> は展開後の <code>echo Hello &amp; World</code> という行がもう一度コマンドとして読み直され、<code>&amp;</code> がコマンド区切りとして働いて壊れます。記号を含む値は <code>echo !MSG!</code> と遅延展開で読んでください（展開結果は読み直されません）。</p>
+	</div>
+
+	<h2 id="p7">#7 <code>if</code> の中の <code>%errorlevel%</code> が期待と違う</h2>
+	<p><span class="badge b-ng">症状</span>コピーが失敗しているのに <code>成功</code> と表示される。</p>
+	<pre><code>if exist "%SRC%" (
+    copy "%SRC%" "%DST%" &gt;nul
+    if "%errorlevel%"=="0" (echo 成功) else (echo 失敗)
+)</code></pre>
+	<p><span class="badge b-warn">原因</span>#1 と同じ理由です。外側の括弧に入る時点で <code>%errorlevel%</code> が展開されて固定されるため、<code>copy</code> の結果は反映されません。</p>
+	<p><span class="badge b-ok">修正</span>方法は3つあります。いずれも「実行時の値を見る」ための手段です。</p>
+	<pre><code>rem (1) 遅延展開で読む
+if exist "%SRC%" (
+    copy "%SRC%" "%DST%" &gt;nul
+    if "!errorlevel!"=="0" (echo 成功) else (echo 失敗)
+)
+
+rem (2) if errorlevel を使う（この構文は実行時に評価される）
+if exist "%SRC%" (
+    copy "%SRC%" "%DST%" &gt;nul
+    if errorlevel 1 (echo 失敗) else (echo 成功)
+)
+
+rem (3) || で失敗時の処理をつなぐ（最も簡潔）
+copy "%SRC%" "%DST%" &gt;nul || (echo 失敗 &amp; exit /b 1)
+echo 成功</code></pre>
+	<div class="callout">
+		<p><strong><code>if errorlevel 1</code> は「1以上」を意味します。</strong>「1と等しい」ではありません。終了コードが 2 でも 5 でも真になります。特定の値だけを見たいときは <code>if "!errorlevel!"=="2"</code> のように比較します。</p>
+	</div>
+
+	<h2 id="p13">#13 実行後、環境変数が書き換わっている</h2>
+	<p><span class="badge b-ng">症状</span>バッチを実行した後、同じコンソールで別の作業をすると挙動がおかしい。<code>PATH</code> が変わっている、<code>TEMP</code> が消えているなど。</p>
+	<pre><code>@echo off
+rem setlocal がない
+set PATH=C:\mytools
+set TEMP=D:\tmp
+mytool.exe</code></pre>
+	<p><span class="badge b-warn">原因</span><code>set</code> はプロセスの環境変数を書き換えます。バッチにはブロックスコープが存在せず、<code>setlocal</code> を書かない限り変更は呼び出し元のコンソールに残り続けます。</p>
+	<p><span class="badge b-ok">修正</span>先頭で <code>setlocal</code> を宣言します。スクリプト終了時に自動的に元へ戻ります。</p>
+	<pre><code>@echo off
+setlocal enabledelayedexpansion
+set "PATH=C:\mytools;%PATH%"
+set "TEMP=D:\tmp"
+mytool.exe</code></pre>
+	<p>意図的に呼び出し元へ値を返したい場合は、<code>endlocal</code> と同じ行で持ち出します。</p>
+	<pre><code>rem RESULT だけを呼び出し元に残す
+endlocal &amp; set "RESULT=%RESULT%"</code></pre>
+</section>
+
+<section class="ch02" id="ch02">
+	<h1>構文とエスケープ</h1>
+
+	<h2 id="p9">#9 <code>::</code> コメントを入れたらループが構文エラーになった</h2>
+	<p><span class="badge b-ng">症状</span>コメントを追加しただけで <code>コマンドの構文が誤っています。</code> と表示される。</p>
+	<pre><code>for %%f in (*.txt) do (
+    :: ファイルごとの処理
+    echo %%f
+)</code></pre>
+	<p><span class="badge b-warn">原因</span><code>::</code> はコメント記号ではなく、<strong>名前が空のラベル</strong>です。ラベルは括弧ブロックの中に置けないため構文エラーになります。ブロックの外なら結果的にコメントとして機能しますが、括弧内では使えません。</p>
+	<p><span class="badge b-ok">修正</span>括弧の中では <code>rem</code> を使います。</p>
+	<pre><code>for %%f in (*.txt) do (
+    rem ファイルごとの処理
+    echo %%f
+)</code></pre>
+	<p><code>rem</code> はどこでも安全なので、最初から <code>rem</code> だけを使うと決めておけばこの問題は起きません。</p>
+
+	<h2 id="p10">#10 <code>%</code> を含む文字列が消える</h2>
+	<p><span class="badge b-ng">症状</span>進捗率を表示したいのに <code>50</code> だけが出て <code>%</code> が消える。あるいは意図しない文字列に化ける。</p>
+	<pre><code>echo 進捗: 50%
+echo 割引率: 10%OFF</code></pre>
+	<pre><code>進捗: 50
+割引率: 10FF</code></pre>
+	<p><span class="badge b-warn">原因</span><code>%</code> は変数展開の開始記号です。<code>%OF</code> のような未定義変数として解釈されて消えます（<code>10%OFF</code> は <code>%OF</code> が消えて <code>10FF</code> になります）。</p>
+	<p><span class="badge b-ok">修正</span>バッチファイル内では <code>%%</code> と書きます。</p>
+	<pre><code>echo 進捗: 50%%
+echo 割引率: 10%%OFF</code></pre>
+	<div class="callout">
+		<p><strong>コマンドプロンプトに直接打つ場合は <code>%</code> 1つです。</strong><code>%%</code> のエスケープが必要なのはバッチファイルの中だけです。プロンプトで試して動いたコードをバッチに貼ると、この点だけが崩れます。<code>for %%f</code> と <code>for %f</code> の違いも同じ理由です。</p>
+	</div>
+
+	<h2 id="p11">#11 <code>for /f</code> でファイルの中身ではなく文字列そのものが処理される</h2>
+	<p><span class="badge b-ng">症状</span>ファイルの各行を読みたいのに、ファイル名がそのまま1行として表示される。</p>
+	<pre><code>rem data.txt の中身を読みたい
+for /f "delims=" %%l in ("data.txt") do echo %%l</code></pre>
+	<pre><code>data.txt</code></pre>
+	<p><span class="badge b-warn">原因</span><code>for /f</code> は括弧内の書き方で対象の解釈を変えます。</p>
+	<div class="tablewrap">
+		<table>
+			<tr><th>書き方</th><th>対象</th></tr>
+			<tr><td class="nw"><code>in (data.txt)</code></td><td>ファイル <code>data.txt</code> の各行</td></tr>
+			<tr><td class="nw"><code>in ("data.txt")</code></td><td><code>data.txt</code> という<strong>文字列そのもの</strong></td></tr>
+			<tr><td class="nw"><code>in ('dir /b')</code></td><td>コマンドの実行結果</td></tr>
+		</table>
+	</div>
+	<p><span class="badge b-ok">修正</span>引用符なしで書きます。ただしパスに空白が含まれる場合は引用符が必要になるため、そのときは <code>usebackq</code> を付けて意味を切り替えます。</p>
+	<pre><code>rem 空白を含まないパス
+for /f "delims=" %%l in (data.txt) do echo %%l
+
+rem 空白を含むパス（usebackq を付けると "..." がファイル名の意味になる）
+for /f "usebackq delims=" %%l in ("%~dp0data file.txt") do echo %%l
+
+rem usebackq のとき、コマンド実行はバッククォートになる
+for /f "usebackq delims=" %%l in (`dir /b *.txt`) do echo %%l</code></pre>
+	<div class="callout">
+		<p><strong><code>usebackq</code> を付けると3つの記号の意味がまとめて入れ替わります。</strong>付けない場合は <code>'…'</code> がコマンド、<code>"…"</code> が文字列。付けた場合は <code>`…`</code> がコマンド、<code>"…"</code> がファイル名、<code>'…'</code> が文字列です。<code>%~dp0</code> を使うパスは空白を含みうるので、実務では <code>usebackq</code> 側で書くことが多くなります。</p>
+	</div>
+</section>
+
+<section class="ch03" id="ch03">
+	<h1>制御フローと終了コード</h1>
+
+	<h2 id="p6">#6 エラーが出ているのに処理が続行する</h2>
+	<p><span class="badge b-ng">症状</span>コピー元が存在せずエラーメッセージが出ているのに、その後の「完了しました」まで表示される。</p>
+	<pre><code>@echo off
+copy "C:\notexist\a.txt" "D:\backup\"
+del "C:\notexist\a.txt"
+echo 完了しました</code></pre>
+	<p><span class="badge b-warn">原因</span>バッチに例外はありません。コマンドが失敗しても終了コードが 0 以外になるだけで、次の行はそのまま実行されます。1行ごとに自分で確認しない限り、処理は最後まで走ります。</p>
+	<p><span class="badge b-ok">修正</span>失敗したら止めたい箇所に <code>|| exit /b</code> を付けます。</p>
+	<pre><code>@echo off
+setlocal
+copy "C:\notexist\a.txt" "D:\backup\" || (
+    echo コピーに失敗しました
+    exit /b 1
+)
+del "C:\notexist\a.txt" || exit /b 1
+echo 完了しました</code></pre>
+	<div class="callout">
+		<p><strong>終了コードを返さないコマンドもあります。</strong><code>robocopy</code> は成功時にも 1〜7 を返し、8 以上が失敗です。<code>find</code> は該当なしで 1 を返します。<code>|| exit /b</code> を付ける前に、そのコマンドの終了コードの意味を <code>コマンド /?</code> で確認してください。</p>
+	</div>
+
+	<h2 id="p8">#8 <code>exit</code> したらコンソールごと閉じた</h2>
+	<p><span class="badge b-ng">症状</span>エラー時に <code>exit</code> するバッチを別のバッチから呼んだら、呼び出し元まで終了してしまった。手で開いていたコマンドプロンプトも閉じた。</p>
+	<pre><code>if not exist "%TARGET%" (
+    echo 対象がありません
+    exit 1
+)</code></pre>
+	<p><span class="badge b-warn">原因</span><code>exit</code> は cmd.exe そのものを終了させます。バッチだけを終わらせるには <code>/b</code>（batch）が必要です。</p>
+	<p><span class="badge b-ok">修正</span></p>
+	<pre><code>if not exist "%TARGET%" (
+    echo 対象がありません
+    exit /b 1
+)</code></pre>
+	<div class="tablewrap">
+		<table>
+			<tr><th>書き方</th><th>効果</th><th>使う場面</th></tr>
+			<tr><td class="nw"><code>exit /b n</code></td><td>このバッチだけ終了</td><td>ほぼ常にこちら</td></tr>
+			<tr><td class="nw"><code>exit n</code></td><td>cmd.exe を終了</td><td><code>cmd /c</code> で単発起動している場合のみ</td></tr>
+			<tr><td class="nw"><code>goto :eof</code></td><td>末尾へ飛ぶ（終了コードは変えない）</td><td>サブルーチンからの復帰</td></tr>
+		</table>
+	</div>
+
+	<h2 id="p12">#12 他のバッチを呼んだらそこで処理が終わってしまった</h2>
+	<p><span class="badge b-ng">症状</span><code>sub.cmd</code> を呼んだ後の行が実行されない。</p>
+	<pre><code>@echo off
+echo 前処理
+sub.cmd
+echo 後処理  &lt;- 実行されない</code></pre>
+	<p><span class="badge b-warn">原因</span>バッチから別のバッチを <code>call</code> なしで実行すると、制御が移ったまま戻ってきません。同じことがサブルーチンのラベルにも当てはまります。</p>
+	<p><span class="badge b-ok">修正</span></p>
+	<pre><code>@echo off
+echo 前処理
+call sub.cmd
+echo 後処理</code></pre>
+	<p>サブルーチンも同様に <code>call :label</code> で呼び、末尾を <code>goto :eof</code> で締めます。</p>
+	<pre><code>call :log "開始"
+echo 本処理
+call :log "終了"
+goto :eof
+
+:log
+echo [%DATE% %TIME%] %~1
+goto :eof</code></pre>
+	<p>この <code>goto :eof</code>（メイン処理の末尾）を忘れると、処理がそのまま <code>:log</code> ラベルへ流れ込んで二重に実行されます。</p>
+</section>
+
+<section class="ch04" id="ch04">
+	<h1>パスと実行環境</h1>
+
+	<h2 id="p4">#4 ダブルクリックでは動くのに別の場所から呼ぶと失敗する</h2>
+	<p><span class="badge b-ng">症状</span>バッチのあるフォルダで実行すると動くが、タスクスケジューラや別フォルダから実行すると <code>指定されたパスが見つかりません。</code> になる。</p>
+	<pre><code>@echo off
+rem config.ini はバッチと同じフォルダにある
+for /f "delims=" %%l in (config.ini) do echo %%l</code></pre>
+	<p><span class="badge b-warn">原因</span>相対パスの起点はバッチの場所ではなく<strong>実行時のカレントディレクトリ</strong>です。呼び出し方によってカレントは変わります（タスクスケジューラなら <code>C:\Windows\System32</code> になることもあります）。</p>
+	<p><span class="badge b-ok">修正</span>先頭でカレントをバッチの場所に固定するか、パスを <code>%~dp0</code> で明示します。</p>
+	<pre><code>@echo off
+rem 方法1: カレントを移動する（最後に popd で戻す）
+pushd "%~dp0" || exit /b 1
+for /f "delims=" %%l in (config.ini) do echo %%l
+popd
+
+rem 方法2: パスを明示する（カレントを変えたくない場合）
+for /f "delims=" %%l in ("%~dp0config.ini") do echo %%l</code></pre>
+	<div class="callout">
+		<p><strong><code>%~dp0</code> の末尾には <code>\</code> が付いています。</strong>連結するときは <code>"%~dp0config.ini"</code> です。<code>"%~dp0\config.ini"</code> と書くと <code>\</code> が二重になります（多くの場合は動いてしまいますが、UNC パスや一部の API で失敗します）。</p>
+	</div>
+
+	<h2 id="p5">#5 パスに空白が含まれると失敗する</h2>
+	<p><span class="badge b-ng">症状</span><code>C:\Program Files\...</code> を渡すと <code>コマンドの構文が誤っています。</code> になる。あるいは <code>C:\Program</code> までしか認識されない。</p>
+	<pre><code>set SRC=C:\Program Files\MyApp\data.txt
+copy %SRC% D:\backup\</code></pre>
+	<p><span class="badge b-warn">原因</span>空白は引数の区切りです。引用符で囲まないと <code>C:\Program</code> と <code>Files\MyApp\data.txt</code> の2引数として渡されます。</p>
+	<p><span class="badge b-ok">修正</span>変数に入れるときは値を囲まず、<strong>使うときに囲みます</strong>。</p>
+	<pre><code>set "SRC=C:\Program Files\MyApp\data.txt"
+copy "%SRC%" "D:\backup\"</code></pre>
+	<p>引数として受け取る場合は <code>%~1</code> で既存の引用符を外し、使うときに改めて囲みます。こうすれば、呼び出し側が囲んでいても囲んでいなくても同じ形で扱えます。</p>
+	<pre><code>set "TARGET=%~1"
+if not exist "%TARGET%" (
+    echo 見つかりません: %TARGET%
+    exit /b 1
+)</code></pre>
+	<div class="callout">
+		<p><strong>引用符を二重に付けると別の失敗になります。</strong><code>set SRC="C:\Program Files\a.txt"</code> のように値ごと囲むと、<code>%SRC%</code> の中に引用符が含まれます。これを <code>"%SRC%"</code> と囲めば <code>""C:\...""</code> になり、やはり失敗します。<strong>値には引用符を含めない</strong>と決めておくのが混乱を避ける唯一の方法です。</p>
+	</div>
+
+	<h2 id="p14">#14 共有フォルダ（UNC パス）でカレント移動が失敗する</h2>
+	<p><span class="badge b-ng">症状</span>共有フォルダ上に置いたバッチをダブルクリックすると <code>UNC パスはサポートされません。</code> と表示され、カレントが <code>C:\Windows</code> になる。</p>
+	<pre><code>@echo off
+cd /d "%~dp0"
+rem \\server\share\tools\ では失敗する</code></pre>
+	<p><span class="badge b-warn">原因</span><code>cd</code> は UNC パス（<code>\\server\share\...</code>）をカレントディレクトリにできません。これは cmd.exe の仕様です。</p>
+	<p><span class="badge b-ok">修正</span><code>pushd</code> を使います。<code>pushd</code> は UNC パスに一時的なドライブレターを割り当てるため、そのまま移動できます。</p>
+	<pre><code>@echo off
+pushd "%~dp0" || (
+    echo 作業フォルダへ移動できません
+    exit /b 1
+)
+
+rem …処理…
+
+popd</code></pre>
+	<p><code>pushd</code> が割り当てたドライブは <code>popd</code> で解放されます。<code>popd</code> を忘れると割り当てが残るため、必ず対で書きます。</p>
+</section>
+
+<section class="ch05" id="ch05">
+	<h1>文字コード</h1>
+
+	<h2 id="p3">#3 日本語が化ける・実行が途中で止まる</h2>
+	<p><span class="badge b-ng">症状</span><code>echo 処理を開始します</code> が <code>蜃ｦ逅�繧帝幕蟋�</code> のように表示される。あるいは日本語を含む行でエラーになり、以降が実行されない。</p>
+	<p><span class="badge b-warn">原因</span>バッチファイルは日本語 Windows では <strong>CP932（Shift-JIS）</strong>として読まれます。UTF-8 で保存すると、日本語部分が別のバイト列として解釈されます。</p>
+	<p>さらに厄介なのは、化けた結果に <code>|</code> や <code>&amp;</code> に相当するバイトが現れると、構文エラーや意図しないコマンド実行になる点です。表示が崩れるだけでは済みません。</p>
+
+	<h3>化けるかどうかは「2つの設定の組み合わせ」で決まる</h3>
+	<p>ファイルの文字コードだけでは決まりません。<strong>実行時のコンソールのコードページ</strong>との組み合わせで結果が変わります。</p>
+	<div class="tablewrap">
+		<table>
+			<tr><th>ファイルの文字コード</th><th>コンソールのコードページ</th><th>結果</th></tr>
+			<tr><td class="nw">SJIS (CP932)</td><td class="nw">932</td><td><span class="badge b-ok">正常</span>これが日本語 Windows の既定の組み合わせ</td></tr>
+			<tr><td class="nw">SJIS (CP932)</td><td class="nw">65001 (UTF-8)</td><td><span class="badge b-ng">化ける</span>ファイルは正しいのに化ける。呼び出し元が UTF-8 のコンソールだと起こる</td></tr>
+			<tr><td class="nw">UTF-8 (BOMなし)</td><td class="nw">932</td><td><span class="badge b-ng">化ける</span>最も多いパターン。エディタの既定が UTF-8 のまま保存した場合</td></tr>
+			<tr><td class="nw">UTF-8 (BOMなし)</td><td class="nw">65001 (UTF-8)</td><td><span class="badge b-warn">条件付き</span>表示は通るが、CP932 で出力する外部コマンドの結果が化ける</td></tr>
+			<tr><td class="nw">UTF-8 (BOM付き)</td><td class="nw">どちらでも</td><td><span class="badge b-ng">エラー</span>先頭の BOM が1行目のコマンドの一部として解釈される</td></tr>
+		</table>
+	</div>
+	<p>コードページは <strong>親プロセスから継承</strong>されます。エクスプローラからダブルクリックした場合はシステムの OEM コードページ（日本語 Windows なら 932）になりますが、UTF-8 に設定されたターミナルや他のツールから呼ばれると 65001 のまま実行されます。同じバッチが「自分の環境では動くのに CI やタスクランナー経由だと化ける」のはこれが原因です。</p>
+	<p>現在のコードページは <code>chcp</code> で確認できます（引数なしで実行すると現在値の表示のみ）。</p>
+	<pre><code>C:\&gt;chcp
+現在のコード ページ: 932</code></pre>
+
+	<h3>修正</h3>
+	<p><span class="badge b-ok">修正</span>バッチファイルは <strong>SJIS（CP932）+ CRLF</strong> で保存します。上の表のうち安定して動く組み合わせはこれだけです。</p>
+	<div class="tablewrap">
+		<table>
+			<tr><th>エディタ</th><th>設定箇所</th></tr>
+			<tr><td class="nw">VS Code</td><td>右下のエンコーディング表示 → 「エンコード付きで保存」→ <code>Japanese (Shift JIS)</code>。改行も右下で <code>CRLF</code> にする</td></tr>
+			<tr><td class="nw">メモ帳</td><td>「名前を付けて保存」→ エンコード <code>ANSI</code></td></tr>
+			<tr><td class="nw">サクラエディタ等</td><td>文字コード <code>SJIS</code>、改行 <code>CRLF</code></td></tr>
+		</table>
+	</div>
+	<h3>UTF-8 で書きたい場合</h3>
+	<p><code>chcp 65001</code> でコードページを UTF-8 に変更する方法がありますが、副作用があるため推奨しません。</p>
+	<div class="tablewrap">
+		<table>
+			<tr><th>副作用</th><th>内容</th></tr>
+			<tr><td>変更が残る</td><td><code>chcp</code> はコンソール全体の設定を変える。バッチ終了後も戻らない（<code>setlocal</code> の対象外）</td></tr>
+			<tr><td>外部コマンドの出力</td><td>CP932 で出力するコマンドの結果が化ける。<code>for /f</code> で読むと壊れる</td></tr>
+			<tr><td>BOM の扱い</td><td>BOM 付き UTF-8 だと1行目の <code>@echo off</code> の前に不正な文字が入り、エラーメッセージが出る</td></tr>
+		</table>
+	</div>
+	<p>どうしても UTF-8 で扱う必要がある場合は、バッチ側は SJIS のまま保ち、UTF-8 が必要な処理だけを PowerShell スクリプトに切り出して <code>powershell -File</code> で呼ぶほうが安全です。</p>
+
+	<h3>呼び出し元のコードページに左右されたくない場合</h3>
+	<p>SJIS で保存しても、65001 のコンソールから呼ばれれば化けます。呼び出し元を制御できないバッチでは、次の2つの方針があります。</p>
+	<div class="tablewrap">
+		<table>
+			<tr><th>方針</th><th>内容</th><th>評価</th></tr>
+			<tr>
+				<td class="nw">メッセージを英数字だけにする</td>
+				<td>画面出力・ログを ASCII のみで書く。日本語はコメント（<code>rem</code>）だけに使う</td>
+				<td><span class="badge b-ok">確実</span>コードページに一切依存しない。ログを他のツールで処理する場合にも有利</td>
+			</tr>
+			<tr>
+				<td class="nw">冒頭で <code>chcp 932</code> する</td>
+				<td>自分が想定するコードページに揃えてから処理する</td>
+				<td><span class="badge b-warn">条件付き</span>下記の制約がある</td>
+			</tr>
+		</table>
+	</div>
+	<p><code>chcp</code> で揃える場合、終了時に元の値へ戻したくなりますが、<code>chcp</code> の出力書式（<code>現在のコード ページ: 932</code> / <code>Active code page: 932.</code>）は OS の表示言語によって変わるため、元の値を取り出す処理はロケール依存になります。<code>setlocal</code> の対象外なので自動で戻ることもありません。無人実行の専用バッチのように「このコンソールは自分専用」と言える場合に限って使うのが安全です。</p>
+	<div class="callout">
+		<p><strong>変換は1回だけ行ってください。</strong>SJIS のファイルを UTF-8 として読み直して保存すると、不正バイトが <code>?</code> に置換されて日本語が復元不能になります。エンコーディングを変える前に、現在何で保存されているかを必ず確認してください。</p>
+	</div>
+</section>
+
+</div>
+
+<footer>
+	<p><a href="../README.html">← README に戻る</a></p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第2回 制御構文と展開の罠</title>
+<style>
+:root{
+	--navy1:#12224d;
+	--navy2:#2f5fbf;
+	--ink:#1c2330;
+	--ink-soft:#4a5568;
+	--line:#d9dfe8;
+	--code-bg:#f4f6fa;
+	--accent:var(--navy1);
+	--accent2:var(--navy2);
+	--soft:#f2f5fb;
+}
+
+/* 章ごとのアクセント色（9章 / 色相 280→0 を 35°刻み） */
+.ch01{ --accent:hsl(280,78%,25%); --accent2:hsl(280,58%,65%); --soft:hsl(280,28%,95%); }
+.ch02{ --accent:hsl(245,78%,25%); --accent2:hsl(245,58%,65%); --soft:hsl(245,28%,95%); }
+.ch03{ --accent:hsl(210,78%,25%); --accent2:hsl(210,58%,65%); --soft:hsl(210,28%,95%); }
+.ch04{ --accent:hsl(175,78%,25%); --accent2:hsl(175,58%,65%); --soft:hsl(175,28%,95%); }
+.ch05{ --accent:hsl(140,78%,25%); --accent2:hsl(140,58%,65%); --soft:hsl(140,28%,95%); }
+.ch06{ --accent:hsl(105,78%,25%); --accent2:hsl(105,58%,65%); --soft:hsl(105,28%,95%); }
+.ch07{ --accent:hsl(70,78%,25%);  --accent2:hsl(70,58%,65%);  --soft:hsl(70,28%,95%); }
+.ch08{ --accent:hsl(35,78%,25%);  --accent2:hsl(35,58%,65%);  --soft:hsl(35,28%,95%); }
+.ch09{ --accent:hsl(0,78%,25%);   --accent2:hsl(0,58%,65%);   --soft:hsl(0,28%,95%); }
+
+*{ box-sizing:border-box; }
+body{
+	margin:0;
+	font-family:"Segoe UI","Yu Gothic UI","Meiryo",sans-serif;
+	font-size:15.5px;
+	line-height:1.85;
+	color:var(--ink);
+	background:#fff;
+}
+
+.titlebar{
+	background:linear-gradient(135deg,var(--navy1),var(--navy2));
+	color:#fff;
+	padding:34px 30px 30px;
+}
+.titlebar .inner{ max-width:1400px; margin:0 auto; }
+.titlebar h1{ font-size:2.05em; margin:0 0 10px; color:#fff; }
+.titlebar .sub{ font-size:.95em; color:#dbe5f7; margin:0; }
+.titlebar .date{ font-size:.9em; color:#c3d3ee; margin:6px 0 0; }
+.titlebar code{ background:rgba(255,255,255,0.16); color:#fff; border:none; }
+
+.wrap{ max-width:1400px; margin:0 auto; padding:0 30px; }
+
+section{
+	background:linear-gradient(180deg,var(--soft),#fff);
+	border:1px solid var(--line);
+	border-radius:10px;
+	padding:4px 26px 26px;
+	margin:34px 0;
+}
+section h1{
+	font-size:1.5em;
+	margin:26px 0 20px;
+	padding:14px 20px;
+	color:#fff;
+	background:linear-gradient(100deg,var(--accent),var(--accent2));
+	border-radius:8px;
+	box-shadow:0 4px 12px rgba(0,0,0,.18);
+}
+section h1 code{ background:rgba(255,255,255,0.16); color:#fff; border:none; }
+h2{
+	font-size:1.15em;
+	margin:32px 0 12px;
+	padding:6px 12px;
+	color:var(--accent);
+	border-left:6px solid var(--accent);
+	background:linear-gradient(90deg,var(--soft),#fff);
+}
+h2 code{ font-size:.92em; }
+h3{
+	font-size:1.02em;
+	margin:20px 0 8px;
+	display:inline-block;
+	padding-bottom:3px;
+	border-bottom:2px dotted var(--accent2);
+}
+
+p{ margin:10px 0; }
+ul,ol{ margin:10px 0; padding-left:1.6em; }
+li{ margin:4px 0; }
+a{ color:var(--navy2); }
+
+code{
+	background:var(--code-bg);
+	border:1px solid var(--line);
+	color:#17335f;
+	padding:.1em .35em;
+	border-radius:4px;
+	font-family:Consolas,"Courier New",monospace;
+	font-size:.92em;
+}
+pre{
+	background:var(--code-bg);
+	color:var(--ink);
+	border-left:5px solid var(--accent2);
+	border-radius:0 8px 8px 0;
+	padding:13px 16px;
+	overflow-x:auto;
+	font-family:Consolas,"Courier New",monospace;
+	font-size:.92em;
+	line-height:1.7;
+}
+pre code{ background:none; border:none; padding:0; color:inherit; font-size:1em; }
+
+.tablewrap{ overflow-x:auto; margin:14px 0; }
+table{
+	border-collapse:collapse;
+	width:100%;
+	border-radius:8px;
+	overflow:hidden;
+	box-shadow:0 2px 8px rgba(0,0,0,.08);
+	font-size:.95em;
+}
+th{
+	padding:9px 12px;
+	text-align:left;
+	color:#fff;
+	background:linear-gradient(100deg,var(--accent),var(--accent2));
+	white-space:nowrap;
+}
+th code{ background:rgba(255,255,255,0.16); color:#fff; border:none; }
+td{
+	padding:9px 12px;
+	vertical-align:top;
+	border-bottom:1px solid var(--line);
+}
+tr:nth-child(even) td{ background:#fafbfe; }
+td.nw{ white-space:nowrap; }
+td.num{ text-align:right; white-space:nowrap; }
+
+.callout{
+	border-left:6px solid var(--accent);
+	background:linear-gradient(180deg,var(--soft),#fff);
+	border-radius:0 8px 8px 0;
+	padding:12px 16px;
+	margin:16px 0;
+}
+.callout strong{ color:var(--accent); }
+
+.badge{
+	display:inline-block;
+	padding:1px 9px;
+	border-radius:999px;
+	color:#fff;
+	font-size:.82em;
+	white-space:nowrap;
+	margin-right:6px;
+}
+.b-ok{ background:linear-gradient(100deg,#1d7a3c,#45b56c); }
+.b-ng{ background:linear-gradient(100deg,#a51f22,#e05a5c); }
+.b-warn{ background:linear-gradient(100deg,#b8620a,#f0a548); }
+
+ol.toc{
+	display:flex;
+	flex-wrap:wrap;
+	gap:8px;
+	list-style:none;
+	padding:0;
+	margin:16px 0 4px;
+	counter-reset:toc;
+}
+ol.toc li{ counter-increment:toc; margin:0; }
+ol.toc a{
+	display:-webkit-box;
+	-webkit-line-clamp:2;
+	-webkit-box-orient:vertical;
+	overflow:hidden;
+	text-overflow:ellipsis;
+	white-space:normal;
+	width:310px;
+	max-width:100%;
+	padding:8px 12px;
+	color:#fff;
+	background:linear-gradient(100deg,var(--accent),var(--accent2));
+	border-radius:8px;
+	text-decoration:none;
+	font-size:.95em;
+	line-height:1.45;
+}
+ol.toc a::before{ content:counter(toc) ". "; }
+
+svg{ max-width:100%; height:auto; display:block; margin:16px 0; }
+
+.backlink{ margin:22px 0 0; font-size:.95em; }
+.backlink a{ color:var(--navy2); }
+
+footer{
+	max-width:1400px;
+	margin:0 auto;
+	padding:18px 30px 0;
+	border-top:1px solid var(--line);
+	font-size:.95em;
+}
+footer a{ color:var(--navy2); }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+	<div class="inner">
+		<h1>第2回 制御構文と展開の罠</h1>
+		<p class="sub">全3回シリーズ（2/3） &nbsp;|&nbsp; この回のゴール: ループの中で変数が更新されない理由を説明でき、正しく書ける</p>
+		<p class="date">📅 作成: 2026-08-25 / 更新: 2026-08-25</p>
+	</div>
+</div>
+
+<div class="wrap">
+
+<p class="backlink"><a href="../README.html">← README に戻る</a></p>
+
+<h2>目次</h2>
+<ol class="toc">
+	<li class="ch01"><a href="#ch01">前回の復習と、この回の見取り図</a></li>
+	<li class="ch02"><a href="#ch02">条件分岐 <code>if</code></a></li>
+	<li class="ch03"><a href="#ch03">繰り返し <code>for</code></a></li>
+	<li class="ch04"><a href="#ch04">遅延展開 — この回の山場</a></li>
+	<li class="ch05"><a href="#ch05">文字列操作</a></li>
+	<li class="ch06"><a href="#ch06">サブルーチン — 関数の代わり</a></li>
+	<li class="ch07"><a href="#ch07">エスケープをまとめる</a></li>
+	<li class="ch08"><a href="#ch08">デモ — ループと振り分け</a></li>
+	<li class="ch09"><a href="#ch09">まとめと第3回の予告</a></li>
+</ol>
+
+<section class="ch01" id="ch01">
+	<h1>前回の復習と、この回の見取り図</h1>
+
+	<h2>前回の結論</h2>
+	<p>cmd.exe は<strong>1行を読み、変数を文字列に置換し、コマンドを実行する</strong>。これを繰り返します。置換は実行の前に済んでいて、置換後の行はもう一度コマンドとして読み直されます。</p>
+	<p>この回で扱う <code>if</code> と <code>for</code> は、どちらも <code>(</code> 〜 <code>)</code> でブロックを作ります。そして<strong>ブロックは1つの論理行として扱われる</strong>ため、置換もブロック全体に対して一度に行われます。この回の罠はすべてここから来ます。</p>
+
+	<h2>この回で答える問い</h2>
+	<p>次のコードは、<code>.txt</code> ファイルが3つあるフォルダで実行すると何を表示するか。</p>
+	<pre><code>@echo off
+setlocal
+set count=0
+for %%f in (*.txt) do (
+    set /a count=count+1
+    echo 現在: %count%
+)
+echo 合計: %count%</code></pre>
+	<pre><code>現在: 0
+現在: 0
+現在: 0
+合計: 3</code></pre>
+	<p>ループの中では 0 のまま、ループを抜けると 3 になる。この一見矛盾した挙動を説明できるようになるのが、この回の前半の目標です。</p>
+
+	<h2>この回で扱うもの</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>章</th><th>内容</th><th>他の言語との対応</th></tr>
+			<tr><td class="nw">2</td><td><code>if</code></td><td><code>if</code> / <code>else</code>。ただし <code>else if</code> の連鎖は書きにくい</td></tr>
+			<tr><td class="nw">3</td><td><code>for</code></td><td><code>for...of</code> / <code>for (i=0;…)</code> / ファイル読み込み</td></tr>
+			<tr><td class="nw">4</td><td>遅延展開</td><td>対応するものがない。バッチ固有</td></tr>
+			<tr><td class="nw">5</td><td>文字列操作</td><td><code>substring</code> / <code>replace</code></td></tr>
+			<tr><td class="nw">6</td><td>サブルーチン</td><td>関数。ただし引数と戻り値の扱いが大きく違う</td></tr>
+			<tr><td class="nw">7</td><td>エスケープ</td><td>—</td></tr>
+		</table>
+	</div>
+</section>
+
+<section class="ch02" id="ch02">
+	<h1>条件分岐 <code>if</code></h1>
+
+	<h2>4種類の <code>if</code></h2>
+	<p>バッチの <code>if</code> は「条件式を評価する」のではなく、<strong>4つの決まった形</strong>のどれかです。</p>
+	<div class="tablewrap">
+		<table>
+			<tr><th>形</th><th>書き方</th><th>意味</th></tr>
+			<tr><td class="nw">文字列比較</td><td class="nw"><code>if "%A%"=="x"</code></td><td>文字列が等しいか</td></tr>
+			<tr><td class="nw">存在確認</td><td class="nw"><code>if exist "path"</code></td><td>ファイル・フォルダがあるか</td></tr>
+			<tr><td class="nw">変数の定義</td><td class="nw"><code>if defined A</code></td><td>変数が定義されているか（<code>%</code> で囲まない）</td></tr>
+			<tr><td class="nw">終了コード</td><td class="nw"><code>if errorlevel 1</code></td><td>終了コードが指定値<strong>以上</strong>か</td></tr>
+		</table>
+	</div>
+	<p>これに <code>not</code>（否定）と <code>/i</code>（大文字小文字を区別しない）を組み合わせます。</p>
+
+	<h2>両辺を <code>"</code> で囲む理由</h2>
+	<pre><code>rem 変数が空のとき、この行は  if ==x  という壊れた行になる
+if %A%==x echo 一致
+
+rem 引用符で囲めば  if ""=="x"  になり、正しく「不一致」と判定される
+if "%A%"=="x" echo 一致</code></pre>
+	<p>前回のとおり、未定義や空の変数は置換されて<strong>その場所から消えます</strong>。引用符は、消えても構文が壊れないようにするための足場です。<code>if "%A%"=="x"</code> という書き方が定型になっているのはこのためです。</p>
+
+	<h2>数値の比較</h2>
+	<p><code>==</code> は文字列比較なので、<code>"05"</code> と <code>"5"</code> は不一致になります。数値として比べるには専用の演算子を使います。</p>
+	<div class="tablewrap">
+		<table>
+			<tr><th>演算子</th><th>意味</th><th>他の言語</th></tr>
+			<tr><td class="nw"><code>EQU</code></td><td>等しい</td><td class="nw"><code>==</code></td></tr>
+			<tr><td class="nw"><code>NEQ</code></td><td>等しくない</td><td class="nw"><code>!=</code></td></tr>
+			<tr><td class="nw"><code>LSS</code> / <code>LEQ</code></td><td>より小さい / 以下</td><td class="nw"><code>&lt;</code> / <code>&lt;=</code></td></tr>
+			<tr><td class="nw"><code>GTR</code> / <code>GEQ</code></td><td>より大きい / 以上</td><td class="nw"><code>&gt;</code> / <code>&gt;=</code></td></tr>
+		</table>
+	</div>
+	<pre><code>if %COUNT% GEQ 10 echo 10件以上あります</code></pre>
+	<p>この形では引用符で囲みません（囲むと文字列比較になります）。そのため <code>%COUNT%</code> が空だと構文エラーになります。空の可能性があるなら、先に <code>if not defined COUNT set "COUNT=0"</code> のように既定値を入れておきます。</p>
+
+	<h2><code>else</code> の書き方には制約がある</h2>
+	<pre><code>rem 正しい: ) と else と ( が同じ行にある
+if "%MODE%"=="test" (
+    echo テストモード
+) else (
+    echo 本番モード
+)</code></pre>
+	<p><span class="badge b-ng">構文エラー</span><code>)</code> と <code>else</code> を別の行に分けると動きません。<code>if</code> 文全体が1つの論理行として解析されるためです。</p>
+	<pre><code>rem これは動かない
+if "%MODE%"=="test" (
+    echo テストモード
+)
+else (
+    echo 本番モード
+)</code></pre>
+
+	<h2><code>else if</code> の連鎖は書きにくい</h2>
+	<p>入れ子にすると急速に読みにくくなります。</p>
+	<pre><code>rem 入れ子（読みにくい）
+if "%EXT%"==".txt" (
+    echo テキスト
+) else if "%EXT%"==".log" (
+    echo ログ
+) else (
+    echo その他
+)</code></pre>
+	<p>分岐が3つ以上になるなら、<code>goto</code> でラベルに飛ばすほうが読めます。他の言語では避けられる書き方ですが、バッチではこちらが素直です。</p>
+	<pre><code>if "%EXT%"==".txt" goto :is_txt
+if "%EXT%"==".log" goto :is_log
+goto :is_other
+
+:is_txt
+echo テキスト
+goto :done
+
+:is_log
+echo ログ
+goto :done
+
+:is_other
+echo その他
+
+:done</code></pre>
+</section>
+
+<section class="ch03" id="ch03">
+	<h1>繰り返し <code>for</code></h1>
+
+	<h2>4つの形を使い分ける</h2>
+	<p>バッチの <code>for</code> は、オプションによって「何を回すか」が変わります。同じキーワードですが、別のコマンドだと考えたほうが理解しやすいです。</p>
+	<div class="tablewrap">
+		<table>
+			<tr><th>形</th><th>回すもの</th><th>例</th></tr>
+			<tr><td class="nw">無印</td><td>ファイル名 / 空白区切りの文字列</td><td class="nw"><code>for %%f in (*.txt) do …</code></td></tr>
+			<tr><td class="nw"><code>/l</code></td><td>数値の範囲（開始,増分,終了）</td><td class="nw"><code>for /l %%i in (1,1,5) do …</code></td></tr>
+			<tr><td class="nw"><code>/f</code></td><td>ファイルの各行 / 文字列 / コマンド出力</td><td class="nw"><code>for /f "delims=" %%l in (a.txt) do …</code></td></tr>
+			<tr><td class="nw"><code>/r</code></td><td>サブフォルダも含むファイル</td><td class="nw"><code>for /r "C:\work" %%f in (*.log) do …</code></td></tr>
+			<tr><td class="nw"><code>/d</code></td><td>フォルダのみ</td><td class="nw"><code>for /d %%d in (*) do …</code></td></tr>
+		</table>
+	</div>
+
+	<h2>ループ変数は <code>%%</code></h2>
+	<p>バッチファイル内では <code>%%f</code>、コマンドプロンプトに直接打つときは <code>%f</code> です。前回の <code>%%</code> エスケープと同じ理由です。</p>
+	<p>変数名は1文字で、大文字と小文字は別物として扱われます。<code>%%f</code> と <code>%%F</code> は違う変数です。</p>
+
+	<h2>無印の <code>for</code> — ファイルと単語</h2>
+	<pre><code>rem カレントの .txt を1つずつ
+for %%f in (*.txt) do echo %%f
+
+rem 空白区切りの単語を1つずつ（配列の代用）
+for %%w in (alpha beta gamma) do echo [%%w]</code></pre>
+	<p>後者が、バッチで配列に一番近い書き方です。<code>for %%w in (%LIST%) do</code> のように変数を渡せば、擬似的なリスト処理になります。</p>
+
+	<h2><code>/f</code> — 行を読む</h2>
+	<p>実務で最もよく使い、最もつまずくのがこの形です。<strong>括弧の中の書き方で対象の意味が変わります</strong>。</p>
+	<div class="tablewrap">
+		<table>
+			<tr><th>書き方</th><th>対象</th></tr>
+			<tr><td class="nw"><code>in (data.txt)</code></td><td>ファイル <code>data.txt</code> の各行</td></tr>
+			<tr><td class="nw"><code>in ("data.txt")</code></td><td><code>data.txt</code> という<strong>文字列そのもの</strong>（1回だけ回る）</td></tr>
+			<tr><td class="nw"><code>in ('dir /b')</code></td><td>コマンドの実行結果の各行</td></tr>
+		</table>
+	</div>
+	<p>ファイルを読みたいのに引用符を付けてしまい、ファイル名が1行として処理されるのがよくある誤りです。ではパスに空白が含まれる場合はどうするか。<code>usebackq</code> を付けて意味を切り替えます。</p>
+	<pre><code>rem usebackq を付けると "…" がファイル名の意味になる
+for /f "usebackq delims=" %%l in ("%~dp0data file.txt") do echo %%l
+
+rem usebackq のとき、コマンド実行はバッククォートで書く
+for /f "usebackq delims=" %%l in (`dir /b *.txt`) do echo %%l</code></pre>
+	<div class="tablewrap">
+		<table>
+			<tr><th></th><th>ファイル</th><th>コマンド</th><th>文字列</th></tr>
+			<tr><td class="nw"><code>usebackq</code> なし</td><td class="nw">囲まない</td><td class="nw"><code>'…'</code></td><td class="nw"><code>"…"</code></td></tr>
+			<tr><td class="nw"><code>usebackq</code> あり</td><td class="nw"><code>"…"</code></td><td class="nw"><code>`…`</code></td><td class="nw"><code>'…'</code></td></tr>
+		</table>
+	</div>
+
+	<h3><code>delims</code> と <code>tokens</code></h3>
+	<pre><code>rem CSV の1列目と2列目を取り出す
+for /f "tokens=1,2 delims=," %%a in (list.csv) do (
+    echo 名前=%%a 年齢=%%b
+)
+
+rem ヘッダ行を飛ばす
+for /f "skip=1 tokens=1,* delims=," %%a in (list.csv) do (
+    echo 1列目=%%a 残り=%%b
+)
+
+rem 行全体を1つとして扱う（区切らない）
+for /f "delims=" %%l in (data.txt) do echo %%l</code></pre>
+	<p><code>tokens</code> に複数を指定すると、変数はアルファベット順に自動で増えます。<code>%%a</code> を指定して <code>tokens=1,2,3</code> なら、2列目は <code>%%b</code>、3列目は <code>%%c</code> です。宣言は不要です。</p>
+	<div class="callout">
+		<p><strong><code>/f</code> は空行を飛ばします。</strong>また既定では <code>;</code> で始まる行も無視されます（<code>eol=;</code> が既定値）。行番号を数えながら処理したい場合や、設定ファイルにコメント行がある場合は、この2つの挙動を意識してください。<code>eol=</code> と書けば無視をやめられます。</p>
+	</div>
+
+	<h2><code>/l</code> — 回数ループ</h2>
+	<pre><code>rem 1 から 5 まで
+for /l %%i in (1,1,5) do echo %%i
+
+rem 10 から 1 まで逆順（増分に負の値）
+for /l %%i in (10,-1,1) do echo %%i</code></pre>
+
+	<h2>ループから抜ける</h2>
+	<p><code>break</code> はありません。<code>goto</code> でループの外へ飛びます。</p>
+	<pre><code>for %%f in (*.txt) do (
+    if "%%~nf"=="target" goto :found
+)
+echo 見つかりませんでした
+goto :eof
+
+:found
+echo 見つかりました</code></pre>
+	<p><code>continue</code> もありません。<code>if</code> で処理全体を囲んで「条件を満たすときだけ実行する」形にします。</p>
+	<pre><code>for %%f in (*) do (
+    rem .txt 以外は何もしない（continue の代用）
+    if "%%~xf"==".txt" (
+        echo 処理: %%f
+    )
+)</code></pre>
+
+	<h2><code>%%f</code> にも <code>%~</code> 修飾子が使える</h2>
+	<pre><code>for %%f in (*.txt) do (
+    echo フルパス   : %%~ff
+    echo 名前       : %%~nf
+    echo 拡張子     : %%~xf
+    echo サイズ     : %%~zf
+    echo フォルダ   : %%~dpf
+)</code></pre>
+	<p>修飾子はループ変数名の<strong>前</strong>に入ります。<code>%%~nf</code> は「<code>f</code> に <code>~n</code> を適用」という並びです。</p>
+</section>
+
+<section class="ch04" id="ch04">
+	<h1>遅延展開 — この回の山場</h1>
+
+	<h2>なぜ 0 のままなのか</h2>
+	<p>冒頭のコードに戻ります。</p>
+	<pre><code>set count=0
+for %%f in (*.txt) do (
+    set /a count=count+1
+    echo 現在: %count%
+)</code></pre>
+	<p><code>for</code> の <code>(</code> 〜 <code>)</code> は<strong>1つの論理行</strong>です。cmd.exe はこのブロック全体を1行として読み込み、ループを始める前に<strong>一度だけ</strong>置換します。この時点で <code>count</code> は <code>0</code> なので、ブロックの中身は次の形に確定します。</p>
+	<pre><code>rem 置換後（cmd.exe が実際に繰り返し実行するもの）
+set /a count=count+1
+echo 現在: 0</code></pre>
+	<p>3回繰り返されるのはこの確定済みの内容です。<code>set /a</code> は毎回実行されるので値そのものは増えていますが、<code>echo</code> の行はすでに <code>0</code> という文字列になっています。ループを抜けた後の <code>echo 合計: %count%</code> は括弧の外にある別の行なので、その行が読まれた時点の値、つまり <code>3</code> が入ります。</p>
+
+	<svg viewBox="0 0 1000 300" role="img" aria-label="通常展開と遅延展開の違い">
+		<defs>
+			<linearGradient id="g-04-1a" x1="0" y1="1" x2="0" y2="0">
+				<stop offset="0" stop-color="hsl(280,78%,25%)"/>
+				<stop offset="1" stop-color="hsl(280,58%,65%)"/>
+			</linearGradient>
+			<linearGradient id="g-04-1b" x1="0" y1="1" x2="0" y2="0">
+				<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+				<stop offset="1" stop-color="hsl(0,58%,65%)"/>
+			</linearGradient>
+			<marker id="m-04-1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+				<path d="M0,0 L10,5 L0,10 z" fill="#4a5568"/>
+			</marker>
+		</defs>
+
+		<text x="245" y="22" fill="#4a5568" font-size="14" font-weight="bold" text-anchor="middle">%count% — 通常の展開</text>
+		<rect x="20" y="35" width="450" height="60" rx="8" fill="url(#g-04-1a)"/>
+		<text x="245" y="60" fill="#fff" font-size="13" text-anchor="middle">ブロックに入る前に、全体を1回だけ置換</text>
+		<text x="245" y="82" fill="#fff" font-size="13" text-anchor="middle">この時点の値 0 が3回分すべてに焼き付く</text>
+
+		<line x1="245" y1="100" x2="245" y2="128" stroke="#4a5568" stroke-width="2" marker-end="url(#m-04-1)"/>
+
+		<rect x="20" y="135" width="450" height="120" rx="8" fill="#f4f6fa" stroke="#d9dfe8"/>
+		<text x="40" y="162" fill="#1c2330" font-size="13" font-family="monospace">1周目: echo 現在: 0</text>
+		<text x="40" y="188" fill="#1c2330" font-size="13" font-family="monospace">2周目: echo 現在: 0</text>
+		<text x="40" y="214" fill="#1c2330" font-size="13" font-family="monospace">3周目: echo 現在: 0</text>
+		<text x="40" y="242" fill="#a51f22" font-size="12">値は増えているが、表示は焼き付いた 0</text>
+
+		<text x="755" y="22" fill="#4a5568" font-size="14" font-weight="bold" text-anchor="middle">!count! — 遅延展開</text>
+		<rect x="530" y="35" width="450" height="60" rx="8" fill="url(#g-04-1b)"/>
+		<text x="755" y="60" fill="#fff" font-size="13" text-anchor="middle">ブロック展開時には置換されない</text>
+		<text x="755" y="82" fill="#fff" font-size="13" text-anchor="middle">各周の実行直前に、その時点の値を差し込む</text>
+
+		<line x1="755" y1="100" x2="755" y2="128" stroke="#4a5568" stroke-width="2" marker-end="url(#m-04-1)"/>
+
+		<rect x="530" y="135" width="450" height="120" rx="8" fill="#f4f6fa" stroke="#d9dfe8"/>
+		<text x="550" y="162" fill="#1c2330" font-size="13" font-family="monospace">1周目: echo 現在: 1</text>
+		<text x="550" y="188" fill="#1c2330" font-size="13" font-family="monospace">2周目: echo 現在: 2</text>
+		<text x="550" y="214" fill="#1c2330" font-size="13" font-family="monospace">3周目: echo 現在: 3</text>
+		<text x="550" y="242" fill="#1d7a3c" font-size="12">実行のたびに評価されるので期待どおり</text>
+
+		<text x="500" y="285" fill="#4a5568" font-size="12" text-anchor="middle">遅延展開を使うには setlocal enabledelayedexpansion が必要（既定では無効）</text>
+	</svg>
+
+	<h2>使い方</h2>
+	<pre><code>@echo off
+setlocal enabledelayedexpansion
+set count=0
+for %%f in (*.txt) do (
+    set /a count=count+1
+    echo 現在: !count!
+)
+echo 合計: !count!</code></pre>
+	<p><code>setlocal enabledelayedexpansion</code> を宣言し、<strong>括弧の中では <code>!VAR!</code> で読む</strong>。これだけです。</p>
+	<div class="callout">
+		<p><strong>括弧の中は常に <code>!VAR!</code> と決めてしまうのが安全です。</strong><code>%VAR%</code> でも正しく動くのは「ループ中に値が変わらない変数」だけです。その判断を毎回するより、機械的に統一したほうが事故が減ります。</p>
+	</div>
+
+	<h2>遅延展開のもう1つの役割 — 再解析を止める</h2>
+	<p>遅延展開は「ループで値が更新されない問題の対策」として説明されがちですが、より本質的な役割があります。<strong>展開した結果が、もう一度コマンドとして読み直されるのを防ぐ</strong>ことです。</p>
+	<pre><code>@echo off
+setlocal enabledelayedexpansion
+set "MSG=Hello &amp; World"
+echo A: %MSG%
+echo B: !MSG!</code></pre>
+	<pre><code>A: Hello
+'World' は、内部コマンドまたは外部コマンド、
+操作可能なプログラムまたはバッチ ファイルとして認識されていません。
+B: Hello &amp; World</code></pre>
+	<p><code>A</code> は置換されて <code>echo Hello &amp; World</code> という<strong>行</strong>になり、その行が読み直されて <code>&amp;</code> がコマンド区切りとして働きます。<code>B</code> は実行直前に値を差し込むだけで読み直さないため、記号がそのまま文字として扱われます。</p>
+	<p>ファイル名やユーザー入力のように「何が入っているか分からない値」を扱うときは、ループの外でも <code>!VAR!</code> で読むほうが安全です。</p>
+
+	<h2><code>if</code> の中の <code>%errorlevel%</code> も同じ問題</h2>
+	<pre><code>rem 動かない: ブロック進入時の値に固定される
+if exist "%SRC%" (
+    copy "%SRC%" "%DST%" &gt;nul
+    if "%errorlevel%"=="0" (echo 成功) else (echo 失敗)
+)</code></pre>
+	<p>対処は3通りあります。</p>
+	<pre><code>rem (1) 遅延展開で読む
+if "!errorlevel!"=="0" (echo 成功) else (echo 失敗)
+
+rem (2) if errorlevel を使う（この構文は実行時に評価される）
+if errorlevel 1 (echo 失敗) else (echo 成功)
+
+rem (3) || でつなぐ（最も簡潔）
+copy "%SRC%" "%DST%" &gt;nul || (echo 失敗 &amp; exit /b 1)</code></pre>
+
+	<h2>遅延展開の副作用 — <code>!</code> が使えなくなる</h2>
+	<p>遅延展開を有効にすると、<code>!</code> が特別な文字になります。値やメッセージに <code>!</code> を含めたい場合はエスケープが必要です。</p>
+	<pre><code>@echo off
+setlocal enabledelayedexpansion
+set "MSG=VALUE"
+echo 1: ^!MSG^!
+echo 2: ^^!MSG^^!</code></pre>
+	<pre><code>1: VALUE
+2: !MSG!</code></pre>
+	<p><code>^</code> が<strong>2つ</strong>必要です。1行は「<code>%</code> の展開 → <code>^</code> の処理 → <code>!</code> の展開」の順に解釈されるため、<code>^!</code> と書くと <code>^</code> が先に消費されて <code>!</code> だけが残り、そのあと展開されてしまいます。</p>
+	<p><code>!</code> をそのまま出したい箇所が多いなら、その部分を <code>setlocal disabledelayedexpansion</code> で囲んで一時的に切るほうが読みやすくなります。</p>
+</section>
+
+<section class="ch05" id="ch05">
+	<h1>文字列操作</h1>
+
+	<p>バッチの文字列操作は変数の展開記法に埋め込まれています。<code>%VAR%</code> 形式の<strong>変数にしか使えず</strong>、引数 <code>%1</code> や <code>for</code> の <code>%%f</code> には直接使えません。いったん <code>set "V=%~1"</code> で変数に入れてから使います。</p>
+
+	<h2>部分取得と置換</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>書き方</th><th>意味</th><th>例（<code>V=abcdefg</code>）</th><th>他の言語</th></tr>
+			<tr><td class="nw"><code>%V:~0,3%</code></td><td>0文字目から3文字</td><td class="nw"><code>abc</code></td><td class="nw"><code>slice(0,3)</code></td></tr>
+			<tr><td class="nw"><code>%V:~3%</code></td><td>3文字目から末尾まで</td><td class="nw"><code>defg</code></td><td class="nw"><code>slice(3)</code></td></tr>
+			<tr><td class="nw"><code>%V:~-2%</code></td><td>末尾から2文字</td><td class="nw"><code>fg</code></td><td class="nw"><code>slice(-2)</code></td></tr>
+			<tr><td class="nw"><code>%V:~0,-2%</code></td><td>末尾2文字を除いた残り</td><td class="nw"><code>abcde</code></td><td class="nw"><code>slice(0,-2)</code></td></tr>
+			<tr><td class="nw"><code>%V:abc=X%</code></td><td>置換（すべての出現箇所）</td><td class="nw"><code>Xdefg</code></td><td class="nw"><code>replaceAll</code></td></tr>
+			<tr><td class="nw"><code>%V:abc=%</code></td><td>削除（空文字に置換）</td><td class="nw"><code>defg</code></td><td class="nw"><code>replaceAll(…,"")</code></td></tr>
+		</table>
+	</div>
+
+	<h2>よく使う組み合わせ</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>やりたいこと</th><th>書き方</th><th>考え方</th></tr>
+			<tr><td>文字列を含むか判定</td><td class="nw"><code>if not "%V:abc=%"=="%V%" ( 含む )</code></td><td>削除して変化があれば含んでいた</td></tr>
+			<tr><td>末尾の <code>\</code> を取り除く</td><td class="nw"><code>if "%V:~-1%"=="\" set "V=%V:~0,-1%"</code></td><td>最後の1文字を見て判定</td></tr>
+			<tr><td>パスの区切りを置換</td><td class="nw"><code>set "V=%V:\=/%"</code></td><td>—</td></tr>
+			<tr><td>文字数を数える</td><td class="nw">直接はできない</td><td><code>for /l</code> で1文字ずつ調べるしかない</td></tr>
+			<tr><td>大文字小文字を無視した置換</td><td class="nw">できない</td><td>外部コマンド（<code>findstr /i</code> 等）を使う</td></tr>
+		</table>
+	</div>
+
+	<h2>日付を組み立てる（第1回の続き）</h2>
+	<p>第1回では <code>%DATE:/=%</code> で <code>20260825</code> を作りました。これは「<code>/</code> をすべて削除する」という置換です。</p>
+	<pre><code>set "TODAY=%DATE:/=%"</code></pre>
+	<p>部分取得を使えば年月日を個別に取り出せます。</p>
+	<pre><code>rem %DATE% が 2026/08/25 の場合
+set "YYYY=%DATE:~0,4%"
+set "MM=%DATE:~5,2%"
+set "DD=%DATE:~8,2%"
+echo %YYYY%年%MM%月%DD%日</code></pre>
+	<p><span class="badge b-warn">要注意</span>どちらの方法も<strong>地域設定に依存します</strong>。区切りや桁位置が違う環境では正しく動きません。環境に依存しない方法は第3回で扱います。</p>
+
+	<div class="callout">
+		<p><strong>ループの中では <code>!V:~0,3!</code> のように書きます。</strong>部分取得や置換も遅延展開の形で使えます。ただし値そのものに <code>=</code> や <code>:</code> が含まれると解釈が崩れるため、この記法で扱うのはパスや識別子程度にとどめるのが安全です。</p>
+	</div>
+</section>
+
+<section class="ch06" id="ch06">
+	<h1>サブルーチン — 関数の代わり</h1>
+
+	<h2>ラベルと <code>call</code></h2>
+	<p>バッチには関数がありません。代わりに<strong>ラベルへ飛んで戻ってくる</strong>という形を取ります。</p>
+	<pre><code>@echo off
+setlocal
+
+call :log "処理を開始します"
+call :log "処理が完了しました"
+goto :eof
+
+:log
+echo [%DATE% %TIME%] %~1
+goto :eof</code></pre>
+	<div class="tablewrap">
+		<table>
+			<tr><th>要素</th><th>役割</th><th>他の言語</th></tr>
+			<tr><td class="nw"><code>:log</code></td><td>サブルーチンの入口</td><td>関数定義</td></tr>
+			<tr><td class="nw"><code>call :log "…"</code></td><td>呼び出し。引数は空白区切りで渡す</td><td>関数呼び出し</td></tr>
+			<tr><td class="nw"><code>%~1</code></td><td>サブルーチン内での第1引数</td><td>仮引数</td></tr>
+			<tr><td class="nw"><code>goto :eof</code></td><td>呼び出し元へ戻る</td><td><code>return</code></td></tr>
+		</table>
+	</div>
+
+	<h2>忘れると事故になる2点</h2>
+	<h3>1. メイン処理の最後に <code>goto :eof</code></h3>
+	<p>これを書かないと、処理がそのまま <code>:log</code> ラベルへ流れ込みます。ラベルは処理の区切りではなく、ただの目印だからです。</p>
+	<pre><code>rem 悪い例: 最後の goto :eof がない
+call :log "開始"
+echo 本処理
+
+:log
+echo [%DATE% %TIME%] %~1
+goto :eof</code></pre>
+	<p>この場合 <code>echo 本処理</code> のあと <code>:log</code> に到達し、引数なしでログ行が1回余分に実行されます。</p>
+
+	<h3>2. <code>call</code> を付ける</h3>
+	<p><code>call</code> なしで <code>goto :log</code> すると、戻ってきません。別のバッチファイルを呼ぶときも同じです。</p>
+	<pre><code>rem 戻ってこない
+sub.cmd
+echo この行は実行されない
+
+rem 正しい
+call sub.cmd
+echo この行は実行される</code></pre>
+
+	<h2>戻り値をどう返すか</h2>
+	<p>戻り値の仕組みはありません。2つの方法があります。</p>
+	<h3>方法1: 終了コードで返す</h3>
+	<pre><code>call :is_text "%FILE%"
+if errorlevel 1 (
+    echo テキストファイルではありません
+) else (
+    echo テキストファイルです
+)
+goto :eof
+
+:is_text
+if /i "%~x1"==".txt" exit /b 0
+exit /b 1</code></pre>
+	<p>真偽値を返すならこれが素直です。<strong>0 が成功（真）</strong>という向きに注意してください。他の言語の <code>return true</code> とは逆の感覚になります。</p>
+
+	<h3>方法2: 変数に書き込んで返す</h3>
+	<pre><code>call :get_ext "%FILE%"
+echo 拡張子は !RESULT! です
+goto :eof
+
+:get_ext
+set "RESULT=%~x1"
+goto :eof</code></pre>
+	<p>バッチにはスコープがないので、サブルーチン内で <code>set</code> した変数は呼び出し元からも見えます。関数の副作用として値を返す形です。名前の衝突を避けるため、<code>RESULT</code> のような専用の変数名を決めておきます。</p>
+
+	<div class="callout">
+		<p><strong><code>call</code> の中だけで変数を閉じたい場合は <code>setlocal</code> を入れ子にできます。</strong>サブルーチンの先頭に <code>setlocal</code>、末尾の <code>goto :eof</code> の前に <code>endlocal</code> を置きます。ただしこうすると方法2で値を返せなくなるため、<code>endlocal &amp; set "RESULT=%RESULT%"</code> という定型が必要になります。ここまで来ると読みにくくなるので、規模が大きいならバッチ以外を検討する合図です。</p>
+	</div>
+</section>
+
+<section class="ch07" id="ch07">
+	<h1>エスケープをまとめる</h1>
+
+	<p>ここまでに <code>%%</code>、<code>^&amp;</code>、<code>^^!</code> が登場しました。都度覚えるのは無理なので、1つの表にまとめます。</p>
+
+	<div class="tablewrap">
+		<table>
+			<tr><th>文字</th><th>そのまま書くと</th><th>エスケープ</th><th>備考</th></tr>
+			<tr><td class="nw"><code>%</code></td><td>変数展開として解釈される</td><td class="nw"><code>%%</code></td><td>バッチファイル内のみ。プロンプトでは <code>%</code> 1つ</td></tr>
+			<tr><td class="nw"><code>^</code></td><td>次の1文字のエスケープ記号</td><td class="nw"><code>^^</code></td><td>行末に置くと行継続になる</td></tr>
+			<tr><td class="nw"><code>&amp;</code></td><td>コマンドの区切り</td><td class="nw"><code>^&amp;</code></td><td><code>"</code> の内側なら不要</td></tr>
+			<tr><td class="nw"><code>|</code></td><td>パイプ</td><td class="nw"><code>^|</code></td><td>同上</td></tr>
+			<tr><td class="nw"><code>&gt;</code> <code>&lt;</code></td><td>リダイレクト</td><td class="nw"><code>^&gt;</code> <code>^&lt;</code></td><td>同上</td></tr>
+			<tr><td class="nw"><code>(</code> <code>)</code></td><td>ブロックの区切り</td><td class="nw"><code>^(</code> <code>^)</code></td><td>ブロック内では特に必要になる</td></tr>
+			<tr><td class="nw"><code>!</code></td><td>遅延展開が有効なとき変数として解釈される</td><td class="nw"><code>^^!</code></td><td><code>^</code> が<strong>2つ</strong>必要。遅延展開が無効なら不要</td></tr>
+			<tr><td class="nw"><code>"</code></td><td>文字列の区切り</td><td class="nw">—</td><td>エスケープできない。数を偶数に保つ</td></tr>
+		</table>
+	</div>
+
+	<h2>解釈される順番を覚えておく</h2>
+	<p>エスケープの必要性は、1行が解釈される順番から導けます。</p>
+	<div class="tablewrap">
+		<table>
+			<tr><th>順</th><th>処理</th><th>関係する記法</th></tr>
+			<tr><td class="num">1</td><td><code>%</code> の展開</td><td class="nw"><code>%VAR%</code> <code>%1</code> <code>%%</code></td></tr>
+			<tr><td class="num">2</td><td><code>^</code> の処理</td><td class="nw"><code>^&amp;</code> <code>^^</code></td></tr>
+			<tr><td class="num">3</td><td><code>!</code> の展開</td><td class="nw"><code>!VAR!</code></td></tr>
+			<tr><td class="num">4</td><td>コマンドとして解析・実行</td><td class="nw"><code>&amp;</code> <code>|</code> <code>&gt;</code> による分割</td></tr>
+		</table>
+	</div>
+	<p><code>!</code> のエスケープに <code>^</code> が2つ必要なのは、2番目の <code>^</code> 処理が3番目の <code>!</code> 展開より前にあるからです。<code>^!</code> だと <code>^</code> が2番目で消費され、3番目で <code>!</code> が展開されてしまいます。</p>
+	<p>また <code>%VAR%</code> の展開が1番目、コマンドの解析が4番目という順序が、前回から繰り返している「置換結果が読み直される」という現象そのものです。</p>
+
+	<h2>迷ったときの指針</h2>
+	<ul>
+		<li><strong>文字列は <code>"</code> で囲む。</strong><code>&amp;</code> <code>|</code> <code>&gt;</code> <code>&lt;</code> <code>(</code> <code>)</code> は引用符の内側では特別扱いされません</li>
+		<li><strong>記号を含む値は <code>!VAR!</code> で読む。</strong>読み直しが起きません</li>
+		<li><strong><code>@echo off</code> を外して確認する。</strong>展開後の行がそのまま表示されるので、どこで壊れたか一目で分かります</li>
+	</ul>
+
+	<h2>行継続</h2>
+	<pre><code>rem 行末の ^ で次の行に続ける
+robocopy "C:\src" "C:\dst" ^
+    /E /R:1 /W:1 ^
+    /LOG:"%~dp0robocopy.log"</code></pre>
+	<p><span class="badge b-warn">要注意</span><code>^</code> の後ろに空白があると機能しません。行末は <code>^</code> で終わらせます。</p>
+</section>
+
+<section class="ch08" id="ch08">
+	<h1>デモ — ループと振り分け</h1>
+
+	<p>第1回で作ったバックアップスクリプトを発展させます。<strong>フォルダ内のファイルを拡張子ごとに振り分けてコピーし、件数を報告する</strong>ものにします。</p>
+
+	<h2>Step 1: フォルダ内のファイルを数える</h2>
+	<pre><code>@echo off
+setlocal enabledelayedexpansion
+
+set "SRCDIR=%~1"
+if "%SRCDIR%"=="" set "SRCDIR=%~dp0."
+
+set "TOTAL=0"
+for %%f in ("%SRCDIR%\*") do (
+    set /a TOTAL+=1
+    echo !TOTAL!: %%~nxf
+)
+echo 合計 !TOTAL! 件</code></pre>
+	<p><code>!TOTAL!</code> で書いているのがこの回の要点です。<code>%TOTAL%</code> にすると全行が <code>0:</code> になります。</p>
+
+	<h2>Step 2: 拡張子で振り分ける</h2>
+	<pre><code>@echo off
+setlocal enabledelayedexpansion
+
+set "SRCDIR=%~1"
+if "%SRCDIR%"=="" set "SRCDIR=%~dp0."
+
+set "N_TXT=0"
+set "N_LOG=0"
+set "N_OTHER=0"
+
+for %%f in ("%SRCDIR%\*") do (
+    rem 拡張子で分岐する。/i で大文字小文字を区別しない
+    if /i "%%~xf"==".txt" (
+        set /a N_TXT+=1
+    ) else if /i "%%~xf"==".log" (
+        set /a N_LOG+=1
+    ) else (
+        set /a N_OTHER+=1
+    )
+)
+
+echo .txt   : !N_TXT! 件
+echo .log   : !N_LOG! 件
+echo その他 : !N_OTHER! 件</code></pre>
+	<p>擬似的な連想配列がないため、拡張子ごとに変数を用意しています。種類が増えるとこの形は破綻します。<strong>「変数名を並べ始めたらバッチの限界が近い」</strong>というのが1つの目安です。</p>
+
+	<h2>Step 3: 振り分けてコピーする</h2>
+	<pre><code>@echo off
+setlocal enabledelayedexpansion
+
+rem --- 引数チェック ---
+set "SRCDIR=%~1"
+if "%SRCDIR%"=="" (
+    echo 使い方: %~nx0 ^<対象フォルダ^>
+    exit /b 1
+)
+if not exist "%SRCDIR%\" (
+    echo [エラー] フォルダが見つかりません: %SRCDIR%
+    exit /b 1
+)
+
+rem --- 保存先はこのバッチと同じ場所 ---
+set "DSTBASE=%~dp0sorted"
+set "TOTAL=0"
+set "FAILED=0"
+
+for %%f in ("%SRCDIR%\*") do (
+    rem 拡張子から保存先フォルダ名を作る（.txt -> txt）
+    rem 空のまま置換記法を使うと予期しない値になるため、先に空を判定する
+    set "EXT=%%~xf"
+    if "!EXT!"=="" (
+        set "EXT=noext"
+    ) else (
+        set "EXT=!EXT:.=!"
+    )
+
+    set "DSTDIR=%DSTBASE%\!EXT!"
+    if not exist "!DSTDIR!\" md "!DSTDIR!"
+
+    copy "%%~ff" "!DSTDIR!\" &gt;nul &amp;&amp; (
+        set /a TOTAL+=1
+        echo   OK   %%~nxf -^&gt; !EXT!\
+    ) || (
+        set /a FAILED+=1
+        echo   NG   %%~nxf
+    )
+)
+
+echo.
+echo コピー成功: !TOTAL! 件 / 失敗: !FAILED! 件
+if !FAILED! GTR 0 exit /b 1
+exit /b 0</code></pre>
+
+	<h3>このコードで使っている技法</h3>
+	<div class="tablewrap">
+		<table>
+			<tr><th>箇所</th><th>技法</th><th>説明した章</th></tr>
+			<tr><td class="nw"><code>%%~xf</code> <code>%%~ff</code> <code>%%~nxf</code></td><td>ループ変数への <code>%~</code> 修飾子</td><td class="nw">3章</td></tr>
+			<tr><td class="nw"><code>set "EXT=!EXT:.=!"</code></td><td>遅延展開しながらの文字列置換</td><td class="nw">4章・5章</td></tr>
+			<tr><td class="nw"><code>if /i</code></td><td>大文字小文字を無視した比較</td><td class="nw">2章</td></tr>
+			<tr><td class="nw"><code>&amp;&amp;</code> と <code>||</code> の併用</td><td>成功・失敗で処理を分ける</td><td class="nw">第1回4章</td></tr>
+			<tr><td class="nw"><code>-^&gt;</code></td><td><code>&gt;</code> のエスケープ（矢印を表示したい）</td><td class="nw">7章</td></tr>
+			<tr><td class="nw"><code>if !FAILED! GTR 0</code></td><td>遅延展開した値の数値比較</td><td class="nw">2章・4章</td></tr>
+		</table>
+	</div>
+
+	<div class="callout">
+		<p><strong>空の変数に置換記法を使ってはいけません。</strong>拡張子のないファイル（<code>LICENSE</code> など）では <code>%%~xf</code> が空になります。空の変数は<strong>削除された状態</strong>なので、そこへ <code>!EXT:.=!</code> を適用すると <code>.=</code> のような文字列が残り、<code>sorted\.=\</code> という壊れたフォルダができます。空の判定を置換より<strong>前</strong>に置くのが正しい順序です。</p>
+	</div>
+
+	<p>サンプルは <code>samples\02\</code> にあります。落とし穴は「失敗版」と「修正版」を対にしてあります。</p>
+	<div class="tablewrap">
+		<table>
+			<tr><th>ファイル</th><th>内容</th></tr>
+			<tr><td class="nw"><code>01-delayed-ng.cmd</code></td><td><span class="badge b-ng">失敗版</span><code>%VAR%</code> でループを回して 0 のままになる例</td></tr>
+			<tr><td class="nw"><code>01-delayed-ok.cmd</code></td><td><span class="badge b-ok">修正版</span><code>!VAR!</code> にした版。両方を実行して見比べる</td></tr>
+			<tr><td class="nw"><code>02-if.cmd</code></td><td><code>if</code> の4つの形と数値比較の確認</td></tr>
+			<tr><td class="nw"><code>03-for.cmd</code></td><td><code>for</code> の4つの形。<code>/f</code> の <code>usebackq</code> の違いも確認できる</td></tr>
+			<tr><td class="nw"><code>04-string.cmd</code></td><td>部分取得・置換・含有判定</td></tr>
+			<tr><td class="nw"><code>05-subroutine.cmd</code></td><td>サブルーチンと戻り値の2つの方法</td></tr>
+			<tr><td class="nw"><code>06-sort.cmd</code></td><td>上の Step 3（完成版）</td></tr>
+		</table>
+	</div>
+</section>
+
+<section class="ch09" id="ch09">
+	<h1>まとめと第3回の予告</h1>
+
+	<h2>この回の要点</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>#</th><th>覚えること</th><th>理由</th></tr>
+			<tr><td class="num">1</td><td>括弧ブロックは1つの論理行。入る前に一括で展開される</td><td>ループ内で値が更新されない現象の唯一の原因</td></tr>
+			<tr><td class="num">2</td><td>括弧の中では <code>!VAR!</code> で読む</td><td>実行直前に評価される。判断を毎回するより機械的に統一する</td></tr>
+			<tr><td class="num">3</td><td><code>!VAR!</code> は展開結果を読み直さない</td><td>記号を含む値も安全に扱える。遅延展開の本質的な役割</td></tr>
+			<tr><td class="num">4</td><td><code>if</code> は両辺を <code>"</code> で囲む。数値比較は <code>GEQ</code> 等</td><td>空の変数で構文が壊れるのを防ぐ</td></tr>
+			<tr><td class="num">5</td><td><code>)</code> <code>else</code> <code>(</code> は同じ行に置く</td><td>1つの論理行として解析されるため</td></tr>
+			<tr><td class="num">6</td><td><code>for /f</code> は引用符で対象の意味が変わる</td><td>空白を含むパスは <code>usebackq</code> が必要</td></tr>
+			<tr><td class="num">7</td><td>サブルーチンは <code>call :label</code> と <code>goto :eof</code> の対</td><td>メイン処理の末尾の <code>goto :eof</code> を忘れると流れ込む</td></tr>
+			<tr><td class="num">8</td><td>解釈順は <code>%</code> → <code>^</code> → <code>!</code> → コマンド</td><td>エスケープの必要性をこの順序から導ける</td></tr>
+		</table>
+	</div>
+
+	<h2>第3回で扱うこと</h2>
+	<p>次回は「動く」から「他人に渡せる」へ進みます。ここまでのコードには、実は配布に耐えない問題がいくつも残っています。</p>
+	<div class="tablewrap">
+		<table>
+			<tr><th>残っている問題</th><th>第3回で扱う内容</th></tr>
+			<tr><td>日付の取得が地域設定に依存している</td><td>環境に依存しない日時の取得</td></tr>
+			<tr><td>日本語メッセージが化ける環境がある</td><td>文字コードとコードページ</td></tr>
+			<tr><td>実行した記録が残らない</td><td>ログ出力の定型</td></tr>
+			<tr><td>ダブルクリックと別フォルダからの実行で挙動が違う</td><td>実行環境の固定</td></tr>
+			<tr><td>失敗の検知が場所ごとにばらばら</td><td>エラー処理の型とテンプレート</td></tr>
+		</table>
+	</div>
+
+	<h2>この回に関連する落とし穴</h2>
+	<p>詳しくは<a href="A3-pitfalls.html">落とし穴カタログ</a>を参照してください。</p>
+	<div class="tablewrap">
+		<table>
+			<tr><th>#</th><th>症状</th></tr>
+			<tr><td class="num"><a href="A3-pitfalls.html#p1">1</a></td><td>ループ内で変数が更新されない</td></tr>
+			<tr><td class="num"><a href="A3-pitfalls.html#p7">7</a></td><td><code>if</code> の中の <code>%errorlevel%</code> が期待と違う</td></tr>
+			<tr><td class="num"><a href="A3-pitfalls.html#p9">9</a></td><td><code>::</code> コメントを入れたらループが構文エラーになった</td></tr>
+			<tr><td class="num"><a href="A3-pitfalls.html#p10">10</a></td><td><code>%</code> を含む文字列が消える</td></tr>
+			<tr><td class="num"><a href="A3-pitfalls.html#p11">11</a></td><td><code>for /f</code> でファイルの中身ではなく文字列そのものが処理される</td></tr>
+			<tr><td class="num"><a href="A3-pitfalls.html#p12">12</a></td><td>他のバッチを呼んだらそこで処理が終わってしまった</td></tr>
+		</table>
+	</div>
+	<p>記法の確認は<a href="A2-cheatsheet.html">記法早見表</a>、目的から引くときは<a href="A1-appendix-index.html">逆引き参照</a>を使ってください。</p>
+</section>
+
+</div>
+
+<footer>
+	<p><a href="../README.html">← README に戻る</a></p>
+</footer>
+
+</body>
+</html>

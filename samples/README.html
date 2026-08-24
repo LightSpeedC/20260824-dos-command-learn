@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>サンプルの実行方法</title>
+<style>
+:root{
+	--navy1:#12224d;
+	--navy2:#2f5fbf;
+	--ink:#1c2330;
+	--ink-soft:#4a5568;
+	--line:#d9dfe8;
+	--code-bg:#f4f6fa;
+	--accent:var(--navy1);
+	--accent2:var(--navy2);
+	--soft:#f2f5fb;
+}
+
+/* 章ごとのアクセント色（4章 / 色相 280→0 を 93.3°刻み） */
+.ch01{ --accent:hsl(280,78%,25%);   --accent2:hsl(280,58%,65%);   --soft:hsl(280,28%,95%); }
+.ch02{ --accent:hsl(186.7,78%,25%); --accent2:hsl(186.7,58%,65%); --soft:hsl(186.7,28%,95%); }
+.ch03{ --accent:hsl(93.3,78%,25%);  --accent2:hsl(93.3,58%,65%);  --soft:hsl(93.3,28%,95%); }
+.ch04{ --accent:hsl(0,78%,25%);     --accent2:hsl(0,58%,65%);     --soft:hsl(0,28%,95%); }
+
+*{ box-sizing:border-box; }
+body{
+	margin:0;
+	font-family:"Segoe UI","Yu Gothic UI","Meiryo",sans-serif;
+	font-size:15.5px;
+	line-height:1.85;
+	color:var(--ink);
+	background:#fff;
+}
+
+.titlebar{
+	background:linear-gradient(135deg,var(--navy1),var(--navy2));
+	color:#fff;
+	padding:34px 30px 30px;
+}
+.titlebar .inner{ max-width:1400px; margin:0 auto; }
+.titlebar h1{ font-size:2.05em; margin:0 0 10px; color:#fff; }
+.titlebar .sub{ font-size:.95em; color:#dbe5f7; margin:0; }
+.titlebar .date{ font-size:.9em; color:#c3d3ee; margin:6px 0 0; }
+.titlebar code{ background:rgba(255,255,255,0.16); color:#fff; border:none; }
+
+.wrap{ max-width:1400px; margin:0 auto; padding:0 30px; }
+
+section{
+	background:linear-gradient(180deg,var(--soft),#fff);
+	border:1px solid var(--line);
+	border-radius:10px;
+	padding:4px 26px 26px;
+	margin:34px 0;
+}
+section h1{
+	font-size:1.5em;
+	margin:26px 0 20px;
+	padding:14px 20px;
+	color:#fff;
+	background:linear-gradient(100deg,var(--accent),var(--accent2));
+	border-radius:8px;
+	box-shadow:0 4px 12px rgba(0,0,0,.18);
+}
+section h1 code{ background:rgba(255,255,255,0.16); color:#fff; border:none; }
+h2{
+	font-size:1.15em;
+	margin:30px 0 12px;
+	padding:6px 12px;
+	color:var(--accent);
+	border-left:6px solid var(--accent);
+	background:linear-gradient(90deg,var(--soft),#fff);
+}
+h2 code{ font-size:.92em; }
+
+p{ margin:10px 0; }
+ul,ol{ margin:10px 0; padding-left:1.6em; }
+li{ margin:4px 0; }
+a{ color:var(--navy2); }
+
+code{
+	background:var(--code-bg);
+	border:1px solid var(--line);
+	color:#17335f;
+	padding:.1em .35em;
+	border-radius:4px;
+	font-family:Consolas,"Courier New",monospace;
+	font-size:.92em;
+}
+pre{
+	background:var(--code-bg);
+	color:var(--ink);
+	border-left:5px solid var(--accent2);
+	border-radius:0 8px 8px 0;
+	padding:13px 16px;
+	overflow-x:auto;
+	font-family:Consolas,"Courier New",monospace;
+	font-size:.92em;
+	line-height:1.7;
+}
+pre code{ background:none; border:none; padding:0; color:inherit; font-size:1em; }
+
+.tablewrap{ overflow-x:auto; margin:14px 0; }
+table{
+	border-collapse:collapse;
+	width:100%;
+	border-radius:8px;
+	overflow:hidden;
+	box-shadow:0 2px 8px rgba(0,0,0,.08);
+	font-size:.95em;
+}
+th{
+	padding:9px 12px;
+	text-align:left;
+	color:#fff;
+	background:linear-gradient(100deg,var(--accent),var(--accent2));
+	white-space:nowrap;
+}
+th code{ background:rgba(255,255,255,0.16); color:#fff; border:none; }
+td{
+	padding:9px 12px;
+	vertical-align:top;
+	border-bottom:1px solid var(--line);
+}
+tr:nth-child(even) td{ background:#fafbfe; }
+td.nw{ white-space:nowrap; }
+
+.callout{
+	border-left:6px solid var(--accent);
+	background:linear-gradient(180deg,var(--soft),#fff);
+	border-radius:0 8px 8px 0;
+	padding:12px 16px;
+	margin:16px 0;
+}
+.callout strong{ color:var(--accent); }
+
+.badge{
+	display:inline-block;
+	padding:1px 9px;
+	border-radius:999px;
+	color:#fff;
+	font-size:.82em;
+	white-space:nowrap;
+	margin-right:6px;
+}
+.b-ok{ background:linear-gradient(100deg,#1d7a3c,#45b56c); }
+.b-ng{ background:linear-gradient(100deg,#a51f22,#e05a5c); }
+.b-warn{ background:linear-gradient(100deg,#b8620a,#f0a548); }
+
+.backlink{ margin:22px 0 0; font-size:.95em; }
+.backlink a{ color:var(--navy2); }
+
+footer{
+	max-width:1400px;
+	margin:0 auto;
+	padding:18px 30px 0;
+	border-top:1px solid var(--line);
+	font-size:.95em;
+}
+footer a{ color:var(--navy2); }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+	<div class="inner">
+		<h1>サンプルの実行方法</h1>
+		<p class="sub">各回のデモで使うバッチ。すべて <code>samples\</code> 配下に閉じた動作で、外部のフォルダは書き換えません</p>
+		<p class="date">📅 作成: 2026-08-25 / 更新: 2026-08-25</p>
+	</div>
+</div>
+
+<div class="wrap">
+
+<p class="backlink"><a href="../README.html">← README に戻る</a></p>
+
+<section class="ch01" id="ch01">
+	<h1>実行方法と注意</h1>
+
+	<h2>実行のしかた</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>方法</th><th>手順</th><th>備考</th></tr>
+			<tr><td class="nw">ダブルクリック</td><td>エクスプローラでファイルをダブルクリックする</td><td>引数が不要なサンプルはこれで動く。末尾に <code>pause</code> があるので結果を読める</td></tr>
+			<tr><td class="nw">コマンドプロンプト</td><td>フォルダを開いて <code>samples\01\01-hello.cmd</code> のように実行する</td><td>引数が必要なサンプルはこちら</td></tr>
+			<tr><td class="nw">エクスプローラのアドレスバー</td><td>アドレスバーに <code>cmd</code> と入力するとそのフォルダでコマンドプロンプトが開く</td><td>パスを打つ手間が省ける</td></tr>
+		</table>
+	</div>
+	<p>引数が必要なサンプルは、引数なしで実行すると使い方（usage）が表示されます。</p>
+
+	<h2>すべてのサンプルに共通する事項</h2>
+	<ul>
+		<li><span class="badge b-warn">要注意</span>ファイルは <strong>SJIS（CP932）+ CRLF</strong> で保存されています。エディタで開いて保存するときにエンコーディングを変えないでください。UTF-8 で保存すると日本語が化け、構文エラーになります</li>
+		<li>末尾に <code>pause</code> が入っています。ダブルクリック実行で結果を読むためです。実務のバッチでは、無人実行するものに <code>pause</code> を入れてはいけません</li>
+		<li>生成物（<code>backup\</code> <code>sorted\</code> <code>log\</code>）は各サンプルと同じフォルダに作られます。不要になったらフォルダごと削除してください</li>
+	</ul>
+
+	<div class="callout">
+		<p><strong>コンソールのコードページが 65001（UTF-8）だと日本語が化けます。</strong>ファイルが正しくても化けるので、その場合は <code>chcp</code> で確認してください。<code>932</code> でなければ、コマンドプロンプトを新しく開き直すか、<code>chcp 932</code> を実行してから試してください。詳細は<a href="../docs/A3-pitfalls.html#p3">落とし穴 #3</a> にあります。</p>
+	</div>
+</section>
+
+<section class="ch02" id="ch02">
+	<h1>第1回のサンプル（<code>01\</code>）</h1>
+
+	<p>資料: <a href="../docs/01-execution-model.html">第1回 バッチの実行モデル</a></p>
+
+	<div class="tablewrap">
+		<table>
+			<tr><th>ファイル</th><th>内容</th><th>引数</th></tr>
+			<tr><td class="nw"><code>01-hello.cmd</code></td><td><code>echo</code> と <code>rem</code> の確認</td><td class="nw">なし</td></tr>
+			<tr><td class="nw"><code>02-expand.cmd</code></td><td>「置換してから実行する」ことの確認。未定義変数 / <code>set</code> の書き方の違い / <code>%%</code> / 記号を含む値の再解析</td><td class="nw">なし</td></tr>
+			<tr><td class="nw"><code>03-errorlevel.cmd</code></td><td>終了コードの確認。<code>&amp;&amp;</code> と <code>||</code>、<code>if errorlevel</code> が「以上」であること</td><td class="nw">なし</td></tr>
+			<tr><td class="nw"><code>04-args.cmd</code></td><td>引数とチルダ修飾子の一覧表示</td><td class="nw">ファイルパス</td></tr>
+			<tr><td class="nw"><code>05-backup.cmd</code></td><td>デモの完成版。日付付きの名前で <code>backup\</code> にコピーする</td><td class="nw">ファイルパス</td></tr>
+		</table>
+	</div>
+
+	<h2>実行例</h2>
+	<pre><code>rem 引数が必要なサンプル
+samples\01\04-args.cmd "samples\01\sample.txt" abc
+samples\01\05-backup.cmd "samples\01\sample.txt"</code></pre>
+
+	<h2>この回で試してほしいこと</h2>
+	<ul>
+		<li><code>01-hello.cmd</code> の1行目 <code>@echo off</code> を <code>rem @echo off</code> に変えて実行する。<strong>実行される行そのものが表示される</strong>のが分かります。これが動かないバッチを調べる最初の手段です</li>
+		<li><code>02-expand.cmd</code> の <code>=== 5 ===</code> の出力を見る。<code>%MSG%</code> は壊れ、<code>!MSG!</code> は正しく表示されます</li>
+	</ul>
+</section>
+
+<section class="ch03" id="ch03">
+	<h1>第2回のサンプル（<code>02\</code>）</h1>
+
+	<p>資料: <a href="../docs/02-control-flow.html">第2回 制御構文と展開の罠</a></p>
+
+	<div class="tablewrap">
+		<table>
+			<tr><th>ファイル</th><th>内容</th><th>引数</th></tr>
+			<tr><td class="nw"><code>01-delayed-ng.cmd</code></td><td><span class="badge b-ng">失敗版</span><code>%VAR%</code> でループを回して 0 のままになる例</td><td class="nw">なし</td></tr>
+			<tr><td class="nw"><code>01-delayed-ok.cmd</code></td><td><span class="badge b-ok">修正版</span><code>!VAR!</code> にした版</td><td class="nw">なし</td></tr>
+			<tr><td class="nw"><code>02-if.cmd</code></td><td><code>if</code> の4つの形と数値比較</td><td class="nw">なし</td></tr>
+			<tr><td class="nw"><code>03-for.cmd</code></td><td><code>for</code> の4つの形。<code>usebackq</code> による意味の切り替えも確認できる</td><td class="nw">なし</td></tr>
+			<tr><td class="nw"><code>04-string.cmd</code></td><td>部分取得・置換・含有判定</td><td class="nw">なし</td></tr>
+			<tr><td class="nw"><code>05-subroutine.cmd</code></td><td>サブルーチンと戻り値の2つの方法</td><td class="nw">なし</td></tr>
+			<tr><td class="nw"><code>06-sort.cmd</code></td><td>デモの完成版。ファイルを拡張子ごとに <code>sorted\</code> へ振り分ける</td><td class="nw">省略可</td></tr>
+		</table>
+	</div>
+
+	<h2>付属のデータファイル</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>ファイル</th><th>用途</th></tr>
+			<tr><td class="nw"><code>data.txt</code></td><td><code>for /f</code> で行を読む例</td></tr>
+			<tr><td class="nw"><code>data file.txt</code></td><td>空白を含むファイル名。<code>usebackq</code> が必要になる例</td></tr>
+			<tr><td class="nw"><code>list.csv</code></td><td><code>tokens</code> / <code>delims</code> / <code>skip</code> の例</td></tr>
+			<tr><td class="nw"><code>testfiles\</code></td><td><code>06-sort.cmd</code> の振り分け対象（<code>.txt</code> <code>.log</code> <code>.png</code> と拡張子なし）</td></tr>
+		</table>
+	</div>
+
+	<h2>この回で試してほしいこと</h2>
+	<ul>
+		<li><code>01-delayed-ng.cmd</code> と <code>01-delayed-ok.cmd</code> を<strong>続けて実行して見比べる</strong>。違いは <code>%COUNT%</code> と <code>!COUNT!</code> だけです</li>
+		<li><code>03-for.cmd</code> の <code>=== 4 ===</code> を見る。引用符の有無で、ファイルの中身を読むか文字列そのものを読むかが変わります</li>
+		<li><code>06-sort.cmd</code> を実行して <code>sorted\noext\</code> に <code>LICENSE</code> が入ることを確認する。ここは空の変数に置換記法を使うと壊れる箇所です</li>
+	</ul>
+</section>
+
+<section class="ch04" id="ch04">
+	<h1>第3回のサンプル（<code>03\</code>）</h1>
+
+	<p>資料: <a href="../docs/03-practical.html">第3回 実務で使えるバッチを書く</a></p>
+
+	<div class="tablewrap">
+		<table>
+			<tr><th>ファイル</th><th>内容</th><th>引数</th></tr>
+			<tr><td class="nw"><code>01-datetime.cmd</code></td><td>日時取得の3つの方法を並べて実行し、結果を見比べる</td><td class="nw">なし</td></tr>
+			<tr><td class="nw"><code>02-errorhandling.cmd</code></td><td>エラー処理の型。<code>robocopy</code> が成功でも 0 以外を返すことも確認できる</td><td class="nw">なし</td></tr>
+			<tr><td class="nw"><code>03-logging.cmd</code></td><td>ログ出力。<code>2&gt;&amp;1</code> の位置による違いを実演する</td><td class="nw">なし</td></tr>
+			<tr><td class="nw"><code>04-args.cmd</code></td><td>引数解析（<code>shift</code> ループ）とヘルプ表示</td><td class="nw">省略可</td></tr>
+			<tr><td class="nw"><code>05-backup.cmd</code></td><td>第1回のバックアップを配布可能な形に仕上げた最終版</td><td class="nw">ファイルパス</td></tr>
+		</table>
+	</div>
+
+	<h2>実行例</h2>
+	<pre><code>rem ヘルプを表示する
+samples\03\04-args.cmd
+
+rem オプション付きで実行する
+samples\03\04-args.cmd -v -o out.txt "samples\03\sample.txt"
+
+rem バックアップの最終版（-v で詳細表示）
+samples\03\05-backup.cmd -v "samples\03\sample.txt"</code></pre>
+
+	<h2>この回で試してほしいこと</h2>
+	<ul>
+		<li><code>01-datetime.cmd</code> で3つの方法の結果を比べる。<code>%TIME%</code> の生の値に<strong>先頭の空白</strong>があることを確認してください</li>
+		<li><code>03-logging.cmd</code> を実行し、生成された <code>log\demo_yyyymmdd.log</code> を開く。「誤った形」のエラーがログに入っていないことが分かります</li>
+		<li><code>05-backup.cmd</code> を引数なしで実行してヘルプを確認し、次に存在しないパスを渡して終了コードを確認する（<code>echo %errorlevel%</code>）</li>
+	</ul>
+
+	<div class="callout">
+		<p><strong>テンプレートは <code>templates\</code> にあります。</strong>サンプルは説明のために書かれていますが、テンプレートは<strong>コピーして使うため</strong>のものです。新しくバッチを書くときは <code>templates\tool.cmd</code> から始めてください。</p>
+	</div>
+</section>
+
+</div>
+
+<footer>
+	<p><a href="../README.html">← README に戻る</a></p>
+</footer>
+
+</body>
+</html>

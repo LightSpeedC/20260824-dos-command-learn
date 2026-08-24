@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第3回 実務で使えるバッチを書く</title>
+<style>
+:root{
+	--navy1:#12224d;
+	--navy2:#2f5fbf;
+	--ink:#1c2330;
+	--ink-soft:#4a5568;
+	--line:#d9dfe8;
+	--code-bg:#f4f6fa;
+	--accent:var(--navy1);
+	--accent2:var(--navy2);
+	--soft:#f2f5fb;
+}
+
+/* 章ごとのアクセント色（9章 / 色相 280→0 を 35°刻み） */
+.ch01{ --accent:hsl(280,78%,25%); --accent2:hsl(280,58%,65%); --soft:hsl(280,28%,95%); }
+.ch02{ --accent:hsl(245,78%,25%); --accent2:hsl(245,58%,65%); --soft:hsl(245,28%,95%); }
+.ch03{ --accent:hsl(210,78%,25%); --accent2:hsl(210,58%,65%); --soft:hsl(210,28%,95%); }
+.ch04{ --accent:hsl(175,78%,25%); --accent2:hsl(175,58%,65%); --soft:hsl(175,28%,95%); }
+.ch05{ --accent:hsl(140,78%,25%); --accent2:hsl(140,58%,65%); --soft:hsl(140,28%,95%); }
+.ch06{ --accent:hsl(105,78%,25%); --accent2:hsl(105,58%,65%); --soft:hsl(105,28%,95%); }
+.ch07{ --accent:hsl(70,78%,25%);  --accent2:hsl(70,58%,65%);  --soft:hsl(70,28%,95%); }
+.ch08{ --accent:hsl(35,78%,25%);  --accent2:hsl(35,58%,65%);  --soft:hsl(35,28%,95%); }
+.ch09{ --accent:hsl(0,78%,25%);   --accent2:hsl(0,58%,65%);   --soft:hsl(0,28%,95%); }
+
+*{ box-sizing:border-box; }
+body{
+	margin:0;
+	font-family:"Segoe UI","Yu Gothic UI","Meiryo",sans-serif;
+	font-size:15.5px;
+	line-height:1.85;
+	color:var(--ink);
+	background:#fff;
+}
+
+.titlebar{
+	background:linear-gradient(135deg,var(--navy1),var(--navy2));
+	color:#fff;
+	padding:34px 30px 30px;
+}
+.titlebar .inner{ max-width:1400px; margin:0 auto; }
+.titlebar h1{ font-size:2.05em; margin:0 0 10px; color:#fff; }
+.titlebar .sub{ font-size:.95em; color:#dbe5f7; margin:0; }
+.titlebar .date{ font-size:.9em; color:#c3d3ee; margin:6px 0 0; }
+.titlebar code{ background:rgba(255,255,255,0.16); color:#fff; border:none; }
+
+.wrap{ max-width:1400px; margin:0 auto; padding:0 30px; }
+
+section{
+	background:linear-gradient(180deg,var(--soft),#fff);
+	border:1px solid var(--line);
+	border-radius:10px;
+	padding:4px 26px 26px;
+	margin:34px 0;
+}
+section h1{
+	font-size:1.5em;
+	margin:26px 0 20px;
+	padding:14px 20px;
+	color:#fff;
+	background:linear-gradient(100deg,var(--accent),var(--accent2));
+	border-radius:8px;
+	box-shadow:0 4px 12px rgba(0,0,0,.18);
+}
+section h1 code{ background:rgba(255,255,255,0.16); color:#fff; border:none; }
+h2{
+	font-size:1.15em;
+	margin:32px 0 12px;
+	padding:6px 12px;
+	color:var(--accent);
+	border-left:6px solid var(--accent);
+	background:linear-gradient(90deg,var(--soft),#fff);
+}
+h2 code{ font-size:.92em; }
+h3{
+	font-size:1.02em;
+	margin:20px 0 8px;
+	display:inline-block;
+	padding-bottom:3px;
+	border-bottom:2px dotted var(--accent2);
+}
+
+p{ margin:10px 0; }
+ul,ol{ margin:10px 0; padding-left:1.6em; }
+li{ margin:4px 0; }
+a{ color:var(--navy2); }
+
+code{
+	background:var(--code-bg);
+	border:1px solid var(--line);
+	color:#17335f;
+	padding:.1em .35em;
+	border-radius:4px;
+	font-family:Consolas,"Courier New",monospace;
+	font-size:.92em;
+}
+pre{
+	background:var(--code-bg);
+	color:var(--ink);
+	border-left:5px solid var(--accent2);
+	border-radius:0 8px 8px 0;
+	padding:13px 16px;
+	overflow-x:auto;
+	font-family:Consolas,"Courier New",monospace;
+	font-size:.92em;
+	line-height:1.7;
+}
+pre code{ background:none; border:none; padding:0; color:inherit; font-size:1em; }
+
+.tablewrap{ overflow-x:auto; margin:14px 0; }
+table{
+	border-collapse:collapse;
+	width:100%;
+	border-radius:8px;
+	overflow:hidden;
+	box-shadow:0 2px 8px rgba(0,0,0,.08);
+	font-size:.95em;
+}
+th{
+	padding:9px 12px;
+	text-align:left;
+	color:#fff;
+	background:linear-gradient(100deg,var(--accent),var(--accent2));
+	white-space:nowrap;
+}
+th code{ background:rgba(255,255,255,0.16); color:#fff; border:none; }
+td{
+	padding:9px 12px;
+	vertical-align:top;
+	border-bottom:1px solid var(--line);
+}
+tr:nth-child(even) td{ background:#fafbfe; }
+td.nw{ white-space:nowrap; }
+td.num{ text-align:right; white-space:nowrap; }
+
+.callout{
+	border-left:6px solid var(--accent);
+	background:linear-gradient(180deg,var(--soft),#fff);
+	border-radius:0 8px 8px 0;
+	padding:12px 16px;
+	margin:16px 0;
+}
+.callout strong{ color:var(--accent); }
+
+.badge{
+	display:inline-block;
+	padding:1px 9px;
+	border-radius:999px;
+	color:#fff;
+	font-size:.82em;
+	white-space:nowrap;
+	margin-right:6px;
+}
+.b-ok{ background:linear-gradient(100deg,#1d7a3c,#45b56c); }
+.b-ng{ background:linear-gradient(100deg,#a51f22,#e05a5c); }
+.b-warn{ background:linear-gradient(100deg,#b8620a,#f0a548); }
+.b-todo{ background:linear-gradient(100deg,#5a6472,#97a1ae); }
+
+ol.toc{
+	display:flex;
+	flex-wrap:wrap;
+	gap:8px;
+	list-style:none;
+	padding:0;
+	margin:16px 0 4px;
+	counter-reset:toc;
+}
+ol.toc li{ counter-increment:toc; margin:0; }
+ol.toc a{
+	display:-webkit-box;
+	-webkit-line-clamp:2;
+	-webkit-box-orient:vertical;
+	overflow:hidden;
+	text-overflow:ellipsis;
+	white-space:normal;
+	width:310px;
+	max-width:100%;
+	padding:8px 12px;
+	color:#fff;
+	background:linear-gradient(100deg,var(--accent),var(--accent2));
+	border-radius:8px;
+	text-decoration:none;
+	font-size:.95em;
+	line-height:1.45;
+}
+ol.toc a::before{ content:counter(toc) ". "; }
+
+svg{ max-width:100%; height:auto; display:block; margin:16px 0; }
+
+.backlink{ margin:22px 0 0; font-size:.95em; }
+.backlink a{ color:var(--navy2); }
+
+footer{
+	max-width:1400px;
+	margin:0 auto;
+	padding:18px 30px 0;
+	border-top:1px solid var(--line);
+	font-size:.95em;
+}
+footer a{ color:var(--navy2); }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+	<div class="inner">
+		<h1>第3回 実務で使えるバッチを書く</h1>
+		<p class="sub">全3回シリーズ（3/3） &nbsp;|&nbsp; この回のゴール: 他人に渡して壊れないバッチの条件を知り、テンプレートから書き始められる</p>
+		<p class="date">📅 作成: 2026-08-25 / 更新: 2026-08-25</p>
+	</div>
+</div>
+
+<div class="wrap">
+
+<p class="backlink"><a href="../README.html">← README に戻る</a></p>
+
+<h2>目次</h2>
+<ol class="toc">
+	<li class="ch01"><a href="#ch01">この回の位置づけ — 「動く」から「渡せる」へ</a></li>
+	<li class="ch02"><a href="#ch02">文字コードとコードページ</a></li>
+	<li class="ch03"><a href="#ch03">日時を確実に取得する</a></li>
+	<li class="ch04"><a href="#ch04">実行環境を固定する</a></li>
+	<li class="ch05"><a href="#ch05">エラー処理の型</a></li>
+	<li class="ch06"><a href="#ch06">ログ出力</a></li>
+	<li class="ch07"><a href="#ch07">引数処理とヘルプ表示</a></li>
+	<li class="ch08"><a href="#ch08">テンプレートと配布時の注意</a></li>
+	<li class="ch09"><a href="#ch09">バッチの限界とシリーズのまとめ</a></li>
+</ol>
+
+<section class="ch01" id="ch01">
+	<h1>この回の位置づけ — 「動く」から「渡せる」へ</h1>
+
+	<p>第1回と第2回で書いたコードは、<strong>自分の環境で自分が実行する分には動きます</strong>。この回で扱うのは、それを他人に渡したり、タスクスケジューラに登録したりしたときに壊れる部分です。</p>
+
+	<h2>いま残っている問題</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>これまでのコード</th><th>何が起きるか</th><th>扱う章</th></tr>
+			<tr><td class="nw">日本語のメッセージを出している</td><td>呼び出し元のコードページ次第で化ける</td><td class="nw">2章</td></tr>
+			<tr><td class="nw"><code>%DATE:/=%</code> で日付を作っている</td><td>地域設定が違う PC で壊れる</td><td class="nw">3章</td></tr>
+			<tr><td class="nw">相対パスを使っている</td><td>呼び出され方でカレントが変わり、失敗する</td><td class="nw">4章</td></tr>
+			<tr><td class="nw">失敗の検知がばらばら</td><td>書き忘れた行が黙って通過する</td><td class="nw">5章</td></tr>
+			<tr><td class="nw">実行の記録が残らない</td><td>無人実行で何が起きたか追えない</td><td class="nw">6章</td></tr>
+			<tr><td class="nw">引数を間違えたときの案内がない</td><td>渡した相手が使い方を推測するしかない</td><td class="nw">7章</td></tr>
+		</table>
+	</div>
+
+	<h2>この回の進み方</h2>
+	<p>各章で1つずつ問題を潰し、最後に<strong>そのすべてを組み込んだテンプレート</strong>にまとめます。テンプレートは <code>templates\</code> に置いてあるので、次に書くバッチはそれをコピーして始められます。</p>
+</section>
+
+<section class="ch02" id="ch02">
+	<h1>文字コードとコードページ</h1>
+
+	<h2>2つの設定が噛み合う必要がある</h2>
+	<p>日本語が化けるかどうかは、<strong>ファイルの文字コード</strong>と<strong>実行時のコンソールのコードページ</strong>の組み合わせで決まります。ファイルを正しく保存しただけでは足りません。</p>
+	<div class="tablewrap">
+		<table>
+			<tr><th>ファイルの文字コード</th><th>コンソールのコードページ</th><th>結果</th></tr>
+			<tr><td class="nw">SJIS (CP932)</td><td class="nw">932</td><td><span class="badge b-ok">正常</span>日本語 Windows の既定の組み合わせ</td></tr>
+			<tr><td class="nw">SJIS (CP932)</td><td class="nw">65001 (UTF-8)</td><td><span class="badge b-ng">化ける</span>ファイルは正しいのに化ける</td></tr>
+			<tr><td class="nw">UTF-8 (BOMなし)</td><td class="nw">932</td><td><span class="badge b-ng">化ける</span>最も多いパターン</td></tr>
+			<tr><td class="nw">UTF-8 (BOMなし)</td><td class="nw">65001</td><td><span class="badge b-warn">条件付き</span>CP932 で出力する外部コマンドの結果が化ける</td></tr>
+			<tr><td class="nw">UTF-8 (BOM付き)</td><td class="nw">どちらでも</td><td><span class="badge b-ng">エラー</span>BOM が1行目のコマンドの一部として解釈される</td></tr>
+		</table>
+	</div>
+	<p>安定して動く組み合わせは1行目だけです。<strong>バッチファイルは SJIS（CP932）+ CRLF で保存する</strong>のが結論になります。</p>
+
+	<h2>コードページは継承される</h2>
+	<p>コードページは親プロセスから受け継がれます。エクスプローラからダブルクリックすればシステムの既定（日本語 Windows なら 932）ですが、UTF-8 に設定されたターミナルや CI から呼ばれると 65001 のまま実行されます。</p>
+	<p>「自分の環境では動くのに、CI やタスクランナー経由だと化ける」という現象はこれが原因です。現在値は <code>chcp</code> で確認できます。</p>
+	<pre><code>C:\&gt;chcp
+現在のコード ページ: 932</code></pre>
+
+	<h2>化けると「表示が崩れる」だけでは済まない</h2>
+	<p>これが文字コードを軽視できない理由です。化けた結果のバイト列に <code>&amp;</code> や <code>|</code> に相当するものが現れると、<strong>構文エラーや意図しないコマンド実行</strong>になります。日本語のコメント行1つでバッチ全体が動かなくなることもあります。</p>
+
+	<h2>呼び出し元を制御できない場合の方針</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>方針</th><th>内容</th><th>評価</th></tr>
+			<tr>
+				<td class="nw">メッセージを英数字だけにする</td>
+				<td>画面出力とログを ASCII のみで書き、日本語は <code>rem</code> のコメントだけに使う</td>
+				<td><span class="badge b-ok">確実</span>コードページに一切依存しない。ログを他のツールで処理する場合にも有利</td>
+			</tr>
+			<tr>
+				<td class="nw">冒頭で <code>chcp 932</code> する</td>
+				<td>想定するコードページに揃えてから処理する</td>
+				<td><span class="badge b-warn">条件付き</span>下記の制約がある</td>
+			</tr>
+		</table>
+	</div>
+	<p><code>chcp</code> で揃える場合、終了時に元へ戻したくなりますが、<code>chcp</code> の出力書式（<code>現在のコード ページ: 932</code> / <code>Active code page: 932.</code>）は OS の表示言語で変わるため、元の値を取り出す処理はロケール依存になります。<code>setlocal</code> の対象外なので自動で戻ることもありません。無人実行の専用バッチのように「このコンソールは自分専用」と言える場合に限って使います。</p>
+
+	<div class="callout">
+		<p><strong>エンコーディングの変換は1回だけ行ってください。</strong>SJIS のファイルを UTF-8 として読み直して保存すると、不正バイトが <code>?</code> に置換されて日本語が復元不能になります。変換する前に、そのファイルが現在何で保存されているかを必ず確認してください。</p>
+	</div>
+
+	<h2>エディタの設定</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>エディタ</th><th>設定箇所</th></tr>
+			<tr><td class="nw">VS Code</td><td>右下のエンコーディング表示 → 「エンコード付きで保存」→ <code>Japanese (Shift JIS)</code>。改行も右下で <code>CRLF</code> にする</td></tr>
+			<tr><td class="nw">メモ帳</td><td>「名前を付けて保存」→ エンコード <code>ANSI</code></td></tr>
+			<tr><td class="nw">サクラエディタ等</td><td>文字コード <code>SJIS</code>、改行 <code>CRLF</code></td></tr>
+		</table>
+	</div>
+	<p>UTF-8 が必要な処理がある場合は、バッチ側は SJIS のまま保ち、その処理だけを PowerShell スクリプトに切り出して <code>powershell -File</code> で呼ぶほうが安全です。</p>
+</section>
+
+<section class="ch03" id="ch03">
+	<h1>日時を確実に取得する</h1>
+
+	<h2><code>%DATE%</code> と <code>%TIME%</code> の問題</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>変数</th><th>この環境での値</th><th>問題</th></tr>
+			<tr><td class="nw"><code>%DATE%</code></td><td class="nw"><code>2026/08/25</code></td><td>書式が地域設定に依存する。曜日が付く環境もある</td></tr>
+			<tr><td class="nw"><code>%TIME%</code></td><td class="nw"><code> 0:41:02.48</code></td><td>時が1桁だと<strong>先頭が空白</strong>。<code>:</code> と <code>.</code> はファイル名に使えない</td></tr>
+		</table>
+	</div>
+	<p>この2つをそのままファイル名に使うと、午前0時台だけファイル名が壊れる、といった時間帯依存のバグになります。</p>
+
+	<h2>3つの方法を比較する</h2>
+	<p>いずれも <code>20260825_004102</code> 形式のタイムスタンプを作る例です。</p>
+
+	<h3>方法1: PowerShell を呼ぶ <span class="badge b-ok">推奨</span></h3>
+	<pre><code>for /f "usebackq delims=" %%d in (`powershell -NoProfile -Command "Get-Date -Format yyyyMMdd_HHmmss"`) do set "STAMP=%%d"
+echo %STAMP%</code></pre>
+	<pre><code>20260825_004102</code></pre>
+	<p>書式を <code>-Format</code> で明示するため、地域設定に一切依存しません。読んで意図が分かるのも利点です。欠点は PowerShell の起動コストで、1回あたり数百ミリ秒かかります。ループの中で毎回呼ぶのではなく、<strong>スクリプトの先頭で1回だけ</strong>取得して変数に入れます。</p>
+
+	<h3>方法2: <code>wmic</code> を使う <span class="badge b-warn">非推奨</span></h3>
+	<pre><code>for /f "tokens=2 delims==" %%d in ('wmic os get localdatetime /value 2^&gt;nul ^| find "="') do set "LDT=%%d"
+set "STAMP=%LDT:~0,8%_%LDT:~8,6%"</code></pre>
+	<p>取得できる生の値は <code>20260825004102.484000+540</code> です。地域設定に依存しない固定書式なので、かつては定番でした。しかし <strong><code>wmic</code> は非推奨</strong>となり、将来の Windows で削除される予定です。新規に書くなら方法1を選びます。</p>
+	<p>また <code>for /f</code> で読むと<strong>値の末尾に余分な CR が混入します</strong>。上のように部分取得（<code>%LDT:~0,8%</code>）で必要な桁だけ切り出せば影響を避けられますが、<code>%LDT%</code> をそのまま使うとファイル名やパスが壊れます。</p>
+
+	<h3>方法3: <code>%DATE%</code> と <code>%TIME%</code> を加工する</h3>
+	<pre><code>set "D=%DATE:/=%"
+rem 先頭の空白を 0 に置換してから、コロンとピリオドを削除する
+set "T=%TIME: =0%"
+set "T=%T::=%"
+set "T=%T:.=%"
+set "STAMP=%D%_%T:~0,6%"</code></pre>
+	<p>外部プロセスを起動しないので高速です。<code>%TIME: =0%</code>（空白を <code>0</code> に置換）が先頭空白への対策になっています。ただし<strong>地域設定に依存する</strong>ため、配布するバッチには向きません。自分の PC 専用のスクリプトに限って使います。</p>
+
+	<h2>まとめ</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>方法</th><th>地域設定への依存</th><th>速度</th><th>使う場面</th></tr>
+			<tr><td class="nw">PowerShell</td><td class="nw">なし</td><td class="nw">遅い（数百 ms）</td><td>配布するもの・タスクスケジューラ登録するもの</td></tr>
+			<tr><td class="nw"><code>wmic</code></td><td class="nw">なし</td><td class="nw">やや遅い</td><td>既存のコードの保守のみ。新規では使わない</td></tr>
+			<tr><td class="nw"><code>%DATE%</code> 加工</td><td class="nw"><strong>あり</strong></td><td class="nw">速い</td><td>自分専用の使い捨てスクリプト</td></tr>
+		</table>
+	</div>
+</section>
+
+<section class="ch04" id="ch04">
+	<h1>実行環境を固定する</h1>
+
+	<h2>カレントディレクトリは信用できない</h2>
+	<p>相対パスの起点は<strong>実行時のカレントディレクトリ</strong>であり、バッチが置かれている場所ではありません。呼び出し方によって変わります。</p>
+	<div class="tablewrap">
+		<table>
+			<tr><th>呼び出し方</th><th>カレントディレクトリ</th></tr>
+			<tr><td class="nw">エクスプローラでダブルクリック</td><td>バッチのある場所（一致する）</td></tr>
+			<tr><td class="nw">別フォルダから <code>path\to\x.cmd</code> と実行</td><td>実行した場所（一致しない）</td></tr>
+			<tr><td class="nw">タスクスケジューラ</td><td>設定次第。既定では <code>C:\Windows\System32</code></td></tr>
+			<tr><td class="nw">他のバッチから <code>call</code></td><td>呼び出し元のカレント</td></tr>
+		</table>
+	</div>
+
+	<h2>先頭で <code>pushd</code> する</h2>
+	<pre><code>@echo off
+rem このバッチの場所へ移動する。失敗したらすぐ終了する
+pushd "%~dp0" || exit /b 1
+
+rem …処理…
+
+popd</code></pre>
+	<p><code>cd</code> ではなく <code>pushd</code> を使う理由は、<strong>共有フォルダ（UNC パス）でも動く</strong>ことです。<code>cd</code> は <code>\\server\share\...</code> をカレントにできず、<code>UNC パスはサポートされません。</code> というメッセージを出して <code>C:\Windows</code> に留まります。<code>pushd</code> は UNC パスに一時的なドライブレターを割り当てるため、そのまま移動できます。</p>
+	<p><code>pushd</code> で割り当てたドライブは <code>popd</code> で解放されます。必ず対で書いてください。</p>
+
+	<h2>カレントを変えたくない場合</h2>
+	<p>パスを <code>%~dp0</code> で明示します。</p>
+	<pre><code>rem 同じフォルダの config.ini を読む
+for /f "usebackq delims=" %%l in ("%~dp0config.ini") do echo %%l
+
+rem 同じフォルダの別のバッチを呼ぶ
+call "%~dp0sub.cmd"</code></pre>
+	<p><code>%~dp0</code> の末尾には <code>\</code> が付いているので、連結は <code>"%~dp0config.ini"</code> です。<code>"%~dp0\config.ini"</code> と書くと <code>\</code> が二重になります。多くの場合は動いてしまいますが、UNC パスや一部の API で失敗します。</p>
+
+	<h2>管理者権限が必要な場合</h2>
+	<p>バッチ自身で権限を昇格させることはできません。判定して案内するのが現実的です。</p>
+	<pre><code>rem 管理者権限があるかを確認する（net session は管理者でないと失敗する）
+net session &gt;nul 2&gt;&amp;1 || (
+    echo [エラー] このバッチは管理者として実行してください
+    echo         右クリック ^&gt; 管理者として実行
+    pause
+    exit /b 1
+)</code></pre>
+
+	<div class="callout">
+		<p><strong>ダブルクリック実行を想定するなら <code>pause</code> を入れます。</strong>エラーで終わるとウィンドウが即座に閉じ、メッセージを読めません。逆にタスクスケジューラから使うバッチに <code>pause</code> があると、入力待ちで永久に止まります。<strong>同じバッチを両方の用途で使わない</strong>のが安全です。ランチャー（<code>pause</code> あり）と本体（<code>pause</code> なし）を分けます。</p>
+	</div>
+</section>
+
+<section class="ch05" id="ch05">
+	<h1>エラー処理の型</h1>
+
+	<h2>例外がないので、1行ごとに書く</h2>
+	<p>第1回で見たとおり、失敗しても次の行は実行されます。止めたい箇所には明示的に書く必要があります。</p>
+	<div class="tablewrap">
+		<table>
+			<tr><th>書き方</th><th>意味</th><th>使う場面</th></tr>
+			<tr><td class="nw"><code>コマンド || exit /b 1</code></td><td>失敗したら即終了</td><td>最も簡潔。これが基本形</td></tr>
+			<tr><td class="nw"><code>コマンド || ( … )</code></td><td>失敗したらブロックを実行</td><td>メッセージを出してから終了する</td></tr>
+			<tr><td class="nw"><code>if errorlevel 1 ( … )</code></td><td>終了コードが1以上なら</td><td>ブロック内で判定するとき</td></tr>
+			<tr><td class="nw"><code>if not exist "…" ( … )</code></td><td>実行前の事前確認</td><td>失敗させる前に弾く</td></tr>
+		</table>
+	</div>
+
+	<h2>基本形</h2>
+	<pre><code>@echo off
+setlocal enabledelayedexpansion
+pushd "%~dp0" || exit /b 1
+
+rem --- 事前確認: 実行する前に弾けるものは弾く ---
+if not exist "%SRC%" (
+    echo [エラー] コピー元が見つかりません: %SRC%
+    exit /b 1
+)
+
+rem --- 各コマンドに失敗時の処理を付ける ---
+md "%DSTDIR%" 2&gt;nul
+copy "%SRC%" "%DSTDIR%\" &gt;nul || (
+    echo [エラー] コピーに失敗しました
+    exit /b 1
+)
+
+echo 完了しました
+exit /b 0</code></pre>
+	<p><code>md "%DSTDIR%" 2&gt;nul</code> は「すでにあってもエラーにしない」書き方です。<code>md</code> は既存フォルダに対して失敗しますが、この場合は失敗しても構わないので、エラー出力だけ捨てて続行します。</p>
+
+	<h2>終了コードの意味はコマンドごとに違う</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>コマンド</th><th>終了コード</th><th>エラー処理の書き方</th></tr>
+			<tr><td class="nw"><code>copy</code> <code>del</code> <code>move</code></td><td>0 が成功、1 が失敗</td><td class="nw"><code>|| exit /b 1</code> でよい</td></tr>
+			<tr><td class="nw"><code>robocopy</code></td><td><strong>1〜7 も成功</strong>、8以上が失敗</td><td class="nw"><code>if errorlevel 8 exit /b 1</code></td></tr>
+			<tr><td class="nw"><code>find</code> <code>findstr</code></td><td>該当なしで 1</td><td>「見つからない」を失敗として扱うかを決める</td></tr>
+			<tr><td class="nw"><code>where</code></td><td>見つからないと 1</td><td>コマンドの存在確認に使える</td></tr>
+			<tr><td class="nw">自作バッチ</td><td>自分で決める</td><td class="nw"><code>exit /b 0</code> / <code>exit /b 1</code> を明示する</td></tr>
+		</table>
+	</div>
+	<pre><code>rem robocopy は成功でも 0 以外を返すので || では判定できない
+robocopy "%SRC%" "%DST%" /e /r:1 /w:1
+if errorlevel 8 (
+    echo [エラー] robocopy が失敗しました
+    exit /b 1
+)</code></pre>
+
+	<h2>後始末を確実に通す</h2>
+	<p><code>try/finally</code> がないので、終了処理を1か所に集めて <code>goto</code> で合流させます。</p>
+	<pre><code>@echo off
+setlocal enabledelayedexpansion
+pushd "%~dp0" || exit /b 1
+
+set "RC=0"
+
+if not exist "%SRC%" (
+    echo [エラー] 見つかりません: %SRC%
+    set "RC=1"
+    goto :finish
+)
+
+call :main
+set "RC=!errorlevel!"
+
+:finish
+rem --- 成功・失敗にかかわらずここを通る ---
+if exist "%TMPFILE%" del "%TMPFILE%"
+endlocal &amp; set "RC=%RC%"
+popd
+exit /b %RC%
+
+:main
+rem 実際の処理。失敗したら exit /b で 0 以外を返す
+exit /b 0</code></pre>
+	<p><code>endlocal &amp; set "RC=%RC%"</code> は、<code>endlocal</code> で破棄される前に <code>RC</code> の値を持ち出すための定型です。この行は解析時に <code>%RC%</code> が展開されるため、<code>endlocal</code> の実行より先に値が確定します。</p>
+
+	<div class="callout">
+		<p><strong>エラーメッセージには「何が」「どこで」を入れてください。</strong><code>echo エラー</code> だけでは、渡された相手は何も調べられません。<code>echo [エラー] コピー元が見つかりません: %SRC%</code> のように、対象の値まで出します。バッチはデバッガが使えないので、メッセージが唯一の手がかりになります。</p>
+	</div>
+</section>
+
+<section class="ch06" id="ch06">
+	<h1>ログ出力</h1>
+
+	<h2>リダイレクトの順序に注意</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>書き方</th><th>結果</th></tr>
+			<tr><td class="nw"><code>&gt; log.txt</code></td><td>標準出力をファイルへ（毎回上書き）</td></tr>
+			<tr><td class="nw"><code>&gt;&gt; log.txt</code></td><td>標準出力をファイルへ（追記）</td></tr>
+			<tr><td class="nw"><code>&gt;&gt; log.txt 2&gt;&amp;1</code></td><td><span class="badge b-ok">正しい</span>標準出力とエラーの両方がファイルへ</td></tr>
+			<tr><td class="nw"><code>2&gt;&amp;1 &gt;&gt; log.txt</code></td><td><span class="badge b-ng">誤り</span>標準出力だけがファイルへ。エラーは画面に残る</td></tr>
+		</table>
+	</div>
+	<p><code>2&gt;&amp;1</code> は「その時点で標準出力が向いている先」を意味します。先に <code>&gt;&gt; log.txt</code> でファイルへ向けてから <code>2&gt;&amp;1</code> と書く必要があります。</p>
+
+	<h2>サブルーチン全体の出力をログへ回す</h2>
+	<pre><code>rem call の行にリダイレクトを付けると、:main 内のすべての出力が対象になる
+call :main &gt;&gt; "%LOGFILE%" 2&gt;&amp;1
+set "RC=%errorlevel%"</code></pre>
+	<p>1行ずつ <code>&gt;&gt; "%LOGFILE%"</code> を書く必要がなくなります。無人実行するバッチではこの形が便利です。</p>
+
+	<h2>画面とログの両方に出す</h2>
+	<p><code>tee</code> がないので、素直に2回書きます。</p>
+	<pre><code>call :log "処理を開始します"
+goto :eof
+
+:log
+echo [%DATE% %TIME%] %~1
+echo [%DATE% %TIME%] %~1 &gt;&gt; "%LOGFILE%"
+goto :eof</code></pre>
+
+	<h2>日付ごとにログを分ける</h2>
+	<pre><code>@echo off
+setlocal enabledelayedexpansion
+pushd "%~dp0" || exit /b 1
+
+rem 日付を確実に取得する（3章の方法1）
+for /f "usebackq delims=" %%d in (`powershell -NoProfile -Command "Get-Date -Format yyyyMMdd"`) do set "TODAY=%%d"
+
+set "LOGDIR=%~dp0log"
+set "LOGFILE=!LOGDIR!\job_!TODAY!.log"
+if not exist "!LOGDIR!" md "!LOGDIR!"
+
+call :log "==== 処理を開始します ===="
+call :main &gt;&gt; "!LOGFILE!" 2&gt;&amp;1
+set "RC=!errorlevel!"
+
+if "!RC!"=="0" (
+    call :log "==== 正常終了しました ===="
+) else (
+    call :log "==== 異常終了しました 終了コード=!RC! ===="
+)
+
+endlocal &amp; set "RC=%RC%"
+popd
+exit /b %RC%
+
+:main
+echo 本処理を実行中...
+exit /b 0
+
+:log
+echo [%DATE% %TIME%] %~1
+echo [%DATE% %TIME%] %~1 &gt;&gt; "!LOGFILE!"
+goto :eof</code></pre>
+
+	<div class="callout">
+		<p><strong>ログが増え続けることを忘れないでください。</strong>日付ごとに分けるとファイルが無限に増えます。<code>forfiles /p "%LOGDIR%" /d -30 /c "cmd /c del @path"</code> のような削除処理を入れるか、運用として定期的に消すことを決めておきます。無人実行のバッチでディスクを埋めるのは、よくある事故です。</p>
+	</div>
+</section>
+
+<section class="ch07" id="ch07">
+	<h1>引数処理とヘルプ表示</h1>
+
+	<h2>引数チェックの定型</h2>
+	<pre><code>@echo off
+setlocal enabledelayedexpansion
+
+rem --- ヘルプの要求と引数なしを同じ扱いにする ---
+if "%~1"=="" goto :usage
+if "%~1"=="/?" goto :usage
+if /i "%~1"=="-h" goto :usage
+if /i "%~1"=="--help" goto :usage
+
+set "TARGET=%~1"
+set "OPTION=%~2"
+
+if not exist "!TARGET!" (
+    echo [エラー] 対象が見つかりません: !TARGET!
+    exit /b 1
+)
+
+rem …処理…
+exit /b 0
+
+:usage
+echo 使い方: %~nx0 ^&lt;対象パス^&gt; [オプション]
+echo.
+echo   対象パス    処理するファイルまたはフォルダ
+echo   オプション  省略可
+exit /b 1</code></pre>
+	<p><code>%~nx0</code> でファイル名を出しているので、バッチをリネームしてもヘルプが正しく表示されます。<code>&lt;</code> と <code>&gt;</code> はリダイレクト記号なので <code>^</code> でエスケープします。</p>
+
+	<h2>オプションを解析する</h2>
+	<p>本格的な引数解析が必要なら、<code>shift</code> でループします。</p>
+	<pre><code>set "VERBOSE="
+set "TARGET="
+
+:parse
+if "%~1"=="" goto :parse_done
+if /i "%~1"=="-v" (
+    set "VERBOSE=1"
+) else if /i "%~1"=="-o" (
+    rem 次の引数を値として取る
+    set "OUTPUT=%~2"
+    shift
+) else (
+    set "TARGET=%~1"
+)
+shift
+goto :parse
+
+:parse_done
+if not defined TARGET (
+    echo [エラー] 対象を指定してください
+    exit /b 1
+)</code></pre>
+	<div class="callout">
+		<p><strong>ここまで書くならバッチ以外を検討する合図です。</strong>引数解析のループは長くなり、<code>shift</code> の位置を1つ間違えると無限ループになります。オプションが3つ以上あるなら、PowerShell の <code>param()</code> のような仕組みを持つ言語のほうが確実です。</p>
+	</div>
+
+	<h2>引数の引用符の扱い</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>書き方</th><th>結果</th></tr>
+			<tr><td class="nw"><code>%1</code></td><td>渡されたまま。呼び出し側が <code>"…"</code> で囲んでいれば引用符が含まれる</td></tr>
+			<tr><td class="nw"><code>%~1</code></td><td>前後の引用符を外したもの</td></tr>
+			<tr><td class="nw"><code>set "V=%~1"</code> → <code>"%V%"</code></td><td><span class="badge b-ok">定型</span>受け取るときに外し、使うときに囲む</td></tr>
+		</table>
+	</div>
+	<p>この定型にしておけば、呼び出し側が囲んでいても囲んでいなくても同じコードで扱えます。値に引用符を含めないのが、混乱を避ける唯一の方法です。</p>
+</section>
+
+<section class="ch08" id="ch08">
+	<h1>テンプレートと配布時の注意</h1>
+
+	<h2>3種類のテンプレート</h2>
+	<p><code>templates\</code> に用途別に3つ置いてあります。用途が違うと必要な定型も違うため、1つに全部詰め込んでいません。</p>
+	<div class="tablewrap">
+		<table>
+			<tr><th>ファイル</th><th>用途</th><th>特徴</th></tr>
+			<tr><td class="nw"><code>tool.cmd</code></td><td>引数を取るツール</td><td>引数チェック、ヘルプ表示、<code>:finish</code> での後始末</td></tr>
+			<tr><td class="nw"><code>launcher.cmd</code></td><td>ps1 や exe の起動</td><td><code>pause</code> あり。ダブルクリック前提</td></tr>
+			<tr><td class="nw"><code>batchjob.cmd</code></td><td>無人実行のバッチ処理</td><td>日付ごとのログ、<code>pause</code> なし</td></tr>
+		</table>
+	</div>
+
+	<h2><code>tool.cmd</code> の骨格</h2>
+	<pre><code>@echo off
+rem --- カレントをこのファイルの場所に固定する（UNC パスでも動く pushd を使う） ---
+pushd "%~dp0" || exit /b 1
+
+rem --- 変数の変更をこのスクリプト内に閉じ、遅延展開を有効にする ---
+setlocal enabledelayedexpansion
+
+rem --- 引数チェック ---
+if "%~1"=="" goto :usage
+if /i "%~1"=="/?" goto :usage
+
+set "TARGET=%~1"
+
+if not exist "!TARGET!" (
+    echo [エラー] 対象が見つかりません: !TARGET!
+    set "RC=1"
+    goto :finish
+)
+
+rem --- 本処理 ---
+call :main
+set "RC=!errorlevel!"
+
+if "!RC!"=="0" (
+    echo 完了しました。
+) else (
+    echo [エラー] 処理に失敗しました。終了コード: !RC!
+)
+
+:finish
+rem --- 後始末。RC を endlocal の外へ持ち出してから戻る ---
+endlocal &amp; set "RC=%RC%"
+popd
+exit /b %RC%
+
+:main
+rem ここに処理を書く。失敗したら exit /b で 0 以外を返す
+exit /b 0
+
+:usage
+echo 使い方: %~nx0 ^&lt;対象パス^&gt;
+popd
+exit /b 1</code></pre>
+	<p>この20行が、この回で扱ったすべての対策を含んでいます。次に書くバッチはこれをコピーして <code>:main</code> の中を埋めるところから始められます。</p>
+
+	<h2>配布時のチェックリスト</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>#</th><th>確認すること</th><th>理由</th></tr>
+			<tr><td class="num">1</td><td>SJIS + CRLF で保存されているか</td><td>UTF-8 だと日本語が化けて構文エラーになる</td></tr>
+			<tr><td class="num">2</td><td>先頭に <code>pushd "%~dp0"</code> があるか</td><td>タスクスケジューラや別フォルダからの実行で失敗する</td></tr>
+			<tr><td class="num">3</td><td><code>setlocal</code> があるか</td><td>呼び出し元の環境変数を汚染する</td></tr>
+			<tr><td class="num">4</td><td><code>exit</code> に <code>/b</code> が付いているか</td><td>呼び出し元のコンソールまで閉じる</td></tr>
+			<tr><td class="num">5</td><td>パスがすべて <code>"</code> で囲まれているか</td><td>空白を含むパスで失敗する</td></tr>
+			<tr><td class="num">6</td><td>日時の取得が地域設定に依存していないか</td><td>他の PC で壊れる</td></tr>
+			<tr><td class="num">7</td><td>失敗時に <code>exit /b 1</code> を返しているか</td><td>呼び出し元が成功と誤認する</td></tr>
+			<tr><td class="num">8</td><td><code>pause</code> の有無が用途と合っているか</td><td>無人実行で永久に止まる／エラーが読めない</td></tr>
+			<tr><td class="num">9</td><td>空白を含むパスで実際に試したか</td><td><code>C:\Program Files\...</code> は必ず試す価値がある</td></tr>
+			<tr><td class="num">10</td><td>ログが増え続けないか</td><td>ディスクを埋める</td></tr>
+		</table>
+	</div>
+
+	<h2>その他の落とし穴</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>状況</th><th>対策</th></tr>
+			<tr><td class="nw">共有フォルダに置く</td><td><code>cd</code> ではなく <code>pushd</code>。<code>popd</code> を忘れるとドライブ割り当てが残る</td></tr>
+			<tr><td class="nw">管理者権限が必要</td><td><code>net session &gt;nul 2&gt;&amp;1 ||</code> で判定して案内する。昇格はできない</td></tr>
+			<tr><td class="nw">長時間動く</td><td><code>title</code> でウィンドウタイトルに進捗を出す</td></tr>
+			<tr><td class="nw">他のバッチから呼ばれる</td><td><code>pause</code> を入れない。終了コードを正しく返す</td></tr>
+			<tr><td class="nw">パスが260文字を超える</td><td>バッチでは回避が難しい。ロボコピーや別の言語を使う</td></tr>
+		</table>
+	</div>
+
+	<p>サンプルは <code>samples\03\</code> にあります。</p>
+	<div class="tablewrap">
+		<table>
+			<tr><th>ファイル</th><th>内容</th></tr>
+			<tr><td class="nw"><code>01-datetime.cmd</code></td><td>日時取得の3つの方法を並べて実行し、結果を見比べる</td></tr>
+			<tr><td class="nw"><code>02-errorhandling.cmd</code></td><td>エラー処理の型。<code>robocopy</code> の終了コードの扱いも含む</td></tr>
+			<tr><td class="nw"><code>03-logging.cmd</code></td><td>日付ごとのログ出力。リダイレクトの順序の違いも確認できる</td></tr>
+			<tr><td class="nw"><code>04-args.cmd</code></td><td>引数解析（<code>shift</code> ループ）とヘルプ表示</td></tr>
+			<tr><td class="nw"><code>05-backup.cmd</code></td><td>第1回のバックアップスクリプトを配布可能な形に仕上げた最終版</td></tr>
+		</table>
+	</div>
+</section>
+
+<section class="ch09" id="ch09">
+	<h1>バッチの限界とシリーズのまとめ</h1>
+
+	<h2>バッチで書くべきではない4条件</h2>
+	<p>次のどれかに当てはまったら、バッチをやめて別の道具を使う判断をします。</p>
+	<div class="tablewrap">
+		<table>
+			<tr><th>条件</th><th>なぜ限界か</th></tr>
+			<tr><td class="nw">配列や連想配列が必要</td><td>データ構造が存在しない。変数名に連番を埋め込む擬似実装しかできず、すぐ破綻する</td></tr>
+			<tr><td class="nw">JSON や XML を扱う</td><td>パーサがない。文字列操作で書くと、値に記号が入った瞬間に壊れる</td></tr>
+			<tr><td class="nw">エラー処理が数階層になる</td><td>例外がないため、階層ごとに終了コードを手で伝播させることになる</td></tr>
+			<tr><td class="nw">文字列処理が主目的</td><td>正規表現がない。<code>findstr</code> で代用すると可読性が失われる</td></tr>
+		</table>
+	</div>
+	<p>第2回のデモで「拡張子ごとに変数を用意する」形になった時点が、まさにこの兆候でした。<strong>変数名を並べ始めたら限界が近い</strong>という感覚を持っておくと判断しやすくなります。</p>
+	<p>逆にバッチが向いているのは、<strong>数十行で終わる決まった手順を、環境構築なしで実行したいとき</strong>です。ランチャー、定型的なファイル操作、他のツールの呼び出し。この範囲に収めるかぎり、バッチは今でも最も手軽な選択肢です。</p>
+
+	<h2>シリーズ全体のまとめ</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>回</th><th>核心</th></tr>
+			<tr><td class="nw">第1回</td><td>バッチは1行ずつ<strong>置換してから実行</strong>する。置換結果はもう一度コマンドとして読み直される</td></tr>
+			<tr><td class="nw">第2回</td><td>括弧ブロックは<strong>1つの論理行</strong>。入る前に一括展開されるので、中では <code>!VAR!</code> を使う</td></tr>
+			<tr><td class="nw">第3回</td><td>環境（文字コード・カレント・地域設定）を<strong>固定しないと他人の PC で壊れる</strong></td></tr>
+		</table>
+	</div>
+	<p>3回を通して繰り返し出てきたのは、<strong>「バッチには暗黙の前提が多く、その前提は環境によって変わる」</strong>という一点です。テンプレートの冒頭数行は、そのすべてを明示的に固定するためにあります。</p>
+
+	<h2>この先の参照先</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>資料</th><th>使う場面</th></tr>
+			<tr><td class="nw"><a href="A1-appendix-index.html">逆引き参照</a></td><td>「これをやりたい」から書き方を引く。他の言語の構文からも引ける</td></tr>
+			<tr><td class="nw"><a href="A2-cheatsheet.html">記法早見表</a></td><td>記法だけ確認したいとき</td></tr>
+			<tr><td class="nw"><a href="A3-pitfalls.html">落とし穴カタログ</a></td><td>動かないとき、症状から原因を引く</td></tr>
+			<tr><td class="nw"><code>templates\</code></td><td>新しくバッチを書き始めるとき</td></tr>
+		</table>
+	</div>
+
+	<h2>この回に関連する落とし穴</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>#</th><th>症状</th></tr>
+			<tr><td class="num"><a href="A3-pitfalls.html#p3">3</a></td><td>日本語が化ける・実行が途中で止まる</td></tr>
+			<tr><td class="num"><a href="A3-pitfalls.html#p4">4</a></td><td>ダブルクリックでは動くのに別の場所から呼ぶと失敗する</td></tr>
+			<tr><td class="num"><a href="A3-pitfalls.html#p5">5</a></td><td>パスに空白が含まれると失敗する</td></tr>
+			<tr><td class="num"><a href="A3-pitfalls.html#p6">6</a></td><td>エラーが出ているのに処理が続行する</td></tr>
+			<tr><td class="num"><a href="A3-pitfalls.html#p8">8</a></td><td><code>exit</code> したらコンソールごと閉じた</td></tr>
+			<tr><td class="num"><a href="A3-pitfalls.html#p14">14</a></td><td>共有フォルダ（UNC パス）でカレント移動が失敗する</td></tr>
+		</table>
+	</div>
+</section>
+
+</div>
+
+<footer>
+	<p><a href="../README.html">← README に戻る</a></p>
+</footer>
+
+</body>
+</html>
