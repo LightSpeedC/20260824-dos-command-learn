@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 190" width="1000" height="190" role="img" aria-label="バッチの1行が実行されるまでの流れ" font-family="Segoe UI, Yu Gothic UI, Meiryo, sans-serif">
+<rect width="100%" height="100%" fill="#ffffff"/>
+
+		<defs>
+			<linearGradient id="g-02-1a" x1="0" y1="1" x2="0" y2="0">
+				<stop offset="0" stop-color="hsl(280,78%,25%)"/>
+				<stop offset="1" stop-color="hsl(280,58%,65%)"/>
+			</linearGradient>
+			<linearGradient id="g-02-1b" x1="0" y1="1" x2="0" y2="0">
+				<stop offset="0" stop-color="hsl(187,78%,25%)"/>
+				<stop offset="1" stop-color="hsl(187,58%,65%)"/>
+			</linearGradient>
+			<linearGradient id="g-02-1c" x1="0" y1="1" x2="0" y2="0">
+				<stop offset="0" stop-color="hsl(93,78%,25%)"/>
+				<stop offset="1" stop-color="hsl(93,58%,65%)"/>
+			</linearGradient>
+			<linearGradient id="g-02-1d" x1="0" y1="1" x2="0" y2="0">
+				<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+				<stop offset="1" stop-color="hsl(0,58%,65%)"/>
+			</linearGradient>
+			<marker id="m-02-1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+				<path d="M0,0 L10,5 L0,10 z" fill="#4a5568"/>
+			</marker>
+		</defs>
+
+		<rect x="15" y="30" width="205" height="85" rx="10" fill="url(#g-02-1a)"/>
+		<text x="117" y="60" fill="#fff" font-size="14" font-weight="bold" text-anchor="middle">1行を読む</text>
+		<text x="117" y="84" fill="#fff" font-size="12" text-anchor="middle">ファイルを閉じずに</text>
+		<text x="117" y="101" fill="#fff" font-size="12" text-anchor="middle">1行ずつ逐次読む</text>
+
+		<rect x="275" y="30" width="205" height="85" rx="10" fill="url(#g-02-1b)"/>
+		<text x="377" y="55" fill="#fff" font-size="14" font-weight="bold" text-anchor="middle">変数を文字列に置換</text>
+		<text x="377" y="78" fill="#fff" font-size="12" text-anchor="middle">%VAR% をここで展開</text>
+		<text x="377" y="97" fill="#fff" font-size="12" text-anchor="middle">実行前に値が確定する</text>
+
+		<rect x="535" y="30" width="205" height="85" rx="10" fill="url(#g-02-1c)"/>
+		<text x="637" y="60" fill="#fff" font-size="14" font-weight="bold" text-anchor="middle">コマンドを実行</text>
+		<text x="637" y="84" fill="#fff" font-size="12" text-anchor="middle">内部コマンド</text>
+		<text x="637" y="101" fill="#fff" font-size="12" text-anchor="middle">または外部の exe</text>
+
+		<rect x="795" y="30" width="190" height="85" rx="10" fill="url(#g-02-1d)"/>
+		<text x="890" y="60" fill="#fff" font-size="14" font-weight="bold" text-anchor="middle">終了コードを残す</text>
+		<text x="890" y="84" fill="#fff" font-size="12" text-anchor="middle">ERRORLEVEL を</text>
+		<text x="890" y="101" fill="#fff" font-size="12" text-anchor="middle">上書きする</text>
+
+		<line x1="225" y1="72" x2="267" y2="72" stroke="#4a5568" stroke-width="2" marker-end="url(#m-02-1)"/>
+		<line x1="485" y1="72" x2="527" y2="72" stroke="#4a5568" stroke-width="2" marker-end="url(#m-02-1)"/>
+		<line x1="745" y1="72" x2="787" y2="72" stroke="#4a5568" stroke-width="2" marker-end="url(#m-02-1)"/>
+
+		<text x="500" y="150" fill="#4a5568" font-size="12" text-anchor="middle">2番目の「置換」は、括弧で囲まれたブロックがあればブロック全体に対して一括で先に行われる</text>
+		<text x="500" y="170" fill="#4a5568" font-size="12" text-anchor="middle">→ これが第2回で扱う「遅延展開」の原因になる</text>
+	
+</svg>

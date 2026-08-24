@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 210" width="1000" height="210" role="img" aria-label="全3回の流れ図" font-family="Segoe UI, Yu Gothic UI, Meiryo, sans-serif">
+<rect width="100%" height="100%" fill="#ffffff"/>
+
+		<defs>
+			<linearGradient id="g-03-1a" x1="0" y1="1" x2="0" y2="0">
+				<stop offset="0" stop-color="hsl(280,78%,25%)"/>
+				<stop offset="1" stop-color="hsl(280,58%,65%)"/>
+			</linearGradient>
+			<linearGradient id="g-03-1b" x1="0" y1="1" x2="0" y2="0">
+				<stop offset="0" stop-color="hsl(140,78%,25%)"/>
+				<stop offset="1" stop-color="hsl(140,58%,65%)"/>
+			</linearGradient>
+			<linearGradient id="g-03-1c" x1="0" y1="1" x2="0" y2="0">
+				<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+				<stop offset="1" stop-color="hsl(0,58%,65%)"/>
+			</linearGradient>
+			<marker id="m-03-1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+				<path d="M0,0 L10,5 L0,10 z" fill="#4a5568"/>
+			</marker>
+		</defs>
+
+		<rect x="20" y="30" width="280" height="120" rx="10" fill="url(#g-03-1a)"/>
+		<text x="160" y="62" fill="#fff" font-size="15" font-weight="bold" text-anchor="middle">第1回 バッチの実行モデル</text>
+		<text x="160" y="88" fill="#fff" font-size="13" text-anchor="middle">1行ずつ展開して実行する</text>
+		<text x="160" y="110" fill="#fff" font-size="13" text-anchor="middle">変数 / 終了コード / 引数</text>
+		<text x="160" y="132" fill="#fff" font-size="12" text-anchor="middle">→ 読めるようになる</text>
+
+		<rect x="360" y="30" width="280" height="120" rx="10" fill="url(#g-03-1b)"/>
+		<text x="500" y="62" fill="#fff" font-size="15" font-weight="bold" text-anchor="middle">第2回 制御構文と展開の罠</text>
+		<text x="500" y="88" fill="#fff" font-size="13" text-anchor="middle">if / for / call / goto</text>
+		<text x="500" y="110" fill="#fff" font-size="13" text-anchor="middle">遅延展開 / エスケープ</text>
+		<text x="500" y="132" fill="#fff" font-size="12" text-anchor="middle">→ 書けるようになる</text>
+
+		<rect x="700" y="30" width="280" height="120" rx="10" fill="url(#g-03-1c)"/>
+		<text x="840" y="62" fill="#fff" font-size="15" font-weight="bold" text-anchor="middle">第3回 実務で使う型</text>
+		<text x="840" y="88" fill="#fff" font-size="13" text-anchor="middle">文字コード / エラー処理</text>
+		<text x="840" y="110" fill="#fff" font-size="13" text-anchor="middle">ランチャー / テンプレート</text>
+		<text x="840" y="132" fill="#fff" font-size="12" text-anchor="middle">→ 配れるようになる</text>
+
+		<line x1="305" y1="90" x2="352" y2="90" stroke="#4a5568" stroke-width="2" marker-end="url(#m-03-1)"/>
+		<line x1="645" y1="90" x2="692" y2="90" stroke="#4a5568" stroke-width="2" marker-end="url(#m-03-1)"/>
+
+		<text x="500" y="185" fill="#4a5568" font-size="12" text-anchor="middle">各回60分（本編45分 + デモ10分 + 質疑5分） / 各回は単独でも読める構成にする</text>
+	
+</svg>
