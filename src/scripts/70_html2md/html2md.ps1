@@ -277,7 +277,9 @@ function Convert-File([string]$path) {
 }
 
 # ---- 実行 ----
-$targets = Get-ChildItem -Path $root -Recurse -Filter *.html | Where-Object { $_.FullName -notlike '*\tmp\*' }
+# index.html は README.html へのリダイレクト専用なので変換しない
+$targets = Get-ChildItem -Path $root -Recurse -Filter *.html |
+	Where-Object { $_.FullName -notlike '*\tmp\*' -and $_.Name -ne 'index.html' }
 Write-Output ("変換対象: " + $targets.Count + " ファイル")
 $totalSvg = 0
 foreach ($t in $targets) {
