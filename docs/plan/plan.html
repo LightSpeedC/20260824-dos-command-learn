@@ -17,17 +17,18 @@
 	--soft:#f2f5fb;
 }
 
-/* 章ごとのアクセント色（10章 / 色相 280→0 を 31.1°刻み） */
-.ch01{ --accent:hsl(280,78%,25%);   --accent2:hsl(280,58%,65%);   --soft:hsl(280,28%,95%); }
-.ch02{ --accent:hsl(248.9,78%,25%); --accent2:hsl(248.9,58%,65%); --soft:hsl(248.9,28%,95%); }
-.ch03{ --accent:hsl(217.8,78%,25%); --accent2:hsl(217.8,58%,65%); --soft:hsl(217.8,28%,95%); }
-.ch04{ --accent:hsl(186.7,78%,25%); --accent2:hsl(186.7,58%,65%); --soft:hsl(186.7,28%,95%); }
-.ch05{ --accent:hsl(155.6,78%,25%); --accent2:hsl(155.6,58%,65%); --soft:hsl(155.6,28%,95%); }
-.ch06{ --accent:hsl(124.4,78%,25%); --accent2:hsl(124.4,58%,65%); --soft:hsl(124.4,28%,95%); }
-.ch07{ --accent:hsl(93.3,78%,25%);  --accent2:hsl(93.3,58%,65%);  --soft:hsl(93.3,28%,95%); }
-.ch08{ --accent:hsl(62.2,78%,25%);  --accent2:hsl(62.2,58%,65%);  --soft:hsl(62.2,28%,95%); }
-.ch09{ --accent:hsl(31.1,78%,25%);  --accent2:hsl(31.1,58%,65%);  --soft:hsl(31.1,28%,95%); }
-.ch10{ --accent:hsl(0,78%,25%);     --accent2:hsl(0,58%,65%);     --soft:hsl(0,28%,95%); }
+/* 章ごとのアクセント色（11章 / 色相 280→0 を 28°刻み） */
+.ch01{ --accent:hsl(280,78%,25%); --accent2:hsl(280,58%,65%); --soft:hsl(280,28%,95%); }
+.ch02{ --accent:hsl(252,78%,25%); --accent2:hsl(252,58%,65%); --soft:hsl(252,28%,95%); }
+.ch03{ --accent:hsl(224,78%,25%); --accent2:hsl(224,58%,65%); --soft:hsl(224,28%,95%); }
+.ch04{ --accent:hsl(196,78%,25%); --accent2:hsl(196,58%,65%); --soft:hsl(196,28%,95%); }
+.ch05{ --accent:hsl(168,78%,25%); --accent2:hsl(168,58%,65%); --soft:hsl(168,28%,95%); }
+.ch06{ --accent:hsl(140,78%,25%); --accent2:hsl(140,58%,65%); --soft:hsl(140,28%,95%); }
+.ch07{ --accent:hsl(112,78%,25%); --accent2:hsl(112,58%,65%); --soft:hsl(112,28%,95%); }
+.ch08{ --accent:hsl(84,78%,25%);  --accent2:hsl(84,58%,65%);  --soft:hsl(84,28%,95%); }
+.ch09{ --accent:hsl(56,78%,25%);  --accent2:hsl(56,58%,65%);  --soft:hsl(56,28%,95%); }
+.ch10{ --accent:hsl(28,78%,25%);  --accent2:hsl(28,58%,65%);  --soft:hsl(28,28%,95%); }
+.ch11{ --accent:hsl(0,78%,25%);   --accent2:hsl(0,58%,65%);   --soft:hsl(0,28%,95%); }
 
 *{ box-sizing:border-box; }
 body{
@@ -214,7 +215,7 @@ footer a{ color:var(--navy2); }
 	<div class="inner">
 		<h1>DOSコマンド勉強会 資料作成計画</h1>
 		<p class="sub">対象: JavaScript の基礎文法・開発経験がある人 / Java または C# を知っている人 &nbsp;|&nbsp; ゴール: <code>.bat</code> <code>.cmd</code> を自分で書けるようになる</p>
-		<p class="date">📅 作成: 2026-08-24 / 更新: 2026-08-25</p>
+		<p class="date">📅 作成: 2026-08-24 / 更新: 2026-08-28</p>
 	</div>
 </div>
 
@@ -233,7 +234,8 @@ footer a{ color:var(--navy2); }
 	<li class="ch07"><a href="#ch07">成果物とファイル構成</a></li>
 	<li class="ch08"><a href="#ch08">資料に必ず含める落とし穴リスト</a></li>
 	<li class="ch09"><a href="#ch09">制作手順と、確認したいこと</a></li>
-	<li class="ch10"><a href="#ch10">付録: 逆引き参照</a></li>
+	<li class="ch10"><a href="#ch10">今後の改善課題</a></li>
+	<li class="ch11"><a href="#ch11">付録: 逆引き参照</a></li>
 </ol>
 
 <section class="ch01" id="ch01">
@@ -679,23 +681,34 @@ goto :eof</code></pre>
 
 	<h2>作成するファイル</h2>
 	<pre><code>20260824-dos-command-learn\
-├── README.html              … 資料一覧（各資料への入口）
+├── index.html                    … GitHub Pages の入口（README.html へリダイレクト）
+├── .nojekyll                     … Jekyll の処理を無効にする
+├── README.html                   … 資料一覧（各資料への入口）
+├── README.md                     … README.html から生成
 ├── docs\
 │   ├── plan\
-│   │   └── plan.html        … 本計画書
+│   │   ├── plan.html             … 本計画書
+│   │   ├── plan.md
+│   │   └── images\               … plan.html から切り出した SVG
 │   ├── 01-execution-model.html   … 第1回 バッチの実行モデル
 │   ├── 02-control-flow.html      … 第2回 制御構文と展開の罠
 │   ├── 03-practical.html         … 第3回 実務で使えるバッチを書く
 │   ├── A1-appendix-index.html    … 付録: 逆引き参照（3種の索引 / 詳細は各資料へリンク）
 │   ├── A2-cheatsheet.html        … 付録: 記法早見表（変数展開・エスケープ・for のオプション）
-│   └── A3-pitfalls.html          … 付録: 落とし穴カタログ（症状 → 原因 → 修正）
+│   ├── A3-pitfalls.html          … 付録: 落とし穴カタログ（症状 → 原因 → 修正）
+│   ├── (各 .md)                  … 上の html から生成
+│   └── images\                   … 各 html から切り出した SVG
 ├── samples\
-│   ├── 01\ … 03\            … 各回のデモで使うバッチ（回ごとに完成版を置く）
-│   └── README.html          … サンプルの実行方法
-└── templates\
-    ├── tool.cmd             … 引数を取るツール型
-    ├── launcher.cmd         … 他のスクリプト・exe を起動するランチャー型
-    └── batchjob.cmd         … 定時実行・ログ出力前提のバッチ処理型</code></pre>
+│   ├── 01\ … 03\                 … 各回のデモで使うバッチ（回ごとに完成版を置く）
+│   ├── README.html               … サンプルの実行方法
+│   └── README.md
+├── templates\
+│   ├── tool.cmd                  … 引数を取るツール型
+│   ├── launcher.cmd              … 他のスクリプト・exe を起動するランチャー型
+│   └── batchjob.cmd              … 定時実行・ログ出力前提のバッチ処理型
+└── src\scripts\70_html2md\
+    ├── html2md.ps1               … HTML から Markdown を生成する
+    └── html2md.cmd               … ダブルクリック実行用のランチャー</code></pre>
 
 	<h2>ファイル名の付け方</h2>
 	<p>本編と付録が名前順で混ざらないよう、接頭辞で系列を分けます。</p>
@@ -710,6 +723,32 @@ goto :eof</code></pre>
 
 	<div class="callout">
 		<p><strong>付録を各回から独立させる理由。</strong>勉強会中は第1〜3回を順に読みますが、勉強会後に実際にバッチを書く場面で必要になるのは「症状から引く」「記法だけ確認する」という使い方です。回の資料に埋め込むと後から引けません。各回の本文からは付録の該当項目へリンクします。</p>
+	</div>
+
+	<h2>HTML と Markdown の運用</h2>
+	<p>各資料は HTML と Markdown の両方を置きます。<strong>HTML が原本</strong>で、<code>.md</code> は HTML から変換して生成したものです。</p>
+	<div class="tablewrap">
+		<table>
+			<tr><th>形式</th><th>用途</th><th>編集</th></tr>
+			<tr><td class="nw">HTML</td><td>ブラウザで読む / 印刷する / 図（SVG）を見る</td><td><strong>ここを直す</strong></td></tr>
+			<tr><td class="nw">Markdown</td><td>GitHub 上で読む</td><td>直接編集しない（次の生成で上書きされる）</td></tr>
+		</table>
+	</div>
+	<p>内容を更新する手順は次の通りです。</p>
+	<ol>
+		<li>HTML を編集する</li>
+		<li><code>src\scripts\70_html2md\html2md.cmd</code> をダブルクリックする</li>
+		<li>全 HTML から <code>.md</code> が作り直され、インライン SVG が <code>images\</code> に切り出される</li>
+	</ol>
+	<p>SVG を切り出すのは、<strong>GitHub が Markdown 内のインライン SVG をサニタイズで除去する</strong>ためです。画像ファイルとして参照すれば Markdown でも図が表示されます。</p>
+
+	<h2>GitHub Pages での公開</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>ファイル</th><th>役割</th></tr>
+			<tr><td class="nw"><code>index.html</code></td><td>Pages のトップ。<code>README.html</code> へ 0 秒でリダイレクトする。<code>meta refresh</code> と <code>location.replace</code> を併記してある</td></tr>
+			<tr><td class="nw"><code>.nojekyll</code></td><td>Jekyll の処理を無効にする。これがないと <code>README.md</code> がトップとして描画され、デザイン付きの HTML に入れない</td></tr>
+		</table>
 	</div>
 
 	<h2>サンプルバッチの扱い</h2>
@@ -798,6 +837,102 @@ goto :eof</code></pre>
 </section>
 
 <section class="ch10" id="ch10">
+	<h1>今後の改善課題</h1>
+
+	<p>資料が揃ったあとで読み返して見つかった問題と、その対応方針です。<span class="badge b-todo">未着手</span>いずれもまだ手を入れていません。</p>
+
+	<h2>README の入口が長い</h2>
+	<p>タイトルバーから第1回のリンクに到達するまでに、<strong>本文727文字・表3つ・callout 1つ</strong>を通過します。最初の資料を開くまでの距離が遠すぎます。</p>
+	<div class="tablewrap">
+		<table>
+			<tr><th>順</th><th>通過する内容</th><th>読者に今必要か</th></tr>
+			<tr><td class="num">1</td><td>対象者とゴール</td><td>必要。ただし1〜2行で足りる</td></tr>
+			<tr><td class="num">2</td><td>表「読む順」4行</td><td>本編リンクの表と役割が重なっている</td></tr>
+			<tr><td class="num">3</td><td>段落「HTML が原本 / <code>.md</code> は生成物 / 作り直しの手順」</td><td><strong>編集者向け</strong>。読者には不要</td></tr>
+			<tr><td class="num">4</td><td>見出し「3回の流れ」＋表3行</td><td>各回の核心。<strong>結論を先に見せてしまう</strong></td></tr>
+			<tr><td class="num">5</td><td>callout「SJIS + CRLF で保存」</td><td><strong>サンプルを触る人向け</strong>。読み始めには不要</td></tr>
+			<tr><td class="num">6</td><td>第1回のリンク</td><td>—</td></tr>
+		</table>
+	</div>
+	<p>3 と 5 は、資料を読む人ではなく<strong>資料を編集する人・サンプルを動かす人</strong>に向けた情報です。入口に置く理由がありません。</p>
+
+	<h2>資料をまたいで重複している記述</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>内容</th><th>README での場所</th><th>他にある場所</th><th>対応方針</th></tr>
+			<tr>
+				<td class="nw">3回の核心<br>（置換してから実行 / 1つの論理行 / 固定しないと壊れる）</td>
+				<td class="nw">表「3回の流れ」</td>
+				<td><strong>第3回 9章「シリーズ全体のまとめ」に同じ3行の表</strong></td>
+				<td>README から削除し、第3回に残す。読み終えた人が振り返る場所として適切</td>
+			</tr>
+			<tr>
+				<td class="nw">SJIS + CRLF の注意</td>
+				<td class="nw">callout</td>
+				<td><code>samples\README.html</code>（callout と共通事項リストの<strong>2箇所</strong>）／第3回 2章／落とし穴 #3</td>
+				<td>README から削除する（本計画書 7章と <code>samples\README.html</code> にある）。<code>samples\README.html</code> 側は1箇所に寄せる</td>
+			</tr>
+			<tr>
+				<td class="nw">学ぶ順 / 探す順</td>
+				<td class="nw">表と本文で4箇所</td>
+				<td>逆引き参照の冒頭／各回の末尾「この先の参照先」</td>
+				<td>README では付録セクションで1回だけ触れる</td>
+			</tr>
+			<tr>
+				<td class="nw">全3回シリーズという位置づけ</td>
+				<td class="nw">3箇所</td>
+				<td>各回のタイトルバーに <code>1/3</code> <code>2/3</code> <code>3/3</code> と表示済み</td>
+				<td>README では1回だけにする</td>
+			</tr>
+		</table>
+	</div>
+
+	<h2>役割分担 — README は読者向け、計画書は作成者向け</h2>
+	<p>入口が長くなった原因は、<strong>読者向けの情報と資料作成向けの情報を同じ場所に置いた</strong>ことです。置き場を分けます。</p>
+	<div class="tablewrap">
+		<table>
+			<tr><th>情報</th><th>読む人</th><th>置き場</th></tr>
+			<tr><td>各資料への案内、読む順、付録の使い分け</td><td class="nw">読者</td><td class="nw">README</td></tr>
+			<tr><td>HTML と Markdown の使い分け、<code>.md</code> の作り直し手順</td><td class="nw">資料を直す人</td><td class="nw"><strong>本計画書 7章</strong></td></tr>
+			<tr><td>ファイル構成、命名規約</td><td class="nw">資料を直す人</td><td class="nw"><strong>本計画書 7章</strong></td></tr>
+			<tr><td>GitHub Pages の構成（<code>index.html</code> / <code>.nojekyll</code>）</td><td class="nw">資料を直す人</td><td class="nw"><strong>本計画書 7章</strong></td></tr>
+			<tr><td>サンプルの文字コードの注意</td><td class="nw">サンプルを動かす人</td><td class="nw"><code>samples\README.html</code></td></tr>
+		</table>
+	</div>
+
+	<h2>目指す README の構成</h2>
+	<pre><code>タイトルバー（対象とゴールは sub に1行）
+─────────────────────────────
+本編                     ← 冒頭2〜3行の案内の直後に置く
+  第1回 バッチの実行モデル
+  第2回 制御構文と展開の罠
+  第3回 実務で使えるバッチを書く
+─────────────────────────────
+付録（引くための資料）    A1 / A2 / A3
+─────────────────────────────
+テンプレート・サンプル
+─────────────────────────────
+計画書へのリンク          ← 資料作成の情報はこの先に置く</code></pre>
+
+	<h2>作業手順</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>順</th><th>内容</th><th>状態</th></tr>
+			<tr><td class="num">1</td><td>表「3回の流れ」を README から削除する（第3回 9章に同じものがある）。各回の一行説明だけ残す</td><td class="nw"><span class="badge b-todo">未着手</span></td></tr>
+			<tr><td class="num">2</td><td>段落「HTML が原本…」を本計画書 7章へ移す</td><td class="nw"><span class="badge b-ok">完了</span></td></tr>
+			<tr><td class="num">3</td><td>callout「SJIS + CRLF」を README から削除する（本計画書 7章と <code>samples\README.html</code> にある）</td><td class="nw"><span class="badge b-ok">完了</span></td></tr>
+			<tr><td class="num">4</td><td>表「読む順」を削除する。付録・テンプレート・サンプルの各セクションの説明で代替する</td><td class="nw"><span class="badge b-todo">未着手</span></td></tr>
+			<tr><td class="num">5</td><td><code>samples\README.html</code> の SJIS の注意を1箇所に寄せる</td><td class="nw"><span class="badge b-todo">未着手</span></td></tr>
+		</table>
+	</div>
+	<p>1 と 4 まで終えると、<strong>冒頭2〜3行 → 第1回のリンク</strong>になります。</p>
+
+	<div class="callout">
+		<p><strong>README は GitHub のトップページとしても表示されます。</strong>入口が長いことの影響は HTML 版より Markdown 版のほうが大きくなります。修正後は変換スクリプトを再実行して <code>.md</code> を作り直します。</p>
+	</div>
+</section>
+
+<section class="ch11" id="ch11">
 	<h1>付録: 逆引き参照</h1>
 
 	<p>本編（第1〜3回）は<strong>学ぶ順</strong>に並んでいますが、勉強会後に実際にバッチを書く人が必要とするのは<strong>探す順</strong>です。この2つは並び方が根本的に違うため、同じ文書では両立できません。そこで付録として逆引き専用のページ（<code>A1-appendix-index.html</code>）を用意します。</p>
