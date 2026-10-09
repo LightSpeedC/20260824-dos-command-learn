@@ -24,7 +24,14 @@ Windows のバッチファイル（`.bat` / `.cmd`）を自分で書けるよう
 docs/              公開する資料（GitHub Pages）
   css/style.css    資料の共通スタイル
   samples/         資料に出てくるコードとテンプレート
+notes/90_rules/    このプロジェクトのローカルルール
 tools/20_build/    資料の前へ・次へ・目次を作り直すスクリプト
 ```
+
+## 4. ローカルルール
+
+[20260824-dos-command-learn ローカルルール](notes/90_rules/local-rules.md)
+
+このプロジェクトでだけ通る決めごと（commit・push の単位など）です。
 
 [^^](../)

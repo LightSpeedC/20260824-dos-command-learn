@@ -1,0 +1,207 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>20260824-dos-command-learn ローカルルール</title>
+<style>
+:root{
+	--navy1:#12224d;
+	--navy2:#2f5fbf;
+	--ink:#1c2330;
+	--ink-soft:#4a5568;
+	--line:#d9dfe8;
+	--code-bg:#f4f6fa;
+	--link:#1a4fa0;
+	--accent:var(--navy1, #12224d);
+	--accent2:var(--navy2, #2f5fbf);
+	--soft:#f2f5fb;
+}
+
+/* 章ごとのアクセント色（3章 / 色相 280→0 を 140°刻み） */
+.ch01{ --accent:hsl(280,78%,25%); --accent2:hsl(280,58%,55%); --soft:hsl(280,28%,95%); }
+.ch02{ --accent:hsl(140,78%,25%); --accent2:hsl(140,58%,55%); --soft:hsl(140,28%,95%); }
+.ch03{ --accent:hsl(0,78%,25%);   --accent2:hsl(0,58%,55%);   --soft:hsl(0,28%,95%); }
+
+*{ box-sizing:border-box; }
+body{
+	margin:0;
+	font-family:"Segoe UI","Yu Gothic UI","Meiryo",sans-serif;
+	font-size:15.5px;
+	line-height:1.85;
+	color:var(--ink, #1c2330);
+	background:#fff;
+}
+
+.titlebar{
+	background:linear-gradient(135deg,var(--navy1, #12224d),var(--navy2, #2f5fbf));
+	color:#fff;
+	padding:34px 30px 30px;
+}
+.titlebar .inner{ max-width:1600px; margin:0 auto; }
+.titlebar h1{ font-size:2.05em; margin:0 0 10px; color:#fff; background:transparent; }
+.titlebar .lead{ font-size:.95em; color:#dbe5f7; background:transparent; margin:0; }
+.titlebar .date{ font-size:.9em; color:#c3d3ee; background:transparent; margin:6px 0 0; }
+.titlebar code{ background:rgba(255,255,255,0.16); color:#fff; border:none; }
+
+.wrap{ max-width:1600px; margin:0 auto; padding:0 30px; }
+
+section{
+	background:linear-gradient(180deg,var(--soft, #f2f5fb),#fff);
+	border:1px solid var(--line, #d9dfe8);
+	border-radius:10px;
+	padding:4px 26px 26px;
+	margin:34px 0;
+}
+section h1{
+	font-size:1.5em;
+	margin:26px 0 20px;
+	padding:14px 20px;
+	color:#fff;
+	background:linear-gradient(100deg,var(--accent, #12224d),var(--accent2, #2f5fbf));
+	border-radius:8px;
+	box-shadow:0 4px 12px rgba(0,0,0,.18);
+}
+h2{
+	font-size:1.15em;
+	margin:30px 0 12px;
+	padding:6px 12px;
+	color:var(--accent, #12224d);
+	border-left:6px solid var(--accent, #12224d);
+	background:linear-gradient(90deg,var(--soft, #f2f5fb),#fff);
+}
+
+p{ margin:10px 0; }
+ul{ margin:10px 0; padding-left:1.6em; }
+li{ margin:4px 0; }
+a{ color:var(--link, #1a4fa0); background:transparent; }
+
+code{
+	background:var(--code-bg, #f4f6fa);
+	border:1px solid var(--line, #d9dfe8);
+	color:#17335f;
+	padding:.1em .35em;
+	border-radius:4px;
+	font-family:Consolas,"Courier New",monospace;
+	font-size:.92em;
+}
+
+.tablewrap{ overflow-x:auto; margin:14px 0; }
+table{
+	border-collapse:collapse;
+	width:100%;
+	border-radius:8px;
+	overflow:hidden;
+	box-shadow:0 2px 8px rgba(0,0,0,.08);
+	font-size:.95em;
+}
+th{
+	padding:9px 12px;
+	text-align:left;
+	color:#fff;
+	background:linear-gradient(100deg,var(--accent, #12224d),var(--accent2, #2f5fbf));
+	white-space:nowrap;
+}
+td{
+	padding:9px 12px;
+	vertical-align:top;
+	border-bottom:1px solid var(--line, #d9dfe8);
+}
+tr:nth-child(even) td{ background:#fafbfe; }
+td.nowrap{ white-space:nowrap; }
+
+.backlink{ margin:18px 0 0; }
+footer .backlink{ margin:0; }
+.backlink a{
+	display:inline-flex;
+	align-items:center;
+	justify-content:center;
+	width:34px;
+	height:28px;
+	color:#fff;
+	background:linear-gradient(100deg,var(--navy1, #12224d),var(--navy2, #2f5fbf));
+	border-radius:6px;
+	text-decoration:none;
+}
+
+footer{
+	max-width:1600px;
+	margin:0 auto;
+	padding:18px 30px 30px;
+	border-top:1px solid var(--line, #d9dfe8);
+}
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+	<div class="inner">
+		<h1>20260824-dos-command-learn ローカルルール</h1>
+		<p class="lead">このプロジェクトでだけ通る決めごと。共通ルールと食い違ったときは、ここが優先する</p>
+		<p class="date">📅 作成: 2026-10-09 / 更新: 2026-10-09</p>
+	</div>
+</div>
+
+<div class="wrap">
+
+<p class="backlink"><a href="../../README.html" aria-label="戻る" title="README へ戻る"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 1 1 7h2v7h4v-4h2v4h4V7h2z"/></svg></a></p>
+
+<section class="ch01" id="ch01">
+	<h1>共通ルールを上書きする点</h1>
+
+	<div class="tablewrap">
+		<table>
+			<tr><th>見出し</th><th>共通ルール</th><th>このプロジェクト</th><th>理由</th></tr>
+			<tr>
+				<td class="nowrap">ワークフロー原則 ＞ 修正は1点ずつ、確認を重視</td>
+				<td>commit は、そのつど「commitして」と指示されてから行う。指示は1回きり有効</td>
+				<td>作業のまとまり（下の「commit・push の単位」）が終わるたびに、AI が指示を待たずに commit し、続けて push する</td>
+				<td>資料は HTML を正とし、1つの変更が小さく戻しやすい。公開は GitHub Pages で、細かく反映したほうが差分を追いやすい</td>
+			</tr>
+			<tr>
+				<td class="nowrap">確認と失敗 ＞ 重大な操作の確認方法</td>
+				<td><code>commit</code> と <code>push</code> は別の指示。「pushして」と明示されたときだけ push する</td>
+				<td>commit のあと develop へ push するところまでを、同じ流れで行う</td>
+				<td>commit だけが手元に溜まると、公開ページと資料がずれる</td>
+			</tr>
+		</table>
+	</div>
+
+	<p><strong>上書きしないもの</strong>: <code>git reset</code>・履歴の書き換え（<code>--amend</code> を含む）・force push・ブランチやタグの操作は、従来どおり内容を示して確認を取る。載せるファイルは名指しして <code>git add</code> し、<code>-A</code> ・ <code>.</code> は使わない。commit の前に <code>git diff --cached --name-only</code> で一覧を見る。</p>
+</section>
+
+<section class="ch02" id="ch02">
+	<h1>commit・push の単位</h1>
+
+	<p>次のどれか1つが終わるたびに、commit して push する。2つ以上を1つの commit に混ぜない。</p>
+	<ul>
+		<li>1つの資料（<code>01</code>〜<code>03</code>・<code>A1</code>〜<code>A3</code>・<code>ZZ</code>・資料一覧・サンプル説明）の本文の修正</li>
+		<li>共通 CSS（<code>docs/css/style.css</code>）の変更</li>
+		<li>サンプル（<code>docs/samples/</code>）の追加・修正</li>
+		<li>名前の変更・移動（リンクの書き換えまで含めて1つ）</li>
+		<li>初期化・設定ファイルの変更</li>
+	</ul>
+	<p>commit の前に、全資料のリンク切れ（<code>html2md</code>）・コントラスト（<code>check-contrast</code>）・Markdown の表示（<code>check-markdown</code>）を通す。失敗したまま commit しない。push のあとは、公開ページの作り直しが終わり、変えたファイルが公開 URL に入っていることを確かめてから報告する。</p>
+	<p>メッセージの先頭行には、何をどうしたかを書く。件数を書くなら、書く直前に <code>git diff --cached --name-only</code> で数える。</p>
+</section>
+
+<section class="ch03" id="ch03">
+	<h1>踏んだ落とし穴</h1>
+
+	<ul>
+		<li><strong><code>html2md</code> は <code>--dir docs</code> を毎回付ける</strong>。付けないと、docs の資料が変換対象から外れ、README 側のリンクが <code>.md</code> から <code>.html</code> に戻る</li>
+		<li><strong>資料を追加・改題したら <code>tools/20_build/update-nav.ps1</code> を実行する</strong>。前へ・次へ・目次のバッジは、各資料のタイトルバーの見出しから作る。手で直さない</li>
+		<li><strong>資料のファイル名を変えると、公開 URL が変わる</strong>。旧 URL は 404 になる</li>
+		<li><strong><code>docs/samples/</code> の cmd は SJIS ＋ CRLF</strong>。直すときは <code>convert-encoding &lt;path&gt; --to utf8</code> → 編集 → <code>--to cmd</code> の順に行う</li>
+		<li><strong>サンプルを実行するとコンソールのコードページを継承する</strong>。ログの日本語は、実行した窓のコードページで決まる。検証は窓を SJIS（932）にして行う</li>
+	</ul>
+</section>
+
+</div>
+
+<footer>
+	<p class="backlink"><a href="../../README.html" aria-label="戻る" title="README へ戻る"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 1 1 7h2v7h4v-4h2v4h4V7h2z"/></svg></a></p>
+</footer>
+
+</body>
+</html>
