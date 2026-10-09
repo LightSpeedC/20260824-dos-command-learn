@@ -1,3 +1,7 @@
+* text=auto eol=lf
+
+*.ps1 text eol=crlf
+
 # バッチファイルは SJIS(CP932) + CRLF が前提。改行を CRLF に固定する
 *.cmd text eol=crlf
 *.bat text eol=crlf

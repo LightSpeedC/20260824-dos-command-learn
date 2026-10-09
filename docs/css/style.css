@@ -1,0 +1,231 @@
+/* ============================================================
+   DOSコマンド勉強会 資料 共通スタイル
+
+   docs/ 配下の資料が共通で読み込む。色相やデザインを変えるときは
+   このファイルだけを直す。
+
+   各資料の HTML に残すのは、その資料だけのもの:
+     - 章アクセント（.ch01 〜）
+     - 目次のカウンタ（counter-reset / counter-increment / content）
+   ============================================================ */
+
+:root{
+	--navy1:#12224d;
+	--navy2:#2f5fbf;
+	--ink:#1c2330;
+	--ink-soft:#4a5568;
+	--line:#d9dfe8;
+	--code-bg:#f4f6fa;
+	--link:#1a4fa0;
+	--accent:var(--navy1, #12224d);
+	--accent2:var(--navy2, #2f5fbf);
+	--soft:#f2f5fb;
+}
+
+*{ box-sizing:border-box; }
+body{
+	margin:0;
+	font-family:"Segoe UI","Yu Gothic UI","Meiryo",sans-serif;
+	font-size:15.5px;
+	line-height:1.85;
+	color:var(--ink, #1c2330);
+	background:#fff;
+}
+
+.titlebar{
+	background:linear-gradient(135deg,var(--navy1, #12224d),var(--navy2, #2f5fbf));
+	color:#fff;
+	padding:34px 30px 30px;
+}
+.titlebar .inner{ max-width:1600px; margin:0 auto; }
+.titlebar h1{ font-size:2.05em; margin:0 0 10px; color:#fff; background:transparent; }
+.titlebar .lead{ font-size:.95em; color:#dbe5f7; background:transparent; margin:0; }
+.titlebar .date{ font-size:.9em; color:#c3d3ee; background:transparent; margin:6px 0 0; }
+.titlebar code{ background:rgba(255,255,255,0.16); color:#fff; border:none; }
+
+.wrap{ max-width:1600px; margin:0 auto; padding:0 30px; }
+
+section{
+	background:linear-gradient(180deg,var(--soft, #f2f5fb),#fff);
+	border:1px solid var(--line, #d9dfe8);
+	border-radius:10px;
+	padding:4px 26px 26px;
+	margin:34px 0;
+}
+section h1{
+	font-size:1.5em;
+	margin:26px 0 20px;
+	padding:14px 20px;
+	color:#fff;
+	background:linear-gradient(100deg,var(--accent, #12224d),var(--accent2, #2f5fbf));
+	border-radius:8px;
+	box-shadow:0 4px 12px rgba(0,0,0,.18);
+}
+section h1 code{ background:rgba(255,255,255,0.16); color:#fff; border:none; }
+h2{
+	font-size:1.15em;
+	margin:30px 0 12px;
+	padding:6px 12px;
+	color:var(--accent, #12224d);
+	border-left:6px solid var(--accent, #12224d);
+	background:linear-gradient(90deg,var(--soft, #f2f5fb),#fff);
+}
+h2 code{ font-size:.92em; }
+h3{
+	font-size:1.02em;
+	margin:20px 0 8px;
+	display:inline-block;
+	padding-bottom:3px;
+	border-bottom:2px dotted var(--accent2, #2f5fbf);
+}
+
+p{ margin:10px 0; }
+ul,ol{ margin:10px 0; padding-left:1.6em; }
+li{ margin:4px 0; }
+a{ color:var(--link, #1a4fa0); background:transparent; }
+
+code{
+	background:var(--code-bg, #f4f6fa);
+	border:1px solid var(--line, #d9dfe8);
+	color:#17335f;
+	padding:.1em .35em;
+	border-radius:4px;
+	font-family:Consolas,"Courier New",monospace;
+	font-size:.92em;
+}
+pre{
+	background:var(--code-bg, #f4f6fa);
+	color:var(--ink, #1c2330);
+	border-left:5px solid var(--accent2, #2f5fbf);
+	border-radius:0 8px 8px 0;
+	padding:13px 16px;
+	overflow-x:auto;
+	font-family:Consolas,"Courier New",monospace;
+	font-size:.92em;
+	line-height:1.7;
+}
+pre code{ background:none; border:none; padding:0; color:inherit; font-size:1em; }
+
+.tablewrap{ overflow-x:auto; margin:14px 0; }
+table{
+	border-collapse:collapse;
+	width:100%;
+	border-radius:8px;
+	overflow:hidden;
+	box-shadow:0 2px 8px rgba(0,0,0,.08);
+	font-size:.95em;
+}
+th{
+	padding:9px 12px;
+	text-align:left;
+	color:#fff;
+	background:linear-gradient(100deg,var(--accent, #12224d),var(--accent2, #2f5fbf));
+	white-space:nowrap;
+}
+th code{ background:rgba(255,255,255,0.16); color:#fff; border:none; }
+th a{ color:#fff; background:transparent; }
+td{
+	padding:9px 12px;
+	vertical-align:top;
+	border-bottom:1px solid var(--line, #d9dfe8);
+}
+tr:nth-child(even) td{ background:#fafbfe; }
+td.nowrap{ white-space:nowrap; }
+td.num{ text-align:right; white-space:nowrap; }
+
+.callout{
+	border-left:6px solid var(--accent, #12224d);
+	background:linear-gradient(180deg,var(--soft, #f2f5fb),#fff);
+	border-radius:0 8px 8px 0;
+	padding:12px 16px;
+	margin:16px 0;
+}
+.callout strong{ color:var(--accent, #12224d); background:transparent; }
+.callout-tip{ border-left-color:#1d7a3c; }
+.callout-important{ border-left-color:#5b2a9e; }
+.callout-warning{ border-left-color:#b8620a; }
+.callout-caution{ border-left-color:#a51f22; }
+
+.badge{
+	display:inline-block;
+	padding:1px 9px;
+	border-radius:999px;
+	color:#fff;
+	background:linear-gradient(100deg,#5a6472,#97a1ae);
+	font-size:.82em;
+	white-space:nowrap;
+	margin-right:6px;
+}
+.b-ok{ background:linear-gradient(100deg,#1d7a3c,#45b56c); }
+.b-ng{ background:linear-gradient(100deg,#a51f22,#e05a5c); }
+.b-warn{ background:linear-gradient(100deg,#b8620a,#f0a548); }
+.b-none{ background:linear-gradient(100deg,#5a6472,#97a1ae); }
+
+/* 目次: 章と同じ色のバッジ */
+.toc ol{
+	display:flex;
+	flex-wrap:wrap;
+	gap:8px;
+	list-style:none;
+	padding:0;
+	margin:16px 0 4px;
+}
+.toc ol li{ margin:0; }
+.toc ol a{
+	display:-webkit-box;
+	-webkit-line-clamp:2;
+	-webkit-box-orient:vertical;
+	overflow:hidden;
+	text-overflow:ellipsis;
+	white-space:normal;
+	width:310px;
+	max-width:100%;
+	padding:8px 12px;
+	color:#fff;
+	background:linear-gradient(100deg,var(--accent, #12224d),var(--accent2, #2f5fbf));
+	border-radius:6px;
+	text-decoration:none;
+	font-size:.95em;
+	font-weight:700;
+	line-height:1.45;
+}
+.toc ol a code{ background:rgba(255,255,255,0.16); color:#fff; border:none; }
+
+/* 資料へのリンク（幅は文字数で決まる） */
+a.doclink{
+	display:inline-block;
+	padding:0 9px;
+	color:#fff;
+	background:linear-gradient(100deg,var(--accent, #12224d),var(--accent2, #2f5fbf));
+	border-radius:6px;
+	text-decoration:none;
+	font-weight:700;
+}
+
+/* 前へ・次へ・目次（アイコンだけの紺バッジ） */
+.docnav{ display:flex; gap:8px; margin:18px 0 0; }
+footer .docnav{ margin:0; }
+.docnav a{
+	display:inline-flex;
+	align-items:center;
+	justify-content:center;
+	width:34px;
+	height:28px;
+	color:#fff;
+	background:linear-gradient(100deg,var(--navy1, #12224d),var(--navy2, #2f5fbf));
+	border-radius:6px;
+	text-decoration:none;
+}
+.docnav svg{ display:inline; margin:0; }
+
+svg{ max-width:100%; height:auto; display:block; margin:16px 0; }
+
+footer{
+	max-width:1600px;
+	margin:0 auto;
+	padding:18px 30px 30px;
+	border-top:1px solid var(--line, #d9dfe8);
+	font-size:.95em;
+}
+footer a{ color:var(--link, #1a4fa0); background:transparent; }
+footer .docnav a{ color:#fff; background:linear-gradient(100deg,var(--navy1, #12224d),var(--navy2, #2f5fbf)); }

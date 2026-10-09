@@ -1,11 +1,18 @@
 tmp/
 etc/
-.claude/
+logs/
+_*
+
+.claude/*
+!.claude/settings.json
+!.claude/commands/
+!.claude/agents/
+!.claude/skills/
 
 # サンプル実行時の生成物（再実行で作り直されるため管理しない）
-samples/*/backup/
-samples/*/sorted/
-samples/*/log/
+docs/samples/*/backup/
+docs/samples/*/sorted/
+docs/samples/*/log/
 
 # testfiles の .log は教材データ。グローバル設定の *.log を打ち消して含める
-!samples/02/testfiles/*.log
+!docs/samples/02/testfiles/*.log

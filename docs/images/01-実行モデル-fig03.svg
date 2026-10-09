@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 200" width="1000" height="200" role="img" aria-label="文字列として連結されるか、set /a で数値として計算されるか">
+		<defs>
+			<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+				<stop offset="0" stop-color="hsl(186.7,78%,25%)"/>
+				<stop offset="1" stop-color="hsl(186.7,58%,55%)"/>
+			</linearGradient>
+			<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+				<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+				<stop offset="1" stop-color="hsl(0,58%,55%)"/>
+			</linearGradient>
+			<linearGradient id="i3" x1="0" y1="1" x2="0" y2="0">
+				<stop offset="0" stop-color="hsl(140,78%,25%)"/>
+				<stop offset="1" stop-color="hsl(140,58%,55%)"/>
+			</linearGradient>
+			<marker id="i4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+				<path d="M0,0 L10,5 L0,10 z" fill="#4a5568"/>
+			</marker>
+		</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+		<rect x="20" y="60" width="240" height="80" rx="10" fill="url(#i1)"/>
+		<text x="140" y="95" fill="#fff" font-size="15" font-weight="bold" text-anchor="middle">N=5 / M=3</text>
+		<text x="140" y="120" fill="#fff" font-size="13" text-anchor="middle">どちらも文字列</text>
+		<line x1="265" y1="85" x2="585" y2="50" stroke="#4a5568" stroke-width="2" marker-end="url(#i4)"/>
+		<line x1="265" y1="115" x2="585" y2="150" stroke="#4a5568" stroke-width="2" marker-end="url(#i4)"/>
+		<text x="420" y="50" fill="#4a5568" font-size="13" text-anchor="middle">%N%%M%</text>
+		<text x="420" y="160" fill="#4a5568" font-size="13" text-anchor="middle">set /a SUM=N+M</text>
+		<rect x="595" y="15" width="380" height="70" rx="10" fill="url(#i2)"/>
+		<text x="785" y="45" fill="#fff" font-size="15" font-weight="bold" text-anchor="middle">53</text>
+		<text x="785" y="70" fill="#fff" font-size="13" text-anchor="middle">文字列を貼り合わせただけ</text>
+		<rect x="595" y="115" width="380" height="70" rx="10" fill="url(#i3)"/>
+		<text x="785" y="145" fill="#fff" font-size="15" font-weight="bold" text-anchor="middle">8</text>
+		<text x="785" y="170" fill="#fff" font-size="13" text-anchor="middle">set /a の中だけ整数として計算</text>
+	</svg>

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 130" width="1000" height="130" role="img" aria-label="if の4つの形">
+		<defs>
+			<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+				<stop offset="0" stop-color="hsl(245,78%,25%)"/>
+				<stop offset="1" stop-color="hsl(245,58%,55%)"/>
+			</linearGradient>
+		</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+		<text x="500" y="20" fill="#4a5568" font-size="14" font-weight="bold" text-anchor="middle">if は条件式ではなく、4つの決まった形のどれか</text>
+		<rect x="20" y="35" width="225" height="80" rx="8" fill="url(#i1)"/>
+		<text x="132" y="68" fill="#fff" font-size="15" text-anchor="middle">文字列比較</text>
+		<text x="132" y="94" fill="#fff" font-size="13" font-family="monospace" text-anchor="middle">"%A%"=="x"</text>
+		<rect x="265" y="35" width="225" height="80" rx="8" fill="url(#i1)"/>
+		<text x="377" y="68" fill="#fff" font-size="15" text-anchor="middle">存在確認</text>
+		<text x="377" y="94" fill="#fff" font-size="13" font-family="monospace" text-anchor="middle">exist "path"</text>
+		<rect x="510" y="35" width="225" height="80" rx="8" fill="url(#i1)"/>
+		<text x="622" y="68" fill="#fff" font-size="15" text-anchor="middle">変数の定義</text>
+		<text x="622" y="94" fill="#fff" font-size="13" font-family="monospace" text-anchor="middle">defined A</text>
+		<rect x="755" y="35" width="225" height="80" rx="8" fill="url(#i1)"/>
+		<text x="867" y="68" fill="#fff" font-size="15" text-anchor="middle">終了コード（以上）</text>
+		<text x="867" y="94" fill="#fff" font-size="13" font-family="monospace" text-anchor="middle">errorlevel 1</text>
+	</svg>

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 150" width="1000" height="150" role="img" aria-label="%VAR% と !VAR! が値を読む時点の違い">
+		<defs>
+			<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+				<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+				<stop offset="1" stop-color="hsl(0,58%,55%)"/>
+			</linearGradient>
+		</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+		<rect x="20" y="20" width="470" height="110" rx="8" fill="url(#i1)"/>
+		<text x="255" y="56" fill="#fff" font-size="17" font-family="monospace" text-anchor="middle">%VAR%</text>
+		<text x="255" y="84" fill="#fff" font-size="14" text-anchor="middle">行（ブロック）を読んだ時点の値</text>
+		<text x="255" y="108" fill="#fff" font-size="14" text-anchor="middle">置換結果はもう一度解析される</text>
+		<rect x="510" y="20" width="470" height="110" rx="8" fill="url(#i1)"/>
+		<text x="745" y="56" fill="#fff" font-size="17" font-family="monospace" text-anchor="middle">!VAR!</text>
+		<text x="745" y="84" fill="#fff" font-size="14" text-anchor="middle">実行する直前の値</text>
+		<text x="745" y="108" fill="#fff" font-size="14" text-anchor="middle">値は読み直されない</text>
+	</svg>

@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 150" width="1000" height="150" role="img" aria-label="Step 1 から Step 5 までに足していくもの">
+		<defs>
+			<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+				<stop offset="0" stop-color="hsl(280,78%,25%)"/>
+				<stop offset="1" stop-color="hsl(280,58%,55%)"/>
+			</linearGradient>
+			<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+				<stop offset="0" stop-color="hsl(210,78%,25%)"/>
+				<stop offset="1" stop-color="hsl(210,58%,55%)"/>
+			</linearGradient>
+			<linearGradient id="i3" x1="0" y1="1" x2="0" y2="0">
+				<stop offset="0" stop-color="hsl(140,78%,25%)"/>
+				<stop offset="1" stop-color="hsl(140,58%,55%)"/>
+			</linearGradient>
+			<linearGradient id="i4" x1="0" y1="1" x2="0" y2="0">
+				<stop offset="0" stop-color="hsl(70,78%,25%)"/>
+				<stop offset="1" stop-color="hsl(70,58%,55%)"/>
+			</linearGradient>
+			<linearGradient id="i5" x1="0" y1="1" x2="0" y2="0">
+				<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+				<stop offset="1" stop-color="hsl(0,58%,55%)"/>
+			</linearGradient>
+			<marker id="i6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+				<path d="M0,0 L10,5 L0,10 z" fill="#4a5568"/>
+			</marker>
+		</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+		<rect x="10" y="30" width="170" height="80" rx="10" fill="url(#i1)"/>
+		<text x="95" y="62" fill="#fff" font-size="14" font-weight="bold" text-anchor="middle">Step 1</text>
+		<text x="95" y="88" fill="#fff" font-size="13" text-anchor="middle">とにかく動かす</text>
+		<rect x="210" y="30" width="170" height="80" rx="10" fill="url(#i2)"/>
+		<text x="295" y="62" fill="#fff" font-size="14" font-weight="bold" text-anchor="middle">Step 2</text>
+		<text x="295" y="88" fill="#fff" font-size="13" text-anchor="middle">setlocal と変数</text>
+		<rect x="410" y="30" width="170" height="80" rx="10" fill="url(#i3)"/>
+		<text x="495" y="62" fill="#fff" font-size="14" font-weight="bold" text-anchor="middle">Step 3</text>
+		<text x="495" y="88" fill="#fff" font-size="13" text-anchor="middle">日付を付ける</text>
+		<rect x="610" y="30" width="170" height="80" rx="10" fill="url(#i4)"/>
+		<text x="695" y="62" fill="#fff" font-size="14" font-weight="bold" text-anchor="middle">Step 4</text>
+		<text x="695" y="88" fill="#fff" font-size="13" text-anchor="middle">if exist と ||</text>
+		<rect x="810" y="30" width="180" height="80" rx="10" fill="url(#i5)"/>
+		<text x="900" y="62" fill="#fff" font-size="14" font-weight="bold" text-anchor="middle">Step 5</text>
+		<text x="900" y="88" fill="#fff" font-size="13" text-anchor="middle">%~1 と %~dp0</text>
+		<line x1="182" y1="70" x2="204" y2="70" stroke="#4a5568" stroke-width="2" marker-end="url(#i6)"/>
+		<line x1="382" y1="70" x2="404" y2="70" stroke="#4a5568" stroke-width="2" marker-end="url(#i6)"/>
+		<line x1="582" y1="70" x2="604" y2="70" stroke="#4a5568" stroke-width="2" marker-end="url(#i6)"/>
+		<line x1="782" y1="70" x2="804" y2="70" stroke="#4a5568" stroke-width="2" marker-end="url(#i6)"/>
+	</svg>

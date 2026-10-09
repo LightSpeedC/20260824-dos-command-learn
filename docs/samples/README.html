@@ -1,0 +1,204 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>サンプルとテンプレート</title>
+<style>
+/* css/style.css が読めなかったときの代替色 */
+.titlebar, section h1, th, a.doclink, .badge { background: #12224d; color: #fff; }
+</style>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+/* 章ごとのアクセント色（5章 / 色相 280→0 を 70°刻み） */
+.ch01{ --accent:hsl(280,78%,25%); --accent2:hsl(280,58%,55%); --soft:hsl(280,28%,95%); }
+.ch02{ --accent:hsl(210,78%,25%); --accent2:hsl(210,58%,55%); --soft:hsl(210,28%,95%); }
+.ch03{ --accent:hsl(140,78%,25%); --accent2:hsl(140,58%,55%); --soft:hsl(140,28%,95%); }
+.ch04{ --accent:hsl(70,78%,25%);  --accent2:hsl(70,58%,55%);  --soft:hsl(70,28%,95%); }
+.ch05{ --accent:hsl(0,78%,25%);   --accent2:hsl(0,58%,55%);   --soft:hsl(0,28%,95%); }
+
+/* 目次の自動採番 */
+.toc ol{ counter-reset:toc; }
+.toc ol li{ counter-increment:toc; }
+.toc ol a::before{ content:counter(toc) ". "; }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+	<div class="inner">
+		<h1>サンプルとテンプレート</h1>
+		<p class="lead">各回のデモで使うバッチと、新しく書き始めるときにコピーするテンプレート。サンプルはすべて <code>docs\samples\</code> 配下に閉じた動作で、外部のフォルダは書き換えません</p>
+		<p class="date">📅 作成: 2026-08-25 / 更新: 2026-10-09</p>
+	</div>
+</div>
+
+<div class="wrap">
+
+<!-- AUTO:nav -->
+<p class="docnav"><a href="../README.html" aria-label="目次" title="DOSコマンド勉強会 資料一覧"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 1 1 7h2v7h4v-4h2v4h4V7h2z"/></svg></a></p>
+<!-- /AUTO:nav -->
+
+<div class="toc">
+	<h2>目次</h2>
+	<ol>
+		<li class="ch01"><a href="#ch01">実行方法と注意</a></li>
+		<li class="ch02"><a href="#ch02">第1回のサンプル（<code>01\</code>）</a></li>
+		<li class="ch03"><a href="#ch03">第2回のサンプル（<code>02\</code>）</a></li>
+		<li class="ch04"><a href="#ch04">第3回のサンプル（<code>03\</code>）</a></li>
+		<li class="ch05"><a href="#ch05">テンプレート（<code>templates\</code>）</a></li>
+	</ol>
+</div>
+
+<section class="ch01" id="ch01">
+	<h1>実行方法と注意</h1>
+
+	<h2>実行のしかた</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>方法</th><th>手順</th><th>備考</th></tr>
+			<tr><td class="nowrap">ダブルクリック</td><td>エクスプローラでファイルをダブルクリックする</td><td>引数が不要なサンプルはこれで動く。末尾に <code>pause</code> があるので結果を読める</td></tr>
+			<tr><td class="nowrap">コマンドプロンプト</td><td>プロジェクトのフォルダを開いて <code>docs\samples\01\01-hello.cmd</code> のように実行する</td><td>引数が必要なサンプルはこちら</td></tr>
+			<tr><td class="nowrap">エクスプローラのアドレスバー</td><td>アドレスバーに <code>cmd</code> と入力するとそのフォルダでコマンドプロンプトが開く</td><td>パスを打つ手間が省ける</td></tr>
+		</table>
+	</div>
+	<p>引数が必要なサンプルは、引数なしで実行すると使い方（usage）が表示されます。</p>
+
+	<h2>すべてのサンプルに共通する事項</h2>
+	<ul>
+		<li><span class="badge b-warn">要注意</span>ファイルは <strong>SJIS（CP932）+ CRLF</strong> で保存されています。エディタで開いて保存するときにエンコーディングを変えないでください。UTF-8 で保存すると日本語が化け、構文エラーになります</li>
+		<li>末尾に <code>pause</code> が入っています。ダブルクリック実行で結果を読むためです。実務のバッチでは、無人実行するものに <code>pause</code> を入れてはいけません</li>
+		<li>生成物（<code>backup\</code> <code>sorted\</code> <code>log\</code>）は各サンプルと同じフォルダに作られます。不要になったらフォルダごと削除してください</li>
+	</ul>
+
+	<div class="callout callout-tip">
+		<p><strong>コンソールのコードページが 65001（UTF-8）だと日本語が化けます。</strong>ファイルが正しくても化けるので、その場合は <code>chcp</code> で確認してください。<code>932</code> でなければ、コマンドプロンプトを新しく開き直すか、<code>chcp 932</code> を実行してから試してください。詳細は<a href="../A3-落とし穴.html#p3">落とし穴 #3</a> にあります。</p>
+	</div>
+</section>
+
+<section class="ch02" id="ch02">
+	<h1>第1回のサンプル（<code>01\</code>）</h1>
+
+	<p>資料: <a class="doclink" href="../01-実行モデル.html">01. バッチの実行モデル</a></p>
+
+	<div class="tablewrap">
+		<table>
+			<tr><th>ファイル</th><th>内容</th><th>引数</th></tr>
+			<tr><td class="nowrap"><code>01-hello.cmd</code></td><td><code>echo</code> と <code>rem</code> の確認</td><td class="nowrap">なし</td></tr>
+			<tr><td class="nowrap"><code>02-expand.cmd</code></td><td>「置換してから実行する」ことの確認。未定義変数 / <code>set</code> の書き方の違い / <code>%%</code> / 記号を含む値の再解析</td><td class="nowrap">なし</td></tr>
+			<tr><td class="nowrap"><code>03-errorlevel.cmd</code></td><td>終了コードの確認。<code>&amp;&amp;</code> と <code>||</code>、<code>if errorlevel</code> が「以上」であること</td><td class="nowrap">なし</td></tr>
+			<tr><td class="nowrap"><code>04-args.cmd</code></td><td>引数とチルダ修飾子の一覧表示</td><td class="nowrap">ファイルパス</td></tr>
+			<tr><td class="nowrap"><code>05-backup.cmd</code></td><td>デモの完成版。日付付きの名前で <code>backup\</code> にコピーする</td><td class="nowrap">ファイルパス</td></tr>
+		</table>
+	</div>
+
+	<h2>実行例</h2>
+	<pre><code class="language-batch">rem 引数が必要なサンプル
+docs\samples\01\04-args.cmd "docs\samples\01\sample.txt" abc
+docs\samples\01\05-backup.cmd "docs\samples\01\sample.txt"</code></pre>
+
+	<h2>この回で試してほしいこと</h2>
+	<ul>
+		<li><code>01-hello.cmd</code> の1行目 <code>@echo off</code> を <code>rem @echo off</code> に変えて実行する。<strong>実行される行そのものが表示される</strong>のが分かります。これが動かないバッチを調べる最初の手段です</li>
+		<li><code>02-expand.cmd</code> の <code>=== 5 ===</code> の出力を見る。<code>%MSG%</code> は壊れ、<code>!MSG!</code> は正しく表示されます</li>
+	</ul>
+</section>
+
+<section class="ch03" id="ch03">
+	<h1>第2回のサンプル（<code>02\</code>）</h1>
+
+	<p>資料: <a class="doclink" href="../02-制御構文.html">02. 制御構文と展開の罠</a></p>
+
+	<div class="tablewrap">
+		<table>
+			<tr><th>ファイル</th><th>内容</th><th>引数</th></tr>
+			<tr><td class="nowrap"><code>01-delayed-ng.cmd</code></td><td><span class="badge b-ng">失敗版</span><code>%VAR%</code> でループを回して 0 のままになる例</td><td class="nowrap">なし</td></tr>
+			<tr><td class="nowrap"><code>01-delayed-ok.cmd</code></td><td><span class="badge b-ok">修正版</span><code>!VAR!</code> にした版</td><td class="nowrap">なし</td></tr>
+			<tr><td class="nowrap"><code>02-if.cmd</code></td><td><code>if</code> の4つの形と数値比較</td><td class="nowrap">なし</td></tr>
+			<tr><td class="nowrap"><code>03-for.cmd</code></td><td><code>for</code> の4つの形。<code>usebackq</code> による意味の切り替えも確認できる</td><td class="nowrap">なし</td></tr>
+			<tr><td class="nowrap"><code>04-string.cmd</code></td><td>部分取得・置換・含有判定</td><td class="nowrap">なし</td></tr>
+			<tr><td class="nowrap"><code>05-subroutine.cmd</code></td><td>サブルーチンと戻り値の2つの方法</td><td class="nowrap">なし</td></tr>
+			<tr><td class="nowrap"><code>06-sort.cmd</code></td><td>デモの完成版。ファイルを拡張子ごとに <code>sorted\</code> へ振り分ける</td><td class="nowrap">省略可</td></tr>
+		</table>
+	</div>
+
+	<h2>付属のデータファイル</h2>
+	<div class="tablewrap">
+		<table>
+			<tr><th>ファイル</th><th>用途</th></tr>
+			<tr><td class="nowrap"><code>data.txt</code></td><td><code>for /f</code> で行を読む例</td></tr>
+			<tr><td class="nowrap"><code>data file.txt</code></td><td>空白を含むファイル名。<code>usebackq</code> が必要になる例</td></tr>
+			<tr><td class="nowrap"><code>list.csv</code></td><td><code>tokens</code> / <code>delims</code> / <code>skip</code> の例</td></tr>
+			<tr><td class="nowrap"><code>testfiles\</code></td><td><code>06-sort.cmd</code> の振り分け対象（<code>.txt</code> <code>.log</code> <code>.png</code> と拡張子なし）</td></tr>
+		</table>
+	</div>
+
+	<h2>この回で試してほしいこと</h2>
+	<ul>
+		<li><code>01-delayed-ng.cmd</code> と <code>01-delayed-ok.cmd</code> を<strong>続けて実行して見比べる</strong>。違いは <code>%COUNT%</code> と <code>!COUNT!</code> だけです</li>
+		<li><code>03-for.cmd</code> の <code>=== 4 ===</code> を見る。引用符の有無で、ファイルの中身を読むか文字列そのものを読むかが変わります</li>
+		<li><code>06-sort.cmd</code> を実行して <code>sorted\noext\</code> に <code>LICENSE</code> が入ることを確認する。ここは空の変数に置換記法を使うと壊れる箇所です</li>
+	</ul>
+</section>
+
+<section class="ch04" id="ch04">
+	<h1>第3回のサンプル（<code>03\</code>）</h1>
+
+	<p>資料: <a class="doclink" href="../03-実務.html">03. 実務で使えるバッチを書く</a></p>
+
+	<div class="tablewrap">
+		<table>
+			<tr><th>ファイル</th><th>内容</th><th>引数</th></tr>
+			<tr><td class="nowrap"><code>01-datetime.cmd</code></td><td>日時取得の3つの方法を並べて実行し、結果を見比べる</td><td class="nowrap">なし</td></tr>
+			<tr><td class="nowrap"><code>02-errorhandling.cmd</code></td><td>エラー処理の型。<code>robocopy</code> が成功でも 0 以外を返すことも確認できる</td><td class="nowrap">なし</td></tr>
+			<tr><td class="nowrap"><code>03-logging.cmd</code></td><td>ログ出力。<code>2&gt;&amp;1</code> の位置による違いを実演する</td><td class="nowrap">なし</td></tr>
+			<tr><td class="nowrap"><code>04-args.cmd</code></td><td>引数解析（<code>shift</code> ループ）とヘルプ表示</td><td class="nowrap">省略可</td></tr>
+			<tr><td class="nowrap"><code>05-backup.cmd</code></td><td>第1回のバックアップを配布可能な形に仕上げた最終版</td><td class="nowrap">ファイルパス</td></tr>
+		</table>
+	</div>
+
+	<h2>実行例</h2>
+	<pre><code class="language-batch">rem ヘルプを表示する
+docs\samples\03\04-args.cmd
+
+rem オプション付きで実行する
+docs\samples\03\04-args.cmd -v -o out.txt "docs\samples\03\sample.txt"
+
+rem バックアップの最終版（-v で詳細表示）
+docs\samples\03\05-backup.cmd -v "docs\samples\03\sample.txt"</code></pre>
+
+	<h2>この回で試してほしいこと</h2>
+	<ul>
+		<li><code>01-datetime.cmd</code> で3つの方法の結果を比べる。<code>%TIME%</code> の生の値に<strong>先頭の空白</strong>があることを確認してください</li>
+		<li><code>03-logging.cmd</code> を実行し、生成された <code>log\demo_yyyymmdd.log</code> を開く。「誤った形」のエラーがログに入っていないことが分かります</li>
+		<li><code>05-backup.cmd</code> を引数なしで実行してヘルプを確認し、次に存在しないパスを渡して終了コードを確認する（<code>echo %errorlevel%</code>）</li>
+	</ul>
+</section>
+
+<section class="ch05" id="ch05">
+	<h1>テンプレート（<code>templates\</code>）</h1>
+
+	<p>サンプルは説明のために書かれていますが、テンプレートは<strong>コピーして使うため</strong>のものです。この勉強会で扱った対策をすべて含んでいます。新しくバッチを書くときは、用途に合う1本をコピーして始めてください。</p>
+
+	<div class="tablewrap">
+		<table>
+			<tr><th>ファイル</th><th>用途</th><th>特徴</th></tr>
+			<tr><td class="nowrap"><code>tool.cmd</code></td><td>引数を取るツール</td><td>引数チェック、ヘルプ表示、<code>:finish</code> での後始末</td></tr>
+			<tr><td class="nowrap"><code>launcher.cmd</code></td><td>ps1 や exe の起動</td><td><code>pause</code> あり。ダブルクリック前提</td></tr>
+			<tr><td class="nowrap"><code>batchjob.cmd</code></td><td>無人実行のバッチ処理</td><td>日付ごとのログ、<code>pause</code> なし</td></tr>
+		</table>
+	</div>
+
+	<p>使い方は <a class="doclink" href="../03-実務.html">03. 実務で使えるバッチを書く</a> で説明しています。</p>
+</section>
+
+</div>
+
+<footer>
+<!-- AUTO:nav -->
+<p class="docnav"><a href="../README.html" aria-label="目次" title="DOSコマンド勉強会 資料一覧"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 1 1 7h2v7h4v-4h2v4h4V7h2z"/></svg></a></p>
+<!-- /AUTO:nav -->
+</footer>
+
+</body>
+</html>

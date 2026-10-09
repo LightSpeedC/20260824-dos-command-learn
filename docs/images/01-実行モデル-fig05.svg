@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 190" width="1000" height="190" role="img" aria-label="%~ 修飾子が C:\work\data\input.txt のどの部分を取り出すか">
+		<defs>
+			<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+				<stop offset="0" stop-color="hsl(280,78%,25%)"/>
+				<stop offset="1" stop-color="hsl(280,58%,55%)"/>
+			</linearGradient>
+			<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+				<stop offset="0" stop-color="hsl(186.7,78%,25%)"/>
+				<stop offset="1" stop-color="hsl(186.7,58%,55%)"/>
+			</linearGradient>
+			<linearGradient id="i3" x1="0" y1="1" x2="0" y2="0">
+				<stop offset="0" stop-color="hsl(93.3,78%,25%)"/>
+				<stop offset="1" stop-color="hsl(93.3,58%,55%)"/>
+			</linearGradient>
+			<linearGradient id="i4" x1="0" y1="1" x2="0" y2="0">
+				<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+				<stop offset="1" stop-color="hsl(0,58%,55%)"/>
+			</linearGradient>
+		</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+		<rect x="20" y="40" width="120" height="60" rx="10" fill="url(#i1)"/>
+		<text x="80" y="77" fill="#fff" font-size="16" font-weight="bold" text-anchor="middle">C:</text>
+		<rect x="150" y="40" width="330" height="60" rx="10" fill="url(#i2)"/>
+		<text x="315" y="77" fill="#fff" font-size="16" font-weight="bold" text-anchor="middle">\work\data\</text>
+		<rect x="490" y="40" width="250" height="60" rx="10" fill="url(#i3)"/>
+		<text x="615" y="77" fill="#fff" font-size="16" font-weight="bold" text-anchor="middle">input</text>
+		<rect x="750" y="40" width="230" height="60" rx="10" fill="url(#i4)"/>
+		<text x="865" y="77" fill="#fff" font-size="16" font-weight="bold" text-anchor="middle">.txt</text>
+		<text x="80" y="128" fill="#4a5568" font-size="14" text-anchor="middle">%~d1</text>
+		<text x="315" y="128" fill="#4a5568" font-size="14" text-anchor="middle">%~p1</text>
+		<text x="615" y="128" fill="#4a5568" font-size="14" text-anchor="middle">%~n1</text>
+		<text x="865" y="128" fill="#4a5568" font-size="14" text-anchor="middle">%~x1</text>
+		<line x1="20" y1="148" x2="480" y2="148" stroke="#4a5568" stroke-width="2"/>
+		<text x="250" y="172" fill="#4a5568" font-size="14" text-anchor="middle">%~dp1（%~dp0 はこの部分を自分自身から取る）</text>
+		<line x1="490" y1="148" x2="980" y2="148" stroke="#4a5568" stroke-width="2"/>
+		<text x="735" y="172" fill="#4a5568" font-size="14" text-anchor="middle">%~nx1</text>
+	</svg>

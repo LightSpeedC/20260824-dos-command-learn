@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 170" width="1000" height="170" role="img" aria-label="括弧ブロックは入る前に一括で置換される">
+		<defs>
+			<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+				<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+				<stop offset="1" stop-color="hsl(0,58%,55%)"/>
+			</linearGradient>
+			<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+				<stop offset="0" stop-color="hsl(220,78%,25%)"/>
+				<stop offset="1" stop-color="hsl(220,58%,55%)"/>
+			</linearGradient>
+			<marker id="i3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+				<path d="M0,0 L10,5 L0,10 z" fill="#4a5568"/>
+			</marker>
+		</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+		<rect x="20" y="40" width="380" height="90" rx="10" fill="url(#i1)"/>
+		<text x="210" y="75" fill="#fff" font-size="15" font-weight="bold" text-anchor="middle">for … do ( … %count% … )</text>
+		<text x="210" y="102" fill="#fff" font-size="13" text-anchor="middle">ブロック全体を1行として先に置換</text>
+		<line x1="405" y1="85" x2="582" y2="85" stroke="#4a5568" stroke-width="2" marker-end="url(#i3)"/>
+		<text x="493" y="72" fill="#4a5568" font-size="13" text-anchor="middle">%count% → 0</text>
+		<rect x="590" y="40" width="390" height="90" rx="10" fill="url(#i2)"/>
+		<text x="785" y="75" fill="#fff" font-size="15" font-weight="bold" text-anchor="middle">echo 現在: 0 を3回実行</text>
+		<text x="785" y="102" fill="#fff" font-size="13" text-anchor="middle">set /a で増えた値は、ブロックの外で見える</text>
+	</svg>
