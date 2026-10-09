@@ -262,6 +262,9 @@ echo C: "%MSG%"</code></pre>
 操作可能なプログラムまたはバッチ ファイルとして認識されていません。
 B: Hello &amp; World
 C: "Hello &amp; World"</code></pre>
+	<p>2行目のメッセージは、英語環境では次のように表示されます。上の日本語はその公式のロケール出力です。</p>
+	<pre><code class="language-text">'World' is not recognized as an internal or external command,
+operable program or batch file.</code></pre>
 	<p>変数には <code>Hello &amp; World</code> が正しく入っています。それでも <code>A</code> は壊れます。<code>echo %MSG%</code> が置換されて <code>echo Hello &amp; World</code> という<strong>行</strong>になり、その行がコマンドとして読み直されるからです。<code>&amp;</code> 以降は別のコマンドとして実行され、<code>World</code> というコマンドを探しに行きます。</p>
 	<p><code>B</code> の <code>!MSG!</code> は正しく表示されます。遅延展開は実行の直前に値を差し込み、<strong>その結果を読み直しません</strong>。<code>C</code> のように引用符で囲む方法もありますが、引用符自体も表示されてしまいます。</p>
 

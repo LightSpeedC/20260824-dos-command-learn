@@ -438,6 +438,9 @@ echo B: !MSG!</code></pre>
 'World' は、内部コマンドまたは外部コマンド、
 操作可能なプログラムまたはバッチ ファイルとして認識されていません。
 B: Hello &amp; World</code></pre>
+	<p>2行目のメッセージは、英語環境では次のように表示されます。上の日本語はその公式のロケール出力です。</p>
+	<pre><code class="language-text">'World' is not recognized as an internal or external command,
+operable program or batch file.</code></pre>
 	<p><code>A</code> は置換されて <code>echo Hello &amp; World</code> という<strong>行</strong>になり、その行が読み直されて <code>&amp;</code> がコマンド区切りとして働きます。<code>B</code> は実行直前に値を差し込むだけで読み直さないため、記号がそのまま文字として扱われます。</p>
 	<p>ファイル名やユーザー入力のように「何が入っているか分からない値」を扱うときは、ループの外でも <code>!VAR!</code> で読むほうが安全です。</p>
 
