@@ -4,7 +4,7 @@
 
 > 📅 作成: 2026-08-25 / 更新: 2026-10-09
 
-[^^](../README.md)
+[^^](../../README.md)
 
 ## 目次
 
@@ -132,4 +132,4 @@ docs\samples\03\05-backup.cmd -v "docs\samples\03\sample.txt"
 
 使い方は [03. 実務で使えるバッチを書く](../03-実務.md) で説明しています。
 
-[^^](../README.md)
+[^^](../../README.md)

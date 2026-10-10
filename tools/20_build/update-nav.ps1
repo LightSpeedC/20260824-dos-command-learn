@@ -21,22 +21,23 @@ function New-Link([string]$href, [string]$label, [string]$title, [string]$icon) 
 }
 
 # 本編は順に読むので前後をつなぐ。付録・構成は目次だけ
+$root = (Resolve-Path "$docs/..").Path
+$rootTitle = Get-Title "$root/README.html"
 $main = @(Get-ChildItem $docs -Filter '0*.html' | Sort-Object Name)
 $others = @(Get-ChildItem $docs -Filter '*.html' | Where-Object { $_.Name -match '^(A\d|ZZ)-' } | Sort-Object Name)
 
 $targets = @()
 for ($i = 0; $i -lt $main.Count; $i++) {
-	$links = @(New-Link 'README.html' '目次' (Get-Title "$docs/README.html") $iconHome)
+	$links = @(New-Link '../README.html' '目次' $rootTitle $iconHome)
 	if ($i -gt 0) { $p = $main[$i - 1]; $links = @(New-Link $p.Name '前へ' (Get-Title $p.FullName) $iconPrev) + $links }
 	if ($i -lt $main.Count - 1) { $n = $main[$i + 1]; $links += New-Link $n.Name '次へ' (Get-Title $n.FullName) $iconNext }
 	$targets += [pscustomobject]@{ Path = $main[$i].FullName; Links = $links }
 }
 foreach ($f in $others) {
-	$targets += [pscustomobject]@{ Path = $f.FullName; Links = @(New-Link 'README.html' '目次' (Get-Title "$docs/README.html") $iconHome) }
+	$targets += [pscustomobject]@{ Path = $f.FullName; Links = @(New-Link '../README.html' '目次' $rootTitle $iconHome) }
 }
-# 資料一覧はプロジェクトの README へ、サンプルの説明は資料一覧へ戻る
-$targets += [pscustomobject]@{ Path = "$docs/README.html"; Links = @(New-Link '../README.html' '戻る' 'README へ戻る' $iconHome) }
-$targets += [pscustomobject]@{ Path = "$docs/samples/README.html"; Links = @(New-Link '../README.html' '目次' (Get-Title "$docs/README.html") $iconHome) }
+# サンプルの説明は 2 階層下にあるので、一覧（root の README）へは ../../ で戻る
+$targets += [pscustomobject]@{ Path = "$docs/samples/README.html"; Links = @(New-Link '../../README.html' '目次' $rootTitle $iconHome) }
 
 foreach ($x in $targets) {
 	$nav = "<!-- AUTO:nav -->`n<p class=`"docnav`">" + ($x.Links -join ' ') + "</p>`n<!-- /AUTO:nav -->"
