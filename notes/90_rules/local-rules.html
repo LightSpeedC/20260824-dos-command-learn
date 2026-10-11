@@ -138,7 +138,7 @@ footer{
 	<div class="inner">
 		<h1>20260824-dos-command-learn ローカルルール</h1>
 		<p class="lead">このプロジェクトでだけ通る決めごと。共通ルールと食い違ったときは、ここが優先する</p>
-		<p class="date">📅 作成: 2026-10-09 / 更新: 2026-10-10</p>
+		<p class="date">📅 作成: 2026-10-09 / 更新: 2026-10-11</p>
 	</div>
 </div>
 
@@ -181,7 +181,7 @@ footer{
 		<li>名前の変更・移動（リンクの書き換えまで含めて1つ）</li>
 		<li>初期化・設定ファイルの変更</li>
 	</ul>
-	<p>commit の前に、全資料のリンク切れ（<code>html2md</code>）・コントラスト（<code>check-contrast</code>）・Markdown の表示（<code>check-markdown</code>）を通す。失敗したまま commit しない。push のあとは、公開ページの作り直しが終わり、変えたファイルが公開 URL に入っていることを確かめてから報告する。</p>
+	<p>commit の前に、全資料のリンク切れ（<code>html2md</code>）・コントラスト（<code>check-contrast</code>）・Markdown の表示（<code>check-markdown</code>）を通す。サンプルや、資料に載せた出力を直したときは、サンプルのテスト（<code>tools/40_test/run-tests</code>）も通す。失敗したまま commit しない。push のあとは、公開ページの作り直しが終わり、変えたファイルが公開 URL に入っていることを確かめてから報告する。</p>
 	<p>メッセージの先頭行には、何をどうしたかを書く。件数を書くなら、書く直前に <code>git diff --cached --name-only</code> で数える。</p>
 </section>
 
@@ -194,6 +194,8 @@ footer{
 		<li><strong>資料のファイル名を変えると、公開 URL が変わる</strong>。旧 URL は 404 になる</li>
 		<li><strong><code>docs/samples/</code> の cmd は SJIS ＋ CRLF</strong>。直すときは <code>convert-encoding &lt;path&gt; --to utf8</code> → 編集 → <code>--to cmd</code> の順に行う</li>
 		<li><strong>サンプルを実行するとコンソールのコードページを継承する</strong>。ログの日本語は、実行した窓のコードページで決まる。検証は窓を SJIS（932）にして行う</li>
+		<li><strong>サンプルのテストは、新しい窓（<code>windowsHide</code>）で起動して 932 に固定する</strong>。呼び出し元の窓が 65001 でも、出力が化けない。<code>chcp</code> は使わない。実行するファイルは <code>.\</code> 付きで渡す（名前だけでは、カレントのファイルが見つからないことがある）</li>
+		<li><strong>期待値は、サンプルを読んで手で書く</strong>。実行結果から作ると、サンプルが何を出しても通る。書いた期待値で実行して食い違ったら、資料・サンプル・期待値のどれが誤りかを、実機の出力で確かめる（この方法で、01 の「未定義の変数」の誤りが見つかった）</li>
 	</ul>
 </section>
 
