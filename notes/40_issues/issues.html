@@ -140,18 +140,19 @@ footer{
 <section class="ch01" id="ch01">
 	<h1>資料の正確さ</h1>
 
-	<details class="md-flat" open>
-		<summary><span class="no">i261011-01</span><span class="badge b-none">未</span>英語の原文を確かめられていないエラーメッセージが 2 件ある</summary>
+	<details class="md-flat">
+		<summary><span class="no">i261011-01</span><span class="badge b-ok">済</span>英語の原文を確かめられていないエラーメッセージが 2 件ある</summary>
 		<p>エラーメッセージは、実際に出る言語（英語）の原文と公式の日本語訳を並べる決まり。次の 2 件は、日本語環境でしか取れず、英語の原文が未確認のまま日本語だけを載せている。</p>
 		<ul>
 			<li>01 の第 2 章: パス演算子（<code>%~dp0</code> 等）の使い方が無効なときのメッセージ</li>
 			<li>03 の第 4 章: UNC パスがカレントにできないときのメッセージ</li>
 		</ul>
 		<p>実機の英語表示の cmd で出力を取れば確かめられる。推測で英文を書かない。</p>
-		<p><strong>選び方</strong>: (A) 英語表示の環境で実測して原文を足す（推奨。決まりどおりになる） ／ (B) 実測できるまで日本語だけを載せ、その旨を本文に書く。</p>
+		<p><strong>選び方</strong>: (A) 英語表示の環境で実測して原文を足す（推奨。決まりどおりになる） ／ (B) 実測できるまで日本語だけを載せ、その旨を本文に書く。→ A を採用。</p>
+		<p><strong>結果</strong>: 英語のロケール資源（<code>en-US</code> の <code>cmd.exe.mui</code>）に原文があった。日本語側と突き合わせたところ、01 の日本語が公式と違っていた（「置き換え中で」→「置き換えで」、「使用方法」→「使用法」）。続く案内の行も足りなかったので、公式の全文に直した。UNC のメッセージも、続く 1 文と前置きの行を足した。</p>
 		<ul>
-			<li><span class="badge b-none">未</span>英語表示の環境で 2 件の出力を取る</li>
-			<li><span class="badge b-none">未</span>01・03 に原文を足し、<code>html2md</code> を流す</li>
+			<li><span class="badge b-ok">済</span>英語のロケール資源から 2 件の原文を取り、日本語側と突き合わせる</li>
+			<li><span class="badge b-ok">済</span>01・03・A1・A3 を直し、<code>html2md</code> を流す</li>
 		</ul>
 	</details>
 </section>

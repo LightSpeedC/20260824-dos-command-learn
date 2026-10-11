@@ -29,7 +29,7 @@
 	<div class="inner">
 		<h1>A3. 落とし穴カタログ</h1>
 		<p class="lead">症状 → 原因 → 修正 の形で14項目。動かないときに症状から引くための資料です</p>
-		<p class="date">📅 作成: 2026-08-25 / 更新: 2026-10-09</p>
+		<p class="date">📅 作成: 2026-08-25 / 更新: 2026-10-11</p>
 	</div>
 </div>
 
@@ -329,7 +329,7 @@ if not exist "%TARGET%" (
 	</div>
 
 	<h2 id="p14">#14 共有フォルダ（UNC パス）でカレント移動が失敗する</h2>
-	<p><span class="badge b-ng">症状</span>共有フォルダ上に置いたバッチをダブルクリックすると <code>UNC パスはサポートされません。</code> と表示され、カレントが <code>C:\Windows</code> になる。</p>
+	<p><span class="badge b-ng">症状</span>共有フォルダ上に置いたバッチをダブルクリックすると <code>UNC パスはサポートされません。Windows ディレクトリを既定で使用します。</code>（英語環境では <code>UNC paths are not supported.  Defaulting to Windows directory.</code>）と表示され、カレントが <code>C:\Windows</code> になる。</p>
 	<pre><code class="language-batch">@echo off
 cd /d "%~dp0"
 rem \\server\share\tools\ では失敗する</code></pre>

@@ -33,7 +33,7 @@
 	<div class="inner">
 		<h1>03. 実務で使えるバッチを書く</h1>
 		<p class="lead">全3回シリーズ（3/3） &nbsp;|&nbsp; この回のゴール: 他人に渡して壊れないバッチの条件を知り、テンプレートから書き始められる</p>
-		<p class="date">📅 作成: 2026-08-25 / 更新: 2026-10-09</p>
+		<p class="date">📅 作成: 2026-08-25 / 更新: 2026-10-11</p>
 	</div>
 </div>
 
@@ -220,7 +220,14 @@ pushd "%~dp0" || exit /b 1
 rem …処理…
 
 popd</code></pre>
-	<p><code>cd</code> ではなく <code>pushd</code> を使う理由は、<strong>共有フォルダ（UNC パス）でも動く</strong>ことです。<code>cd</code> は <code>\\server\share\...</code> をカレントにできず、<code>UNC パスはサポートされません。</code> というメッセージを出して <code>C:\Windows</code> に留まります。<code>pushd</code> は UNC パスに一時的なドライブレターを割り当てるため、そのまま移動できます。</p>
+	<p><code>cd</code> ではなく <code>pushd</code> を使う理由は、<strong>共有フォルダ（UNC パス）でも動く</strong>ことです。<code>cd</code> は <code>\\server\share\...</code> をカレントにできず、<code>UNC パスはサポートされません。Windows ディレクトリを既定で使用します。</code> というメッセージを出して <code>C:\Windows</code> に留まります。<code>pushd</code> は UNC パスに一時的なドライブレターを割り当てるため、そのまま移動できます。</p>
+	<p>共有フォルダ上のバッチをダブルクリックしたときの表示は次のとおりです（1行目は開始時のカレント）。上が日本語環境、下が英語環境の公式のロケール出力です。</p>
+	<pre><code class="language-text">'\\server\share\tools'
+上記の現在のディレクトリで CMD.EXE を開始しました。
+UNC パスはサポートされません。Windows ディレクトリを既定で使用します。</code></pre>
+	<pre><code class="language-text">'\\server\share\tools'
+CMD.EXE was started with the above path as the current directory.
+UNC paths are not supported.  Defaulting to Windows directory.</code></pre>
 	<p><code>pushd</code> で割り当てたドライブは <code>popd</code> で解放されます。必ず対で書いてください。</p>
 
 	<h2>カレントを変えたくない場合</h2>
