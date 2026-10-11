@@ -27,11 +27,12 @@
 .d06{ --accent:hsl(46.7,78%,25%);  --accent2:hsl(46.7,58%,55%);  --soft:hsl(46.7,28%,95%); }
 .d07{ --accent:hsl(0,78%,25%);     --accent2:hsl(0,58%,55%);     --soft:hsl(0,28%,95%); }
 
-/* 章ごとのアクセント色（4章 / 色相 280→0 を 93.3°刻み） */
+/* 章ごとのアクセント色（5章 / 色相 280→0 を 70°刻み） */
 .ch01{ --accent:hsl(280,78%,25%);   --accent2:hsl(280,58%,55%);   --soft:hsl(280,28%,95%); }
-.ch02{ --accent:hsl(186.7,78%,25%); --accent2:hsl(186.7,58%,55%); --soft:hsl(186.7,28%,95%); }
-.ch03{ --accent:hsl(93.3,78%,25%);  --accent2:hsl(93.3,58%,55%);  --soft:hsl(93.3,28%,95%); }
-.ch04{ --accent:hsl(0,78%,25%);     --accent2:hsl(0,58%,55%);     --soft:hsl(0,28%,95%); }
+.ch02{ --accent:hsl(210,78%,25%);   --accent2:hsl(210,58%,55%);   --soft:hsl(210,28%,95%); }
+.ch03{ --accent:hsl(140,78%,25%);   --accent2:hsl(140,58%,55%);   --soft:hsl(140,28%,95%); }
+.ch04{ --accent:hsl(70,78%,25%);    --accent2:hsl(70,58%,55%);    --soft:hsl(70,28%,95%); }
+.ch05{ --accent:hsl(0,78%,25%);     --accent2:hsl(0,58%,55%);     --soft:hsl(0,28%,95%); }
 
 *{ box-sizing:border-box; }
 body{
@@ -253,10 +254,17 @@ footer{
 <pre><code class="language-text">docs/              公開する資料（GitHub Pages）
   css/style.css    資料の共通スタイル
   samples/         資料に出てくるコードとテンプレート
+notes/40_issues/   これから解決する課題
 notes/90_rules/    このプロジェクトのローカルルール</code></pre>
 </section>
 
 <section class="ch04" id="ch04">
+	<h1>課題</h1>
+	<p><a class="doclink" href="notes/40_issues/issues.html">20260824-dos-command-learn 課題</a></p>
+	<p>これから解決することの一覧です。</p>
+</section>
+
+<section class="ch05" id="ch05">
 	<h1>ローカルルール</h1>
 	<p><a class="doclink" href="notes/90_rules/local-rules.html">20260824-dos-command-learn ローカルルール</a></p>
 	<p>このプロジェクトでだけ通る決めごと（commit・push の単位など）です。</p>

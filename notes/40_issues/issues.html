@@ -1,0 +1,181 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>20260824-dos-command-learn 課題</title>
+<style>
+:root{
+	--navy1:#12224d;
+	--navy2:#2f5fbf;
+	--ink:#1c2330;
+	--ink-soft:#4a5568;
+	--line:#d9dfe8;
+	--code-bg:#f4f6fa;
+	--link:#1a4fa0;
+	--accent:var(--navy1, #12224d);
+	--accent2:var(--navy2, #2f5fbf);
+	--soft:#f2f5fb;
+}
+
+/* 章ごとのアクセント色（2章 / 色相 280 と 0） */
+.ch01{ --accent:hsl(280,78%,25%); --accent2:hsl(280,58%,55%); --soft:hsl(280,28%,95%); }
+.ch02{ --accent:hsl(0,78%,25%);   --accent2:hsl(0,58%,55%);   --soft:hsl(0,28%,95%); }
+
+*{ box-sizing:border-box; }
+body{
+	margin:0;
+	font-family:"Segoe UI","Yu Gothic UI","Meiryo",sans-serif;
+	font-size:15.5px;
+	line-height:1.85;
+	color:var(--ink, #1c2330);
+	background:#fff;
+}
+
+.titlebar{
+	background:linear-gradient(135deg,var(--navy1, #12224d),var(--navy2, #2f5fbf));
+	color:#fff;
+	padding:34px 30px 30px;
+}
+.titlebar .inner{ max-width:1600px; margin:0 auto; }
+.titlebar h1{ font-size:2.05em; margin:0 0 10px; color:#fff; background:transparent; }
+.titlebar .lead{ font-size:.95em; color:#dbe5f7; background:transparent; margin:0; }
+.titlebar .date{ font-size:.9em; color:#c3d3ee; background:transparent; margin:6px 0 0; }
+
+.wrap{ max-width:1600px; margin:0 auto; padding:0 30px; }
+
+section{
+	background:linear-gradient(180deg,var(--soft, #f2f5fb),#fff);
+	border:1px solid var(--line, #d9dfe8);
+	border-radius:10px;
+	padding:4px 26px 26px;
+	margin:34px 0;
+}
+section h1{
+	font-size:1.5em;
+	margin:26px 0 20px;
+	padding:14px 20px;
+	color:#fff;
+	background:linear-gradient(100deg,var(--accent, #12224d),var(--accent2, #2f5fbf));
+	border-radius:8px;
+	box-shadow:0 4px 12px rgba(0,0,0,.18);
+}
+
+p{ margin:10px 0; }
+ul{ margin:10px 0; padding-left:1.6em; }
+li{ margin:4px 0; }
+a{ color:var(--link, #1a4fa0); background:transparent; }
+
+code{
+	background:var(--code-bg, #f4f6fa);
+	border:1px solid var(--line, #d9dfe8);
+	color:#17335f;
+	padding:.1em .35em;
+	border-radius:4px;
+	font-family:Consolas,"Courier New",monospace;
+	font-size:.92em;
+}
+
+details{
+	background:#fff;
+	border:1px solid var(--line, #d9dfe8);
+	border-left:6px solid var(--accent, #12224d);
+	border-radius:0 8px 8px 0;
+	padding:6px 16px;
+	margin:12px 0;
+}
+summary{ cursor:pointer; font-weight:700; color:var(--ink, #1c2330); background:transparent; }
+summary .no{ font-family:Consolas,"Courier New",monospace; color:var(--accent, #12224d); background:transparent; margin-right:.6em; }
+
+.badge{
+	display:inline-block;
+	padding:0 9px;
+	margin-right:.6em;
+	border-radius:6px;
+	color:#fff;
+	font-size:.85em;
+	font-weight:700;
+	white-space:nowrap;
+}
+.b-none{ background:linear-gradient(100deg,#5a6472,#97a1ae); color:#fff; }
+.b-warn{ background:linear-gradient(100deg,#b8620a,#f0a548); color:#fff; }
+.b-ok{ background:linear-gradient(100deg,#1d7a3c,#45b56c); color:#fff; }
+
+.backlink{ margin:18px 0 0; }
+footer .backlink{ margin:0; }
+.backlink a{
+	display:inline-flex;
+	align-items:center;
+	justify-content:center;
+	width:34px;
+	height:28px;
+	color:#fff;
+	background:linear-gradient(100deg,var(--navy1, #12224d),var(--navy2, #2f5fbf));
+	border-radius:6px;
+	text-decoration:none;
+}
+
+footer{
+	max-width:1600px;
+	margin:0 auto;
+	padding:18px 30px 30px;
+	border-top:1px solid var(--line, #d9dfe8);
+}
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+	<div class="inner">
+		<h1>20260824-dos-command-learn 課題</h1>
+		<p class="lead">これから解決することの一覧。判断や選び方が要るものだけを残す</p>
+		<p class="date">📅 作成: 2026-10-11 / 更新: 2026-10-11</p>
+	</div>
+</div>
+
+<div class="wrap">
+
+<p class="backlink"><a href="../../README.html" aria-label="戻る" title="README へ戻る"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 1 1 7h2v7h4v-4h2v4h4V7h2z"/></svg></a></p>
+
+<section class="ch01" id="ch01">
+	<h1>資料の正確さ</h1>
+
+	<details class="md-flat" open>
+		<summary><span class="no">i261011-01</span><span class="badge b-none">未</span>英語の原文を確かめられていないエラーメッセージが 2 件ある</summary>
+		<p>エラーメッセージは、実際に出る言語（英語）の原文と公式の日本語訳を並べる決まり。次の 2 件は、日本語環境でしか取れず、英語の原文が未確認のまま日本語だけを載せている。</p>
+		<ul>
+			<li>01 の第 2 章: パス演算子（<code>%~dp0</code> 等）の使い方が無効なときのメッセージ</li>
+			<li>03 の第 4 章: UNC パスがカレントにできないときのメッセージ</li>
+		</ul>
+		<p>実機の英語表示の cmd で出力を取れば確かめられる。推測で英文を書かない。</p>
+		<p><strong>選び方</strong>: (A) 英語表示の環境で実測して原文を足す（推奨。決まりどおりになる） ／ (B) 実測できるまで日本語だけを載せ、その旨を本文に書く。</p>
+		<ul>
+			<li><span class="badge b-none">未</span>英語表示の環境で 2 件の出力を取る</li>
+			<li><span class="badge b-none">未</span>01・03 に原文を足し、<code>html2md</code> を流す</li>
+		</ul>
+	</details>
+</section>
+
+<section class="ch02" id="ch02">
+	<h1>サンプルの検証</h1>
+
+	<details class="md-flat" open>
+		<summary><span class="no">i261011-02</span><span class="badge b-none">未</span>サンプルの cmd を一括で実行して確かめる仕組みが無い</summary>
+		<p>資料に載せた出力は、サンプルを実行して貼ったもの。ただし、あとからサンプルや資料を直したときに、出力がずれていないかを確かめる手段が無い（<code>tests/</code> と <code>tools/40_test/</code> が無い）。</p>
+		<p>サンプルは実行するとファイルを作るものと、コンソールのコードページで出力が変わるものがあり、そのまま一括実行はできない。作るなら、出力先を <code>tmp/</code> にし、窓を SJIS（932）に固定して、期待値を先に手で書く形になる。</p>
+		<p><strong>選び方</strong>: (A) <code>tests/</code> に実行テストを作り、<code>tools/40_test/</code> にランチャを置く（推奨。資料とサンプルのずれを機械で見つけられる） ／ (B) 作らず、直すたびに手で実行して確かめる運用にする。</p>
+		<ul>
+			<li><span class="badge b-none">未</span>どのサンプルを対象にするか決める（出力が環境に依らないもの）</li>
+			<li><span class="badge b-none">未</span>期待値を手で書き、落ちることを確かめてから実装する</li>
+		</ul>
+	</details>
+</section>
+
+</div>
+
+<footer>
+	<p class="backlink"><a href="../../README.html" aria-label="戻る" title="README へ戻る"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 1 1 7h2v7h4v-4h2v4h4V7h2z"/></svg></a></p>
+</footer>
+
+</body>
+</html>
