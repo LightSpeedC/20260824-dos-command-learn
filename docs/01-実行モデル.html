@@ -142,7 +142,7 @@ after  set: 0</code></pre></td></tr>
 				<td class="nowrap"><code>n</code></td>
 				<td class="nowrap"><code>n</code></td>
 				<td class="nowrap"><code>%n%</code></td>
-				<td>読むのは実行時ではなく<strong>行の解析時</strong>。未定義なら空文字ではなく <code>%n%</code> という文字列がそのまま残る</td>
+				<td>読むのは実行時ではなく<strong>行の解析時</strong>。未定義なら、エラーにならず<strong>空文字に置き換わる</strong>（コマンドプロンプトに直接打ったときだけは <code>%n%</code> がそのまま残る）</td>
 			</tr>
 			<tr>
 				<td class="nowrap">スコープ</td>
@@ -238,11 +238,12 @@ after  set: 0</code></pre></td></tr>
 	<h2>置換であることの帰結</h2>
 	<p>「変数を読む」が「その位置に値の文字列を貼り込む」であるため、次のようなことが起きます。</p>
 
-	<h3>1. 未定義の変数は空にならない</h3>
+	<h3>1. 未定義の変数は黙って空になる</h3>
 	<pre><code class="language-batch">@echo off
 echo [%UNDEFINED_VAR%]</code></pre>
-	<pre><code class="language-text">[%UNDEFINED_VAR%]</code></pre>
-	<p>JavaScript なら <code>undefined</code>、Java ならコンパイルエラーですが、バッチは<strong>置換できないので元の文字列を残します</strong>。<code>if "%A%"=="x"</code> で比較が成立しないときは、まずこれを疑います。</p>
+	<pre><code class="language-text">[]</code></pre>
+	<p>JavaScript なら <code>undefined</code>、Java ならコンパイルエラーですが、バッチは<strong>エラーにせず、空文字に置き換えます</strong>。変数名を打ち間違えても気づけません。<code>if "%A%"=="x"</code> の比較が思いどおりにならないときは、まず変数が空になっていないかを疑います。</p>
+	<p>コマンドプロンプトに直接打ったときだけは、未定義の <code>%UNDEFINED_VAR%</code> が元の文字列のまま残ります。バッチとは動きが違うので、プロンプトで試した結果をそのまま信じないでください。</p>
 
 	<h3>2. 置換した結果が、もう一度コマンドとして読み直される</h3>
 	<p>これがこの回で一番重要な帰結です。置換は文字列を貼り込むだけなので、<strong>貼り込んだ値の中にある記号も、コマンドの記号として解釈されます</strong>。</p>

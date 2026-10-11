@@ -285,7 +285,7 @@
 			<tr><td>ループ内の出力が初期値のまま変わらない</td><td><code>%VAR%</code> を <code>!VAR!</code> にする（遅延展開）</td><td class="nowrap"><a href="A3-落とし穴.html#p1">#1</a></td></tr>
 			<tr><td>比較が成立しない</td><td><code>set VAR = value</code> の空白 / 未定義変数</td><td class="nowrap"><a href="A3-落とし穴.html#p2">#2</a></td></tr>
 			<tr><td>値の末尾に空白が入っている</td><td><code>set "名前=値"</code> の形にする</td><td class="nowrap"><a href="A3-落とし穴.html#p2">#2</a></td></tr>
-			<tr><td><code>%VAR%</code> がそのまま表示される</td><td>変数が未定義。置換できず元の文字列が残っている</td><td class="nowrap"><a href="01-実行モデル.html#ch02">01.2</a></td></tr>
+			<tr><td><code>%VAR%</code> がそのまま表示される</td><td>コマンドプロンプトに直接打っている。未定義の変数は、バッチ内では空になるが、プロンプトでは元の文字列が残る</td><td class="nowrap"><a href="01-実行モデル.html#ch02">01.2</a></td></tr>
 			<tr><td><code>&amp;</code> を含む値を <code>echo</code> したら壊れた</td><td>展開結果が読み直されている。<code>!VAR!</code> で読む</td><td class="nowrap"><a href="02-制御構文.html#ch04">02.4</a></td></tr>
 			<tr><td>実行後、環境変数が書き換わっている</td><td><code>setlocal</code> がない</td><td class="nowrap"><a href="A3-落とし穴.html#p13">#13</a></td></tr>
 			<tr><td>拡張子なしのファイルで変な値になる</td><td>空の変数に置換記法を使っている</td><td class="nowrap"><a href="02-制御構文.html#ch08">02.8</a></td></tr>

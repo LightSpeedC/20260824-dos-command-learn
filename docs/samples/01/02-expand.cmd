@@ -5,9 +5,9 @@ rem   「バッチは置換してから実行する」ことの確認
 rem ============================================================
 setlocal enabledelayedexpansion
 
-echo === 1. 未定義の変数は空にならない ===
+echo === 1. 未定義の変数は黙って空になる ===
 echo [%UNDEFINED_VAR%]
-echo   置換できないので %%UNDEFINED_VAR%% がそのまま残る
+echo   エラーにならず空に置換される。変数名の打ち間違いに気づけない
 
 echo.
 echo === 2. set の書き方の違い ===
