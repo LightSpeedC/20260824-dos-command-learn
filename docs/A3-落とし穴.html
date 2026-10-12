@@ -28,7 +28,7 @@
 <div class="titlebar">
 	<div class="inner">
 		<h1>A3. 落とし穴カタログ</h1>
-		<p class="lead">症状 → 原因 → 修正 の形で14項目。動かないときに症状から引くための資料です</p>
+		<p class="lead">症状 → 原因 → 修正 の形で15項目。動かないときに症状から引くための資料です</p>
 		<p class="date">📅 作成: 2026-08-25 / 更新: 2026-10-12</p>
 	</div>
 </div>
@@ -57,6 +57,7 @@
 		<tr><td class="num"><a href="#p12">12</a></td><td>他のバッチを呼んだらそこで処理が終わってしまった</td><td><code>call</code> を付けていない</td></tr>
 		<tr><td class="num"><a href="#p13">13</a></td><td>実行後、環境変数が書き換わっている</td><td><code>setlocal</code> がない</td></tr>
 		<tr><td class="num"><a href="#p14">14</a></td><td>共有フォルダ（UNC パス）でカレント移動が失敗する</td><td><code>cd</code> は UNC を扱えない</td></tr>
+		<tr><td class="num"><a href="#p15">15</a></td><td>使い方の表示で、ファイル名のところに <code>-v</code> などの引数が出る</td><td><code>shift</code> は <code>%0</code> もずらす</td></tr>
 	</table>
 </div>
 
@@ -65,7 +66,7 @@
 	<ol>
 		<li class="ch01"><a href="#ch01">変数と展開（#1 #2 #7 #13）</a></li>
 		<li class="ch02"><a href="#ch02">構文とエスケープ（#9 #10 #11）</a></li>
-		<li class="ch03"><a href="#ch03">制御フローと終了コード（#6 #8 #12）</a></li>
+		<li class="ch03"><a href="#ch03">制御フローと終了コード（#6 #8 #12 #15）</a></li>
 		<li class="ch04"><a href="#ch04">パスと実行環境（#4 #5 #14）</a></li>
 		<li class="ch05"><a href="#ch05">文字コード（#3）</a></li>
 	</ol>
@@ -286,6 +287,36 @@ goto :eof
 echo [%DATE% %TIME%] %~1
 goto :eof</code></pre>
 	<p>この <code>goto :eof</code>（メイン処理の末尾）を忘れると、処理がそのまま <code>:log</code> ラベルへ流れ込んで二重に実行されます。</p>
+
+	<h2 id="p15">#15 <code>shift</code> のあとで使い方を表示すると、ファイル名が引数になる</h2>
+	<p><span class="badge b-ng">症状</span>オプションを解析したあとで使い方を表示すると、<code>使い方: -v [-v] &lt;対象パス&gt;</code> のように、バッチの名前があるはずの場所に引数が出る。</p>
+	<pre><code class="language-batch">@echo off
+:parse
+if "%~1"=="" goto :parse_done
+if /i "%~1"=="-v" set "VERBOSE=1"
+shift
+goto :parse
+
+:parse_done
+echo 使い方: %~nx0 [-v] ^&lt;対象パス^&gt;</code></pre>
+	<pre><code class="language-text">C:\work&gt;sample.cmd -v
+使い方: -v [-v] &lt;対象パス&gt;</code></pre>
+	<p><span class="badge b-warn">原因</span><code>shift</code> は <code>%1</code> 以降だけでなく <strong><code>%0</code> も1つずらします</strong>。<code>-v</code> を読み捨てた時点で、<code>%0</code> は <code>-v</code> に入れ替わっています。引数なしで <code>:usage</code> へ直接進む経路では <code>shift</code> が走らないため、名前は正しく出ます。<code>shift</code> の後を通る経路でだけ崩れるので、気づきにくい不具合です。</p>
+	<p><span class="badge b-ok">修正</span>解析を始める前に、名前を変数へ控えます。</p>
+	<pre><code class="language-batch">@echo off
+setlocal enabledelayedexpansion
+rem shift は %0 もずらすため、使い方に出す名前は先に控えておく
+set "SELF=%~nx0"
+
+:parse
+if "%~1"=="" goto :parse_done
+if /i "%~1"=="-v" set "VERBOSE=1"
+shift
+goto :parse
+
+:parse_done
+echo 使い方: !SELF! [-v] ^&lt;対象パス^&gt;</code></pre>
+	<p>03 のサンプル <code>04-args.cmd</code> と <code>05-backup.cmd</code> は、この形で書いています。</p>
 </section>
 
 <section class="ch04" id="ch04">

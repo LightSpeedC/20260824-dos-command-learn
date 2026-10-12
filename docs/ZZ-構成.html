@@ -599,11 +599,12 @@ goto :eof</code></pre>
 			<tr><td class="num">12</td><td>他のバッチを呼んだらそこで処理が終わってしまった</td><td><code>call</code> を付けずに呼んだため、制御が戻らない</td><td class="nowrap">第2回</td></tr>
 			<tr><td class="num">13</td><td>スクリプト実行後、環境変数が汚れている</td><td><code>setlocal</code> がない</td><td class="nowrap">第1回</td></tr>
 			<tr><td class="num">14</td><td>UNC パス（<code>\\server\share</code>）でカレント移動が失敗する</td><td><code>cd</code> は UNC を扱えない。<code>pushd</code> を使う</td><td class="nowrap">第3回</td></tr>
+			<tr><td class="num">15</td><td>使い方の表示で、ファイル名のところに <code>-v</code> などの引数が出る</td><td><code>shift</code> は <code>%0</code> もずらす。解析の前に名前を控える</td><td class="nowrap">第3回</td></tr>
 		</table>
 	</div>
 
 	<div class="callout callout-tip">
-		<p><strong>この14項目は、資料の品質検証にも使う。</strong>3回分の資料を書き終えたあと、各項目が本当にどこかで説明されているかを1つずつ突き合わせます。落とし穴の説明漏れは、資料としての価値を最も大きく損なう欠陥です。</p>
+		<p><strong>この15項目は、資料の品質検証にも使う。</strong>3回分の資料を書き終えたあと、各項目が本当にどこかで説明されているかを1つずつ突き合わせます。落とし穴の説明漏れは、資料としての価値を最も大きく損なう欠陥です。</p>
 	</div>
 </section>
 
