@@ -29,7 +29,7 @@
 	<div class="inner">
 		<h1>A3. 落とし穴カタログ</h1>
 		<p class="lead">症状 → 原因 → 修正 の形で14項目。動かないときに症状から引くための資料です</p>
-		<p class="date">📅 作成: 2026-08-25 / 更新: 2026-10-11</p>
+		<p class="date">📅 作成: 2026-08-25 / 更新: 2026-10-12</p>
 	</div>
 </div>
 
@@ -165,7 +165,7 @@ endlocal &amp; set "RESULT=%RESULT%"</code></pre>
 	<h1>構文とエスケープ</h1>
 
 	<h2 id="p9">#9 <code>::</code> コメントを入れたらループが構文エラーになった</h2>
-	<p><span class="badge b-ng">症状</span>コメントを追加しただけで <code>コマンドの構文が誤っています。</code> と表示される。</p>
+	<p><span class="badge b-ng">症状</span>コメントを追加しただけで <code>コマンドの構文が誤っています。</code>（英語環境では <code>The syntax of the command is incorrect.</code>）と表示される。</p>
 	<pre><code class="language-batch">for %%f in (*.txt) do (
     :: ファイルごとの処理
     echo %%f
@@ -292,7 +292,7 @@ goto :eof</code></pre>
 	<h1>パスと実行環境</h1>
 
 	<h2 id="p4">#4 ダブルクリックでは動くのに別の場所から呼ぶと失敗する</h2>
-	<p><span class="badge b-ng">症状</span>バッチのあるフォルダで実行すると動くが、タスクスケジューラや別フォルダから実行すると <code>指定されたパスが見つかりません。</code> になる。</p>
+	<p><span class="badge b-ng">症状</span>バッチのあるフォルダで実行すると動くが、タスクスケジューラや別フォルダから実行すると <code>指定されたパスが見つかりません。</code>（英語環境では <code>The system cannot find the path specified.</code>）になる。</p>
 	<pre><code class="language-batch">@echo off
 rem config.ini はバッチと同じフォルダにある
 for /f "delims=" %%l in (config.ini) do echo %%l</code></pre>
@@ -311,7 +311,7 @@ for /f "delims=" %%l in ("%~dp0config.ini") do echo %%l</code></pre>
 	</div>
 
 	<h2 id="p5">#5 パスに空白が含まれると失敗する</h2>
-	<p><span class="badge b-ng">症状</span><code>C:\Program Files\...</code> を渡すと <code>コマンドの構文が誤っています。</code> になる。あるいは <code>C:\Program</code> までしか認識されない。</p>
+	<p><span class="badge b-ng">症状</span><code>C:\Program Files\...</code> を渡すと <code>コマンドの構文が誤っています。</code>（<code>The syntax of the command is incorrect.</code>）になる。あるいは <code>C:\Program</code> までしか認識されない。</p>
 	<pre><code class="language-batch">set SRC=C:\Program Files\MyApp\data.txt
 copy %SRC% D:\backup\</code></pre>
 	<p><span class="badge b-warn">原因</span>空白は引数の区切りです。引用符で囲まないと <code>C:\Program</code> と <code>Files\MyApp\data.txt</code> の2引数として渡されます。</p>

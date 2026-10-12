@@ -33,7 +33,7 @@
 	<div class="inner">
 		<h1>ZZ. 資料の構成</h1>
 		<p class="lead">対象: JavaScript の基礎文法・開発経験がある人 / Java または C# を知っている人 &nbsp;|&nbsp; ゴール: <code>.bat</code> <code>.cmd</code> を自分で書けるようになる</p>
-		<p class="date">📅 作成: 2026-08-24 / 更新: 2026-10-11</p>
+		<p class="date">📅 作成: 2026-08-24 / 更新: 2026-10-12</p>
 	</div>
 </div>
 
@@ -518,8 +518,13 @@ goto :eof</code></pre>
 │       ├── README.html       … サンプルとテンプレートの使い方
 │       ├── 01\ … 03\         … 各回のデモで使うバッチ
 │       └── templates\        … tool.cmd / launcher.cmd / batchjob.cmd
-└── tools\20_build\
-    └── update-nav.ps1        … 各資料の前へ・次へ・目次のバッジを作り直す</code></pre>
+├── tests\
+│   └── samples.test.ts       … サンプルの cmd を実行して、出力が資料どおりかを確かめるテスト
+└── tools\
+    ├── 20_build\
+    │   └── update-nav.ps1    … 各資料の前へ・次へ・目次のバッジを作り直す
+    └── 40_test\
+        └── run-tests.cmd     … テストの一括実行（node と bun）</code></pre>
 	<p>Markdown（<code>.md</code>）は各 html と同じフォルダに生成されます。</p>
 
 	<h2>ファイル名の付け方</h2>
@@ -532,7 +537,7 @@ goto :eof</code></pre>
 		</table>
 	</div>
 	<p>エクスプローラやエディタの名前順で <code>01</code> → <code>02</code> → <code>03</code> → <code>A1</code> → <code>A2</code> → <code>A3</code> → <code>ZZ</code> と並び、本編を読み終えた先に付録が続く形になります。付録を後から追加する場合も <code>A4-</code> 以降を使い、本編の連番には割り込ませません。</p>
-	<p>資料を追加・改題したら <code>tools\20_build\update-nav.ps1</code> を実行し、各資料の前へ・次へ・目次のバッジを作り直します。</p>
+	<p>資料を追加・改題したら <code>tools\20_build\update-nav.ps1</code> を実行し、各資料の前へ・次へ・目次のバッジを作り直します。サンプルや、資料に載せた出力を直したときは <code>tools\40_test\run-tests.cmd</code> を実行し、サンプルの出力が資料どおりかを確かめます。</p>
 
 	<div class="callout">
 		<p><strong>付録を各回から独立させる理由。</strong>勉強会中は第1〜3回を順に読みますが、勉強会後に実際にバッチを書く場面で必要になるのは「症状から引く」「記法だけ確認する」という使い方です。回の資料に埋め込むと後から引けません。各回の本文からは付録の該当項目へリンクします。</p>
@@ -614,7 +619,7 @@ goto :eof</code></pre>
 			<tr><th>索引</th><th>手がかり</th><th>想定する場面</th></tr>
 			<tr><td class="nowrap">索引A<br>やりたいこと逆引き</td><td class="nowrap">日本語の目的</td><td>「フォルダ内のファイルを順に処理したい」— これから書く。何を使えばいいか分からない</td></tr>
 			<tr><td class="nowrap">索引B<br>他言語からの逆引き</td><td class="nowrap">既知言語の構文</td><td>「JS の <code>for...of</code> にあたるものは?」— 書きたい処理は頭にあり、記法だけが分からない</td></tr>
-			<tr><td class="nowrap">索引C<br>症状からの逆引き</td><td class="nowrap">エラー文・おかしな挙動</td><td>「<code>この時点では予期されていません。</code> と出た」— 既に書いたものが動かない</td></tr>
+			<tr><td class="nowrap">索引C<br>症状からの逆引き</td><td class="nowrap">エラー文・おかしな挙動</td><td>「<code>… の使い方が誤っています。</code> と出た」— 既に書いたものが動かない</td></tr>
 		</table>
 	</div>
 
@@ -668,10 +673,10 @@ goto :eof</code></pre>
 			<tr><td>ループ内の出力が初期値のまま変わらない</td><td>遅延展開（<code>%VAR%</code> を <code>!VAR!</code> に）</td><td class="num">1</td></tr>
 			<tr><td>比較が常に成立しない / 値の末尾に空白が付く</td><td><code>set VAR = value</code> の空白</td><td class="num">2</td></tr>
 			<tr><td>日本語が <code>?</code> や別の文字になる</td><td>ファイルの文字コード（UTF-8 で保存していないか）</td><td class="num">3</td></tr>
-			<tr><td><code>指定されたパスが見つかりません。</code></td><td>カレントディレクトリ / <code>%~dp0</code> の連結</td><td class="num">4・5</td></tr>
-			<tr><td><code>この時点では予期されていません。</code></td><td>括弧・引用符・エスケープ（<code>&amp;</code> <code>|</code> <code>%</code>）</td><td class="num">10</td></tr>
-			<tr><td><code>コマンドの構文が誤っています。</code></td><td>引数の引用符 / 空白を含むパス</td><td class="num">5</td></tr>
-			<tr><td>ラベルが見つからない旨のメッセージ</td><td><code>goto</code> 先のスペル / <code>::</code> を括弧内に書いていないか</td><td class="num">9</td></tr>
+			<tr><td><code>指定されたパスが見つかりません。</code><br><code>The system cannot find the path specified.</code></td><td>カレントディレクトリ / <code>%~dp0</code> の連結</td><td class="num">4・5</td></tr>
+			<tr><td><code>… の使い方が誤っています。</code><br><code>… was unexpected at this time.</code></td><td>括弧・引用符・エスケープ（<code>&amp;</code> <code>|</code> <code>%</code>）</td><td class="num">10</td></tr>
+			<tr><td><code>コマンドの構文が誤っています。</code><br><code>The syntax of the command is incorrect.</code></td><td>引数の引用符 / 空白を含むパス</td><td class="num">5</td></tr>
+			<tr><td><code>指定されたバッチ ラベルが見つかりません - …</code><br><code>The system cannot find the batch label specified - …</code></td><td><code>goto</code> 先のスペル / <code>::</code> を括弧内に書いていないか</td><td class="num">9</td></tr>
 			<tr><td>エラーが出ているのに次の処理に進む</td><td>終了コードを確認していない</td><td class="num">6・7</td></tr>
 			<tr><td>実行後、ウィンドウが一瞬で閉じる</td><td><code>exit</code> に <code>/b</code> がない / <code>pause</code> がない</td><td class="num">8</td></tr>
 			<tr><td>呼び出したバッチから戻ってこない</td><td><code>call</code> を付けずに呼んでいる</td><td class="num">12</td></tr>
