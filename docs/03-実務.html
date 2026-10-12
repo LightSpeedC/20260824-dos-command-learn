@@ -33,7 +33,7 @@
 	<div class="inner">
 		<h1>03. 実務で使えるバッチを書く</h1>
 		<p class="lead">全3回シリーズ（3/3） &nbsp;|&nbsp; この回のゴール: 他人に渡して壊れないバッチの条件を知り、テンプレートから書き始められる</p>
-		<p class="date">📅 作成: 2026-08-25 / 更新: 2026-10-11</p>
+		<p class="date">📅 作成: 2026-08-25 / 更新: 2026-10-12</p>
 	</div>
 </div>
 
@@ -172,7 +172,7 @@ echo %STAMP%</code></pre>
 	<h3>方法2: <code>wmic</code> を使う <span class="badge b-warn">非推奨</span></h3>
 	<pre><code class="language-batch">for /f "tokens=2 delims==" %%d in ('wmic os get localdatetime /value 2^&gt;nul ^| find "="') do set "LDT=%%d"
 set "STAMP=%LDT:~0,8%_%LDT:~8,6%"</code></pre>
-	<p>取得できる生の値は <code>20260825004102.484000+540</code> です。地域設定に依存しない固定書式なので、かつては定番でした。しかし <strong><code>wmic</code> は非推奨</strong>となり、将来の Windows で削除される予定です。新規に書くなら方法1を選びます。</p>
+	<p>取得できる生の値は <code>20260825004102.484000+540</code> です。地域設定に依存しない固定書式なので、かつては定番でした。しかし <strong><code>wmic</code> は非推奨</strong>となり、将来の Windows で削除される予定です。Windows 11 の新しい版（ビルド 26300 で確認）には、すでにありません。<code>wmic</code> が無い環境では <code>LDT</code> が未定義のまま上の部分取得が展開され、<code>20260825_004102</code> ではなく崩れた文字列になります。新規に書くなら方法1を選びます。</p>
 	<p>また <code>for /f</code> で読むと<strong>値の末尾に余分な CR が混入します</strong>。上のように部分取得（<code>%LDT:~0,8%</code>）で必要な桁だけ切り出せば影響を避けられますが、<code>%LDT%</code> をそのまま使うとファイル名やパスが壊れます。</p>
 
 	<h3>方法3: <code>%DATE%</code> と <code>%TIME%</code> を加工する</h3>
@@ -453,7 +453,7 @@ exit /b 1</code></pre>
 
 
 	<h2>オプションを解析する</h2>
-	<p>本格的な引数解析が必要なら、<code>shift</code> でループします。</p>
+	<p>本格的な引数解析が必要なら、<code>shift</code> でループします。<code>shift</code> は <code>%0</code> もずらすため、解析のあとで使い方に <code>%~nx0</code> を出すと名前が崩れます。名前は解析の前に変数へ控えます（<a href="A3-落とし穴.html#p15">落とし穴 #15</a>）。</p>
 	<pre><code class="language-batch">set "VERBOSE="
 set "TARGET="
 
