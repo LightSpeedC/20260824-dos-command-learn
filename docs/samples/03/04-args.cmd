@@ -7,6 +7,9 @@ rem  使い方: 04-args.cmd [-v] [-o 出力先] 対象パス
 rem ============================================================
 setlocal enabledelayedexpansion
 
+rem shift は %0 もずらすため、使い方に出す名前は先に控えておく
+set "SELF=%~nx0"
+
 rem --- ヘルプの要求と引数なしを同じ扱いにする ---
 if "%~1"=="" goto :usage
 if "%~1"=="/?" goto :usage
@@ -51,7 +54,7 @@ pause
 exit /b 0
 
 :usage
-echo 使い方: %~nx0 [-v] [-o 出力先] ^<対象パス^>
+echo 使い方: !SELF! [-v] [-o 出力先] ^<対象パス^>
 echo.
 echo   ^<対象パス^>   処理するファイルまたはフォルダ
 echo   -v           詳細を表示する
