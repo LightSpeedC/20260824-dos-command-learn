@@ -3,60 +3,18 @@
 // 期待値は、サンプルを読んで手で書いたもの。実行結果から作らない。
 // 資料に載せた出力とサンプルがずれたとき、ここで落ちて気づけるようにするのが目的。
 //
-// 実行の決まり:
-// - 窓を共有しないために windowsHide で起動する。新しい窓は OS 既定の 932 で始まるため、
-//   呼び出し元の窓のコードページ（65001 のことがある）に左右されない。
-// - 結果のファイルを作るサンプルがあるため、tmp/ に写して、その写しを実行する。
-// - 日時・フォルダの絶対パスなど、実行のたびに変わる行は比較から外す。
+// 実行の決まり（窓・コードページ・写しの作り方）は helpers.ts に書いてある。
+// 日時など実行のたびに変わる値を含むサンプルは samples-env.test.ts で扱う。
 import { after, describe, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { cpSync, existsSync, mkdirSync, rmSync } from 'node:fs';
+import { existsSync } from 'node:fs';
 import { join } from 'node:path';
+import { cleanup, runSample } from './helpers.ts';
 
-const projectDir = join(import.meta.dirname, '..');
-const workRoot = join(projectDir, 'tmp', 'test-samples');
 const decoder = new TextDecoder('shift_jis');
 
-interface RunResult {
-	lines: string[];
-	stderr: string;
-	exitCode: number | null;
-	dir: string;
-}
-
-// pause の案内は言語で変わるため、最後の行が ". . ." で終わるものを外す
-function stripPause(text: string): string[] {
-	const lines = text.split(/\r?\n/);
-	while (lines.length > 0 && lines[lines.length - 1].trim() === '') lines.pop();
-	if (lines.length > 0 && /\. \. \.\s*$/.test(lines[lines.length - 1])) lines.pop();
-	return lines;
-}
-
-// sampleDir: docs/samples 配下のフォルダ名（01・02）。そのフォルダごと tmp/ に写して実行する
-function runSample(sampleDir: string, fileName: string): RunResult {
-	const dir = join(workRoot, `${sampleDir}-${fileName}-${process.pid}`);
-	rmSync(dir, { recursive: true, force: true });
-	mkdirSync(dir, { recursive: true });
-	cpSync(join(projectDir, 'docs', 'samples', sampleDir), dir, { recursive: true });
-	// カレントの実行ファイルは名前だけでは見つからないことがあるため、.\ を付ける
-	const r = spawnSync('cmd', ['/d', '/c', `.\\${fileName}`], {
-		cwd: dir,
-		windowsHide: true,
-		stdio: ['ignore', 'pipe', 'pipe'],
-		timeout: 30000,
-	});
-	return {
-		lines: stripPause(decoder.decode(r.stdout)),
-		stderr: decoder.decode(r.stderr),
-		exitCode: r.status,
-		dir,
-	};
-}
-
-after(() => {
-	rmSync(workRoot, { recursive: true, force: true });
-});
+after(cleanup);
 
 describe('実行環境', () => {
 	test('新しい窓のコードページは 932（以降の期待値は SJIS で読む前提）', () => {
@@ -263,17 +221,8 @@ describe('第2回のサンプル', () => {
 	});
 
 	test('06-sort: 存在しないフォルダを渡すとエラーで終了コード 1', () => {
-		const dir = join(workRoot, `02-06-sort-missing-${process.pid}`);
-		rmSync(dir, { recursive: true, force: true });
-		mkdirSync(dir, { recursive: true });
-		cpSync(join(projectDir, 'docs', 'samples', '02'), dir, { recursive: true });
-		const r = spawnSync('cmd', ['/d', '/c', '.\\06-sort.cmd', 'notexist_dir_xyz'], {
-			cwd: dir,
-			windowsHide: true,
-			stdio: ['ignore', 'pipe', 'pipe'],
-			timeout: 30000,
-		});
-		assert.equal(r.status, 1);
-		assert.ok(stripPause(decoder.decode(r.stdout))[0].startsWith('[エラー] フォルダが見つかりません: '));
+		const r = runSample('02', '06-sort.cmd', { args: ['notexist_dir_xyz'] });
+		assert.equal(r.exitCode, 1);
+		assert.ok(r.lines[0].startsWith('[エラー] フォルダが見つかりません: '));
 	});
 });

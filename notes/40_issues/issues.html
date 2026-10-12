@@ -161,8 +161,8 @@ footer{
 <section class="ch02" id="ch02">
 	<h1>サンプルの検証</h1>
 
-	<details class="md-flat" open>
-		<summary><span class="no">i261011-02</span><span class="badge b-warn">着手</span>サンプルの cmd を一括で実行して確かめる仕組みが無い</summary>
+	<details class="md-flat">
+		<summary><span class="no">i261011-02</span><span class="badge b-ok">済</span>サンプルの cmd を一括で実行して確かめる仕組みが無い</summary>
 		<p>資料に載せた出力は、サンプルを実行して貼ったもの。ただし、あとからサンプルや資料を直したときに、出力がずれていないかを確かめる手段が無い（<code>tests/</code> と <code>tools/40_test/</code> が無い）。</p>
 		<p>サンプルは実行するとファイルを作るものと、コンソールのコードページで出力が変わるものがあり、そのまま一括実行はできない。作るなら、出力先を <code>tmp/</code> にし、窓を SJIS（932）に固定して、期待値を先に手で書く形になる。</p>
 		<p><strong>選び方</strong>: (A) <code>tests/</code> に実行テストを作り、<code>tools/40_test/</code> にランチャを置く（推奨。資料とサンプルのずれを機械で見つけられる） ／ (B) 作らず、直すたびに手で実行して確かめる運用にする。</p>
@@ -170,7 +170,7 @@ footer{
 		<ul>
 			<li><span class="badge b-ok">済</span>出力が環境に依らない 7 本を対象にし、期待値を手で書く（01 の 01・02・03、02 の 01 の 2 本・02・04・06）</li>
 			<li><span class="badge b-ok">済</span>落ちることを確かめる（<code>02-if.cmd</code> の値を変えて実行し、落ちるのを見てから戻した）</li>
-			<li><span class="badge b-none">未</span>残りの対象（01 の 04・05、02 の 03・05、03 の 5 本、テンプレート 3 本）。日時・引数・実行環境に出力が左右されるため、固定の方法を決めてから足す</li>
+			<li><span class="badge b-ok">済</span>残りの対象 13 本（01 の 04・05、02 の 03・05、03 の 5 本、テンプレート 3 本）。期待値の配列に正規表現を混ぜ、日時・絶対パスを受ける（<code>tests/samples-env.test.ts</code>）。引数は固定し、<code>wmic</code> の有無は実行時に見分ける</li>
 		</ul>
 	</details>
 </section>
@@ -200,6 +200,27 @@ footer{
 			<li><span class="badge b-ok">済</span>01・A1・A3・ZZ を直し、英語の原文を足す</li>
 			<li><span class="badge b-ok">済</span><code>tests/messages.test.ts</code> を足す（実機の出力と資料の文言を突き合わせる）</li>
 			<li><span class="badge b-ok">済</span>ZZ のファイル構成に <code>tests/</code> と <code>tools/40_test/</code> を足す</li>
+		</ul>
+	</details>
+
+	<details class="md-flat" open>
+		<summary><span class="no">i261012-02</span><span class="badge b-warn">着手</span>03 のサンプル 01 の方法 2 が、wmic の無い環境で崩れた表示になる</summary>
+		<p>残りのサンプルのテストを書く過程で見つけた。Windows 11 の新しい版には <code>wmic</code> が無い。<code>LDT</code> が未定義のまま <code>!LDT:~0,8!</code> が展開され、<code>結果   = [~0,8C:/Tools/nodejs/nodeLDT:~8,6]</code> のような表示になる。資料 03 の方法 2 は、すでに「非推奨・将来削除される予定」と書いているが、削除済みの環境で何が起きるかは書いていない。</p>
+		<p><strong>選び方</strong>: (A) 資料 03 の方法 2 に、「削除された環境では動かず、表示も崩れる」と書き足す。サンプルは非推奨の見本としてそのまま残す（推奨。方法 2 は使わせないための例示で、直す意味が薄い） ／ (B) サンプルに <code>wmic</code> の有無を確かめる行を足し、無ければ「この環境には wmic が無い」と表示する。</p>
+		<ul>
+			<li><span class="badge b-ok">済</span>テストは <code>wmic</code> の有無を実行時に見分けて通す</li>
+			<li><span class="badge b-none">未</span>A か B かを決め、資料またはサンプルへ反映する</li>
+		</ul>
+	</details>
+
+	<details class="md-flat" open>
+		<summary><span class="no">i261012-03</span><span class="badge b-warn">着手</span>shift が %0 もずらすことを、資料が書いていない</summary>
+		<p><code>shift</code> は <code>%1</code> 以降だけでなく <code>%0</code> もずらす。03 のサンプル 04・05 は、オプションの解析（<code>shift</code>）のあとで使い方を出すと、「使い方: -v …」のようにファイル名が <code>-v</code> になっていた。資料 03 の引数解析の節は、使い方に <code>%~nx0</code> を使うと説明しているが、<code>shift</code> のあとでは名前が変わることを書いていない。</p>
+		<p><strong>選び方</strong>: (A) A3（落とし穴カタログ）に項目を足し、03 の引数解析の節からリンクする（推奨。症状・原因・修正の形で引ける） ／ (B) 03 の引数解析の節に 1 文の注意だけを足す。</p>
+		<ul>
+			<li><span class="badge b-ok">済</span>サンプル 04・05 を、解析の前に名前を控える形に直す（<code>set "SELF=%~nx0"</code>）</li>
+			<li><span class="badge b-ok">済</span>落ちるテストを足し、修正前の版で落ちることを確かめる</li>
+			<li><span class="badge b-none">未</span>A か B かを決め、資料へ反映する</li>
 		</ul>
 	</details>
 </section>
