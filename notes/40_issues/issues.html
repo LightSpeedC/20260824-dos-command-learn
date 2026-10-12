@@ -203,24 +203,25 @@ footer{
 		</ul>
 	</details>
 
-	<details class="md-flat" open>
-		<summary><span class="no">i261012-02</span><span class="badge b-warn">着手</span>03 のサンプル 01 の方法 2 が、wmic の無い環境で崩れた表示になる</summary>
+	<details class="md-flat">
+		<summary><span class="no">i261012-02</span><span class="badge b-ok">済</span>03 のサンプル 01 の方法 2 が、wmic の無い環境で崩れた表示になる</summary>
 		<p>残りのサンプルのテストを書く過程で見つけた。Windows 11 の新しい版には <code>wmic</code> が無い。<code>LDT</code> が未定義のまま <code>!LDT:~0,8!</code> が展開され、<code>結果   = [~0,8C:/Tools/nodejs/nodeLDT:~8,6]</code> のような表示になる。資料 03 の方法 2 は、すでに「非推奨・将来削除される予定」と書いているが、削除済みの環境で何が起きるかは書いていない。</p>
 		<p><strong>選び方</strong>: (A) 資料 03 の方法 2 に、「削除された環境では動かず、表示も崩れる」と書き足す。サンプルは非推奨の見本としてそのまま残す（推奨。方法 2 は使わせないための例示で、直す意味が薄い） ／ (B) サンプルに <code>wmic</code> の有無を確かめる行を足し、無ければ「この環境には wmic が無い」と表示する。</p>
 		<ul>
 			<li><span class="badge b-ok">済</span>テストは <code>wmic</code> の有無を実行時に見分けて通す</li>
-			<li><span class="badge b-none">未</span>A か B かを決め、資料またはサンプルへ反映する</li>
+			<li><span class="badge b-ok">済</span>A を採用し、資料 03 の方法 2 に、wmic の無い環境で崩れることを書き足す（ビルド 26300 で確認）</li>
 		</ul>
 	</details>
 
-	<details class="md-flat" open>
-		<summary><span class="no">i261012-03</span><span class="badge b-warn">着手</span>shift が %0 もずらすことを、資料が書いていない</summary>
+	<details class="md-flat">
+		<summary><span class="no">i261012-03</span><span class="badge b-ok">済</span>shift が %0 もずらすことを、資料が書いていない</summary>
 		<p><code>shift</code> は <code>%1</code> 以降だけでなく <code>%0</code> もずらす。03 のサンプル 04・05 は、オプションの解析（<code>shift</code>）のあとで使い方を出すと、「使い方: -v …」のようにファイル名が <code>-v</code> になっていた。資料 03 の引数解析の節は、使い方に <code>%~nx0</code> を使うと説明しているが、<code>shift</code> のあとでは名前が変わることを書いていない。</p>
 		<p><strong>選び方</strong>: (A) A3（落とし穴カタログ）に項目を足し、03 の引数解析の節からリンクする（推奨。症状・原因・修正の形で引ける） ／ (B) 03 の引数解析の節に 1 文の注意だけを足す。</p>
 		<ul>
 			<li><span class="badge b-ok">済</span>サンプル 04・05 を、解析の前に名前を控える形に直す（<code>set "SELF=%~nx0"</code>）</li>
 			<li><span class="badge b-ok">済</span>落ちるテストを足し、修正前の版で落ちることを確かめる</li>
-			<li><span class="badge b-none">未</span>A か B かを決め、資料へ反映する</li>
+			<li><span class="badge b-ok">済</span>A と B の両方を採用する。A3 に #15 を足し（症状の表・分類・ZZ の落とし穴リスト・A1 の逆引き・README の項目数を含む）、03 の引数解析の節に注意とリンクを足す</li>
+			<li><span class="badge b-ok">済</span>A3 の項目数（見出しの数と、副題・README・ZZ の「N項目」）が一致することを確かめるテストを足す（<code>tests/docs.test.ts</code>）</li>
 		</ul>
 	</details>
 </section>
