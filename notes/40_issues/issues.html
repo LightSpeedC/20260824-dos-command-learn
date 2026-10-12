@@ -130,7 +130,7 @@ footer{
 	<div class="inner">
 		<h1>20260824-dos-command-learn 課題</h1>
 		<p class="lead">これから解決することの一覧。判断や選び方が要るものだけを残す</p>
-		<p class="date">📅 作成: 2026-10-11 / 更新: 2026-10-11</p>
+		<p class="date">📅 作成: 2026-10-11 / 更新: 2026-10-12</p>
 	</div>
 </div>
 
@@ -185,6 +185,21 @@ footer{
 		<ul>
 			<li><span class="badge b-ok">済</span>01（比較表と第 2 章の 1 項目）・ZZ・A1 の記述と、サンプル <code>02-expand.cmd</code> の表示を、実測どおりに直す</li>
 			<li><span class="badge b-ok">済</span>サンプルのテストで、<code>[]</code> になることを確かめる</li>
+		</ul>
+	</details>
+
+	<details class="md-flat">
+		<summary><span class="no">i261012-01</span><span class="badge b-ok">済</span>資料のエラーメッセージが、公式・実機の文言とずれていた</summary>
+		<p>公式のロケール資源（<code>cmd.exe.mui</code> と <code>kernelbase.dll.mui</code>）と実機の出力で、資料に載せた全メッセージを突き合わせた。</p>
+		<ul>
+			<li>01 の「コマンドの構文が正しくありません。」は誤り。公式は「コマンドの構文が誤っています。」（A3 はもともと正しかった）</li>
+			<li>A1・ZZ の「この時点では予期されていません。」は公式の訳ではない。実機は「x の使い方が誤っています。」（英語は <code>x was unexpected at this time.</code>）</li>
+			<li>A1・ZZ・A3 の表と症状に、英語の原文が無かった。「指定されたパスが見つかりません。」（<code>The system cannot find the path specified.</code>）は <code>kernelbase.dll.mui</code> で確かめた</li>
+		</ul>
+		<ul>
+			<li><span class="badge b-ok">済</span>01・A1・A3・ZZ を直し、英語の原文を足す</li>
+			<li><span class="badge b-ok">済</span><code>tests/messages.test.ts</code> を足す（実機の出力と資料の文言を突き合わせる）</li>
+			<li><span class="badge b-ok">済</span>ZZ のファイル構成に <code>tests/</code> と <code>tools/40_test/</code> を足す</li>
 		</ul>
 	</details>
 </section>
